@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <meta name="description" content="Js Vanilla random image generator"/>
+    <meta name="author" content="Simon Chabrier"/>
+    <meta name="copyright" content="Simon Chabrier"/>
+
+    <!-- Linkedin Pict -->
+    <meta name="image" property="og:image" content="https://js.simschab.fr/picgenerator/assets/images/linkedinShare.png"/>
+
+    <!-- Facebook - you can use 1200px by 630px picture -->
+
+    <meta property="og:title" content="Js Vanilla random image generator" />
+    <meta property="og:url" content="https://js.simschab.fr/picgenerator/index.html" />
+    <meta property="og:image" content="https://js.simschab.fr/picgenerator/assets/images/facebookShare.png" />
+    <meta property="og:description" content="Randomize picture, change style on smartphone Y orientation and more" />
+    <meta property="og:site_name" content="JS Picture Generator" />
+
+    <!-- adding for not have 404 on icon if no icon -->
+    <link rel="shortcut icon" href="#">
+
+   <link rel="stylesheet" href="./assets/css/reset.css">
+   <link rel="stylesheet" href="./assets/css/style.css">
+    <title>WebCam Stream</title>
+</head>
+
+<body>
+    <div id="test"></div>
+        <h1>Click on StartCam !
+            <!-- affichage des messages d'erreur -->
+            <div id="errorMsg"></div>
+        </h1>
+
+    <div class ="main">
+        
+        <div class="left" id="left">
+            <button type="submit" id="start">Start Cam</button>
+            <button type="submit" id="stop">Stop Cam</button>
+                <!-- stream vidéo -->
+                <video id="videoElement" autoplay></video>
+                <!-- stream vidéo -->
+            <button type="submit" id="catch">Catch a picture</button>
+            <button type="submit" id="reset">Clear picture</button>
+                <!-- capture -->
+                <canvas id="canvas" width="0" height="0"></canvas>
+                <!-- capture -->
+        </div>
+
+        <div class="right" id="right">
+            
+            <!-- liste des contraintes supportées par le navigateur -->
+            <div id="constraintList" class="hidden"></div>
+        </div>
+    </div>
+</body>
+
+<!-- insertion du script en bas de page -->
+<script src="./assets/js/app.js" defer></script>
+</html>
