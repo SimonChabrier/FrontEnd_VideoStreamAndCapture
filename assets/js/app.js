@@ -34,24 +34,22 @@ camStreamer:function(){
         //* initialisation au click sur le bouton 'start cam'
         start.addEventListener('click', function() {
         // les constaints passées ici comme argument vont créer une demande d'autorisation d'accès à la caméra.
-        navigator.mediaDevices.getUserMedia(constraints)
         //* on lance le stream su l'utilisateur valide.
-        .then(function success(stream) {
+        navigator.mediaDevices.getUserMedia(constraints).then(function success(stream) {
+
+             //* On insére le stream dans la balise <video></vidéo> 
+        video.srcObject = stream;
+        video.classList.remove('hidden')
 
             // le stream se lance - je vérifie si il est actif et j'initialise l'affichage.
             video.addEventListener("playing", () => {
                 video.style.width ='320px';
                 video.style.heigth ='240px';
-                video.classList.remove('hidden')
                 canvas.classList.remove('hidden');
                 constrainsList.classList.remove('hidden');
                 app.browserSuportedConstraints();
             });
-
-        //* On insére le stream dans la balise <video></vidéo> 
-        video.srcObject = stream;
-        //console.log(video.srcObject);
-            
+ 
             //*Appel functions take et reset picture
             app.takeCapture();
             app.resetCapture();
