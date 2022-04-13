@@ -19,6 +19,7 @@ camStreamer:function(){
     let start = document.getElementById('start');
     let stop = document.getElementById('stop');
     let canvas = document.querySelector("#canvas");
+    canvas.classList.add('hidden');
 
     //* Contraintes pour la vidéo et l'audio
     // https://developer.mozilla.org/en-US/docs/Web/API/MediaDevices/getUserMedia
@@ -45,7 +46,6 @@ camStreamer:function(){
             video.addEventListener("playing", () => {
                 video.style.width ='320px';
                 video.style.heigth ='240px';
-                canvas.classList.remove('hidden');
                 constrainsList.classList.remove('hidden');
                 app.browserSuportedConstraints();
             });
@@ -111,20 +111,11 @@ takeCapture:function () {
         video.addEventListener("playing", () => {
         let click_button = document.querySelector("#catch");
         let canvas = document.querySelector("#canvas");
-        
         canvas.width = video.offsetWidth;
         canvas.height = video.offsetHeight;
         
-        // j'affiche la taille actuelle de mon canvas
-        // let target = document.getElementById('test');
-        // let myP = document.createElement('h1');
-        // let cwidth = canvas.width;
-        // let cheight = canvas.height;
-        // myP.append('canvas size = ' + cwidth + ' / ' + cheight)
-        // target.append(myP)
-        
-
         click_button.addEventListener('click', function() {
+        canvas.classList.remove('hidden');
         canvas.getContext('2d').drawImage(video, 0, 0, canvas.width, canvas.height);
         });
     });
@@ -136,16 +127,11 @@ resetCapture:function () {
     
     click_button.addEventListener('click', function() {
     var canvas = document.getElementById("canvas");
+    canvas.classList.add('hidden');
     var context = canvas.getContext('2d');
     context.clearRect(0, 0, canvas.width, canvas.height);
     });
 },
-
-
-    
-
-
-  
 
 };
 
