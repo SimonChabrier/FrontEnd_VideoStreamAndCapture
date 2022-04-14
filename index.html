@@ -25,31 +25,31 @@
    <link rel="stylesheet" href="./assets/css/style.css">
     <title>WebCam Stream</title>
 </head>
-
 <body>
-    <div id="test"></div>
-        <h1>Click on StartCam !
-            <!-- affichage des messages d'erreur -->
-            <div id="errorMsg"></div>
-        </h1>
-
-    <div class ="main">
-        
-        <div class="left" id="left">
+        <!-- titre + affichage des messages d'erreur -->
+        <h1>JS Photo Booth !</h1>
+        <h2 id="errorMsg"></h2>
+           
+<div class ="main">   
+        <div class="left" id="left">                    
+            <!-- select -->
+            <select name="camselect" id="select">
+                <option value="">Choose a camera or leave the default one !</option>
+            </select>
+            <!-- buttons -->
             <button type="submit" id="start">Start Cam</button>
             <button type="submit" id="stop">Stop Cam</button>
-                <!-- stream vidéo -->
-                <video id="videoElement" autoplay></video>
-                <!-- stream vidéo -->
-            <button type="submit" id="catch">Catch a picture</button>
-            <button type="submit" id="reset">Clear picture</button>
-                <!-- capture -->
-                <canvas id="canvas" width="0" height="0"></canvas>
-                <!-- capture -->
+            <!-- stream vidéo -->
+            <video id="videoElement" autoplay></video>
+            <!-- stream vidéo -->
+            <button type="submit" id="catch">Take a picture</button>
+            <button type="submit" id="reset">Delete picture</button>
+            <!-- capture -->
+            <canvas id="canvas" width="0" height="0"></canvas>
+            <!-- capture -->
         </div>
 
-        <div class="right" id="right">
-            
+        <div class="right" id="right">       
             <!-- liste des contraintes supportées par le navigateur -->
             <div id="constraintList" class="hidden"></div>
         </div>

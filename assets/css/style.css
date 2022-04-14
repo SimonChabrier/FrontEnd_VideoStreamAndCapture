@@ -5,13 +5,25 @@ justify-content:center;
 min-height:100vh;
 background: black;
 color: white;
+font-family: Arial, Helvetica, sans-serif;
 }
 
 h1{
-    text-align: center;
-    padding: 2rem;
-    font-size: 1.5rem;
-    font-family: Arial, Helvetica, sans-serif;
+text-align: center;
+font-size: 1.5rem;
+background-color: rgb(18, 83, 80);
+padding: 1rem;
+margin-bottom: 1rem;
+margin: 1rem 2rem;
+border-radius: .3rem;
+}
+
+h2 {
+text-align: center;
+font-size: 1.2rem;
+background-color: rgb(101, 101, 101);
+padding: 1rem;
+margin-bottom: 1rem;
 }
 
 li{
@@ -21,7 +33,6 @@ line-height: 1.8rem;
 .main {
 display: flex;
 flex-wrap: wrap;
-gap: 1rem;
 justify-content: center;
 }
 
@@ -31,18 +42,19 @@ flex-direction: column;
 gap: 1rem;
 }
 
+.right {
+height: 350px;
+overflow: auto;
+opacity: .4;
+}
+    
 .hidden {
 display: none;
 padding: 0;
 }
 
-.right {
-height: 640px;
-overflow: auto;
-}
-
 #constraintList {
-padding: 0 25px;
+padding: 0 1rem;
 }
 
 #canvas {
@@ -51,10 +63,8 @@ background: rgb(21 21 21);
 
 #videoElement {
 background: rgb(83, 83, 83);
-/* width: 320px;
-height: 240px; */
 }
 
 #test {
-    background: rgb(89, 13, 13);
-    }
+background: rgb(89, 13, 13);
+}
