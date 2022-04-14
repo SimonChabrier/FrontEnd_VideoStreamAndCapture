@@ -49,6 +49,8 @@ const app = {
         let clearButton = document.getElementById('reset');
         let canvas = document.querySelector("#canvas");
         let selectDisplay = document.getElementById('select');
+        let errorMessage = document.getElementById('errorMsg');
+        let rightCol = document.getElementById('right');
 
         video.classList.add('hidden');
         constrainsList.classList.add('hidden');
@@ -56,6 +58,9 @@ const app = {
         catchButton.classList.add('hidden');
         clearButton.classList.add('hidden');
         canvas.classList.add('hidden');
+        errorMessage.classList.add('hidden');
+        rightCol.classList.add('hidden');
+
 
         let start = document.getElementById('start');
         //* lancement du stream au click sur le bouton Stat Cam
@@ -96,7 +101,9 @@ const app = {
 
                 //* si le stream est en bien en cours de lecture
                 video.addEventListener("playing", () => {
-                document.getElementById('errorMsg').classList.add('hidden')
+                document.getElementById('errorMsg').classList.add('hidden');
+                document.getElementById('right').classList.remove('hidden');
+                document.getElementById('left').style.height ='auto';
                 video.style.width ='320px';
                 video.style.heigth ='240px';
                 constrainsList.classList.remove('hidden');
@@ -109,7 +116,7 @@ const app = {
 
                 //*Appel boutton stop stream et full resetndu stream en cours
                 stop.addEventListener('click', () => { 
-                app.resetMediaStream(stream, video)
+                app.resetMediaStream(stream, video);
                 selectDisplay.classList.remove('hidden');
                 selectDisplay.classList.add('visible');
                 start.classList.add('visible');
@@ -133,10 +140,9 @@ const app = {
     // liste les contraintes supportées par le navigateur
     // https://developer.mozilla.org/en-US/docs/Web/API/MediaDevices/getSupportedConstraints
     browserSuportedConstraints:function () {
-       
         let supportedConstraints = navigator.mediaDevices.getSupportedConstraints();
         let constrainsList = document.getElementById('constraintList');
-        let constraintInfo = document.createTextNode('Liste des contraintes supportées');
+        let constraintInfo = document.createTextNode(' ---- Est supporté ---- ');
         constrainsList.appendChild(constraintInfo);
     
         for (let constraint in supportedConstraints) {
@@ -162,7 +168,6 @@ const app = {
     
     // faire une capture
     takeCapture:function () {
-    
         let video = document.querySelector('video');
             // facultatif - on contrôle que la vidéo est bien en cours de lecture
             video.addEventListener("playing", () => {
@@ -182,7 +187,7 @@ const app = {
     resetCaptureCanvas:function () {
         let resetCanvasButton = document.getElementById('reset');
         
-        resetCanvasButton.addEventListener('click', function() {
+        resetCanvasButton.addEventListener('click', () => {
         let canvas = document.getElementById('canvas');
         canvas.classList.add('hidden');
         let context = canvas.getContext('2d');
