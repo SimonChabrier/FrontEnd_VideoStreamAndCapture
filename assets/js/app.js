@@ -6,14 +6,14 @@ const app = {
         app.camStreamer(); 
     },
     
-    //lister tous le spérifériues de capture
+    //lister tous les périfériques de capture dispo
     listDevice:function (){
         let select = document.getElementById('select');
         // je récupère les devices vidéo et audio diponnibles sur mon péréphérique
         navigator.mediaDevices.enumerateDevices().then(function(devices) {
             //je boucle sur chaque péréfériques audio et vidéo existants
             devices.forEach(function(device) {
-                //si ce sont des device de type vidéo alor je les ajoutent dans les options de mon select
+                //si ce sont des device de type vidéo alors je les ajoutent dans les options de mon select
                 if (device.kind === 'videoinput') 
                 {
                     const option = document.createElement('option');
