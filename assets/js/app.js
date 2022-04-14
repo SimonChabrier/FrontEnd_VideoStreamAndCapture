@@ -42,8 +42,7 @@ const app = {
         //je récupère la liste de mes devices pour initialiser les options de mon select.
         app.listDevice();   
     
-        //* variables globales
-        // je récupère ma balise vidéo qui servira pour l'insertion du stream et je la masque par défaut.
+        //* variables 'globales'
         let video = document.querySelector('video')
         let constrainsList = document.getElementById('constraintList')
         let start = document.getElementById('start');
@@ -60,30 +59,26 @@ const app = {
         clearButton.classList.add('hidden');
         canvas.classList.add('hidden');
 
-       
-
+    
         //* lancement du stream au click sur le bouton Stat Cam
         start.addEventListener('click', () => {
         
         selectDisplay.classList.add('hidden');
         start.classList.add('hidden');
 
-        //* Contraintes pour la vidéo et l'audio
-        // https://developer.mozilla.org/en-US/docs/Web/API/MediaDevices/getUserMedia
+        // j'initialise un objet vide pour le moment qui prendra les valeurs de if/else
         const videoConstraints = {};
-        let currentStream;
-
-        if (typeof currentStream !== 'undefined') {
-            stopMediaTracks(currentStream);
-        }
 
         if (select.value === '') {
-          videoConstraints.facingMode = 'environment';
+          videoConstraints.facingMode = 'environment'; 
         } else {
-        //*je passe comme contrainte le choix de la caméra dans récupérée dans la value du select  
+          //*je passe comme contrainte le choix de la caméra dans récupérée dans la value du select  
           videoConstraints.deviceId = { exact: select.value };
-        }
+          console.log(select.value)
+        };
 
+         //* Contraintes pour la vidéo dynamisée par les valeurs des if/else ci-dessus.
+        // https://developer.mozilla.org/en-US/docs/Web/API/MediaDevices/getUserMedia
         const constraints = {
           video: videoConstraints,
           audio: false
@@ -91,8 +86,8 @@ const app = {
        
             // les constaints passées ici comme argument vont créer une demande d'autorisation d'accès à la caméra. 
             navigator.mediaDevices.getUserMedia(constraints).then(stream => {
+
                 //* On insére le stream dans la balise <video></vidéo> 
-                currentStream = stream;
                 video.srcObject = stream;
                 
                 //*gestion de l'affichage des boutons
@@ -131,9 +126,9 @@ const app = {
                 .catch(function(error) {
                     app.dislayError(error);
                 });// end catch errors
-        }); // end click listener du bouton start
+        });
 
-    },//end function
+    },
     
     // liste les contraintes supportées par le navigateur
     // https://developer.mozilla.org/en-US/docs/Web/API/MediaDevices/getSupportedConstraints
