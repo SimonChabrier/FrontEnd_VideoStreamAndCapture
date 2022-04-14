@@ -10,6 +10,7 @@ https://developer.mozilla.org/en-US/docs/web/api/mediadevices/getusermedia
 
 Currently the script allows you :
 
+- select your phone or deskstop cam in list of devices available.
 - start or stop the stream from your camera.
 - take a capture that is displayed on the page.
 - delete the capture and do as much as you want.
