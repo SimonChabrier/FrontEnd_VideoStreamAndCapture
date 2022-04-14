@@ -37,7 +37,7 @@ const app = {
     // Stream vidéo
     camStreamer:function(){
     
-        //je récupère la liste de mes devices.
+        //je récupère la liste de mes devices pour initialiser les options de mon select.
         app.listDevice();   
     
         //* variables globales
@@ -54,39 +54,43 @@ const app = {
         let canvas = document.querySelector("#canvas");
         canvas.classList.add('hidden');
 
+        let selectDisplay = document.getElementById('select');
+
+        //* lancement du stream au click sur le bouton Stat Cam
+        start.addEventListener('click', () => {
+
+        selectDisplay.classList.add('hidden');
+        start.classList.add('hidden');
 
         //* Contraintes pour la vidéo et l'audio
         // https://developer.mozilla.org/en-US/docs/Web/API/MediaDevices/getUserMedia
-        
-        //* initialisation au click
-        start.addEventListener('click', function() {
-            
-            const videoConstraints = {};
-            let currentStream;
+        const videoConstraints = {};
+        let currentStream;
 
-            if (typeof currentStream !== 'undefined') {
-                stopMediaTracks(currentStream);
-            }
+        if (typeof currentStream !== 'undefined') {
+            stopMediaTracks(currentStream);
+        }
 
-            if (select.value === '') {
-              videoConstraints.facingMode = 'environment';
-            } else {
-            //je passe comme contrainte le choix de la caméra dans récupérée dans la value du select  
-              videoConstraints.deviceId = { exact: select.value };
-            }
+        if (select.value === '') {
+          videoConstraints.facingMode = 'environment';
+        } else {
+        //*je passe comme contrainte le choix de la caméra dans récupérée dans la value du select  
+          videoConstraints.deviceId = { exact: select.value };
+        }
 
-            const constraints = {
-              video: videoConstraints,
-              audio: false
-            };
-    
-            // les constaints passées ici comme argument vont créer une demande d'autorisation d'accès à la caméra.
-            //* on lance le stream su l'utilisateur valide.
-            
+        const constraints = {
+          video: videoConstraints,
+          audio: false
+        };
+       
+            // les constaints passées ici comme argument vont créer une demande d'autorisation d'accès à la caméra. 
             navigator.mediaDevices.getUserMedia(constraints).then(stream => {
                 //* On insére le stream dans la balise <video></vidéo> 
                 currentStream = stream;
                 video.srcObject = stream;
+                //*Appel functions take et reset capture (canvas)
+                app.takeCapture();
+                app.resetCapture(); 
                 // on affiche la fenêtre vidéo.
                 video.classList.remove('hidden')
                 // si le stream est en cours - je vérifie si il est actif et j'initialise l'affichage.
@@ -96,17 +100,21 @@ const app = {
                 constrainsList.classList.remove('hidden');
                 app.browserSuportedConstraints();   
                 });//end-listener
-                //*Appel functions take et reset capture (canvas)
-                app.takeCapture();
-                app.resetCapture(); 
+                
 
                 //*Appel boutton stop stream et full resetndu stream en cours
-                stop.addEventListener('click', () => { app.resetStream(stream, video)});//end listener
+                stop.addEventListener('click', () => { app.resetStream(stream, video)
+                selectDisplay.classList.remove('hidden');
+                selectDisplay.classList.add('visible');
+                start.classList.add('visible');
+                start.classList.remove('hidden');
+                });//end listener
             })// end .then stream
                 .catch(function(error) {
                     app.dislayError(error);
                 });// end catch errors
         }); // end click listener du bouton start
+
     },//end function
     
 
