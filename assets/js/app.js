@@ -15,7 +15,8 @@ const app = {
             //je boucle sur chaque device dispo
             devices.forEach(function(device) {
                 //si ce sont des device de type vidéo alor je les ajoutent dans les options de mon select
-                if (device.kind === 'videoinput') {
+                if (device.kind === 'videoinput') 
+                {
                     const option = document.createElement('option');
                     option.nodeType = 'submit';
                     //ici j'ai comme value de mes selects le nom des péréfériques dispo
@@ -24,11 +25,12 @@ const app = {
                     const textNode = document.createTextNode(label);
                     option.appendChild(textNode);
                     select.appendChild(option);
-                }//endif
+                }
                 // ici j'ai la liste de tout mes péréphériques
                     //console.log(device.kind + ": " + device.label + " id = " + device.deviceId);   
-            });//end foreach
-        })//end navigator.mediadevice
+            });
+        })
+
         .catch(function(err) {
             console.log('je suis dans cette erreur' + err.name + ": " + err.message);
         });  
@@ -43,22 +45,26 @@ const app = {
         //* variables globales
         // je récupère ma balise vidéo qui servira pour l'insertion du stream et je la masque par défaut.
         let video = document.querySelector('video')
-        video.classList.add('hidden');
-        // je récupère ma liste des contraintes supportées et je la masque par défaut
         let constrainsList = document.getElementById('constraintList')
-        constrainsList.classList.add('hidden');
-        // je récupère mon bouton start et stop
         let start = document.getElementById('start');
         let stop = document.getElementById('stop');
-        // je récupère mon objet canvas et je le masque par défaut
+        let catchButton = document.getElementById('catch');
+        let clearButton = document.getElementById('reset');
         let canvas = document.querySelector("#canvas");
+        let selectDisplay = document.getElementById('select');
+
+        video.classList.add('hidden');
+        constrainsList.classList.add('hidden');
+        stop.classList.add('hidden');
+        catchButton.classList.add('hidden');
+        clearButton.classList.add('hidden');
         canvas.classList.add('hidden');
 
-        let selectDisplay = document.getElementById('select');
+       
 
         //* lancement du stream au click sur le bouton Stat Cam
         start.addEventListener('click', () => {
-
+        
         selectDisplay.classList.add('hidden');
         start.classList.add('hidden');
 
@@ -88,11 +94,12 @@ const app = {
                 //* On insére le stream dans la balise <video></vidéo> 
                 currentStream = stream;
                 video.srcObject = stream;
-                //*Appel functions take et reset capture (canvas)
-                app.takeCapture();
-                app.resetCapture(); 
-                // on affiche la fenêtre vidéo.
+                
+                //*gestion de l'affichage des boutons
                 video.classList.remove('hidden')
+                catchButton.classList.remove('hidden');
+                clearButton.classList.remove('hidden');
+                stop.classList.remove('hidden');
                 // si le stream est en cours - je vérifie si il est actif et j'initialise l'affichage.
                 video.addEventListener("playing", () => {
                 video.style.width ='320px';
@@ -101,14 +108,25 @@ const app = {
                 app.browserSuportedConstraints();   
                 });//end-listener
                 
+                //*Appel functions take et reset capture canvas
+                app.takeCapture();
+                app.resetCaptureCanvas(); 
 
                 //*Appel boutton stop stream et full resetndu stream en cours
-                stop.addEventListener('click', () => { app.resetStream(stream, video)
+                stop.addEventListener('click', () => { 
+                app.resetMediaStream(stream, video)
                 selectDisplay.classList.remove('hidden');
                 selectDisplay.classList.add('visible');
                 start.classList.add('visible');
                 start.classList.remove('hidden');
+                video.classList.add('hidden');
+                constrainsList.classList.add('hidden');
+                stop.classList.add('hidden');
+                catchButton.classList.add('hidden');
+                clearButton.classList.add('hidden');
+                canvas.classList.add('hidden');
                 });//end listener
+
             })// end .then stream
                 .catch(function(error) {
                     app.dislayError(error);
@@ -117,7 +135,6 @@ const app = {
 
     },//end function
     
-
     // liste les contraintes supportées par le navigateur
     // https://developer.mozilla.org/en-US/docs/Web/API/MediaDevices/getSupportedConstraints
     browserSuportedConstraints:function () {
@@ -151,12 +168,12 @@ const app = {
         let video = document.querySelector('video');
             // facultatif - on contrôle que la vidéo est bien en cours de lecture
             video.addEventListener("playing", () => {
-            let click_button = document.querySelector("#catch");
+            let catchPicture = document.getElementById('catch');
             let canvas = document.querySelector("#canvas");
             canvas.width = video.offsetWidth;
             canvas.height = video.offsetHeight;
             
-            click_button.addEventListener('click', function() {
+            catchPicture.addEventListener('click', function() {
             canvas.classList.remove('hidden');
             canvas.getContext('2d').drawImage(video, 0, 0, canvas.width, canvas.height);
             });
@@ -164,25 +181,27 @@ const app = {
     },
     
     // supprimer la capture
-    resetCapture:function () {
-        let click_button = document.querySelector("#reset");
+    resetCaptureCanvas:function () {
+        let resetCanvasButton = document.getElementById('reset');
         
-        click_button.addEventListener('click', function() {
-        var canvas = document.getElementById("canvas");
+        resetCanvasButton.addEventListener('click', function() {
+        let canvas = document.getElementById('canvas');
         canvas.classList.add('hidden');
-        var context = canvas.getContext('2d');
+        let context = canvas.getContext('2d');
         context.clearRect(0, 0, canvas.width, canvas.height);
         });
     },
 
-    resetStream: function(stream, video){
+    // reset display stream
+    resetMediaStream: function(stream, video){
         document.getElementById('constraintList').classList.add('hidden')
         video.classList.add('hidden');
         canvas.classList.add('hidden');
+
         stream.getTracks().forEach(function(track){
         track.stop();
         });
-    }
+    },
     
 };
     
