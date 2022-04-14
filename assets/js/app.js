@@ -6,46 +6,39 @@ init:function(){
     app.camStreamer(); 
 },
 
-// listeningChoiceCamButton: function (){
-//     document.getElementById('choose').addEventListener('click', app.listDevice()) 
-//     console.log('Je passe la')
-// },
-
 //lister tous le spérifériues de capture
 listDevice:function (){
-
+    //je récupère ma balise select
     let select = document.getElementById('select');
-
+    // je liste les devices vidéo et audio diponnibles sur mon péréphérique
     navigator.mediaDevices.enumerateDevices().then(function(devices) {
     //je boucle sur chaque device dispo
     devices.forEach(function(device) {
-            //si ce sont des device de type vidéo je les ajoute au select
-            if (device.kind === 'videoinput') {
-                const option = document.createElement('option');
-                //ici j'ai comme value de mes selects le nom des péréfériques dispo
-                option.value = device.deviceId;
-                const label = device.label || `Camera ${count++}`;
-                const textNode = document.createTextNode(label);
-                option.appendChild(textNode);
-                select.appendChild(option);
-            }//endif
-            // ici j'ai la liste de tou mes péréphériques
-             console.log(device.kind + ": " + device.label + " id = " + device.deviceId);   
-            });//end foreach
-        })//end navigator.mediadevice
-
+        //si ce sont des device de type vidéo alor je les ajoutent dans les options de mon select
+        if (device.kind === 'videoinput') {
+            const option = document.createElement('option');
+            option.value = device.deviceId;
+            
+            const label = device.label || `Camera ${count++}`;
+            const textNode = document.createTextNode(label);
+            option.appendChild(textNode);
+            select.appendChild(option);
+        }//endif
+        // ici j'ai la liste de tout mes péréphériques
+            console.log(device.kind + ": " + device.label + " id = " + device.deviceId);   
+        });//end foreach
+    })//end navigator.mediadevice
+  
     .catch(function(err) {
-        console.log(err.name + ": " + err.message);
+        console.log('je suis dans cette erreur' + err.name + ": " + err.message);
     });  
 },
 
 // Stream vidéo
 camStreamer:function(){
-    app.listDevice();
-    
 
-    //je liste les périfériques
-    //app.listeningChoiceCamButton();
+    //je récupère la liste de mes devices.
+    app.listDevice();   
 
     //* variables globales
     // je récupère ma balise vidéo qui servira pour l'insertion du stream et je la masque par défaut.
@@ -54,36 +47,29 @@ camStreamer:function(){
     // je récupère ma liste des contraintes supportées et je la masque par défaut
     let constrainsList = document.getElementById('constraintList')
     constrainsList.classList.add('hidden');
-    // je récupère mon bouton start - stop - canvas
-    let start = document.getElementById('start');
+    // je récupère mon bouton stop
     let stop = document.getElementById('stop');
+    // je récupère mon objet canvas et je le masque par défaut
     let canvas = document.querySelector("#canvas");
     canvas.classList.add('hidden');
     
-    //* initialisation au click sur le bouton 'start cam'
-   start.addEventListener('click', event => {
-  
     //* Contraintes pour la vidéo et l'audio
     // https://developer.mozilla.org/en-US/docs/Web/API/MediaDevices/getUserMedia
-    let constraints = window.constraints = {
-        //on met les contraintes vidéo que l'on souhaite eg:
-        //width: 320,
-        //height: 240,
-        //gestion de l'audio et de la vidéo
-        audio: false,
-        video: true
-    };
+    
+    //* initialisation au click sur le bouton Choose & Start Cam
+    let start = document.getElementById('start');
 
-    let button = document.getElementById('choose');
-    button.addEventListener('click', event => {
-        console.log('je clique')
+    start.addEventListener('click', event => {
+
         if (typeof currentStream !== 'undefined') {
           stopMediaTracks(currentStream);
         }
         const videoConstraints = {};
+
         if (select.value === '') {
           videoConstraints.facingMode = 'environment';
         } else {
+        //je passe comme contrainte le choix de la caméra dans récupérée dans la value du select  
           videoConstraints.deviceId = { exact: select.value };
         }
         const constraints = {
@@ -91,8 +77,7 @@ camStreamer:function(){
           audio: false
         };
 
-
-                // les constaints passées ici comme argument vont créer une demande d'autorisation d'accès à la caméra.
+        // les constaints passées ici comme argument vont créer une demande d'autorisation d'accès à la caméra.
         //* on lance le stream su l'utilisateur valide.
         
         navigator.mediaDevices.getUserMedia(constraints).then(stream => {
@@ -107,13 +92,11 @@ camStreamer:function(){
                video.style.heigth ='240px';
                constrainsList.classList.remove('hidden');
                app.browserSuportedConstraints();  
-               //*Appel functions take et reset picture
-                
-           });
+               //*Appel functions take et reset picture 
+           });//end-listener
 
            app.takeCapture();
            app.resetCapture(); 
-           
            //* stop du stream au click
            stop.addEventListener('click', function() {
            document.getElementById('constraintList').classList.add('hidden')
@@ -131,14 +114,8 @@ camStreamer:function(){
        .catch(function(error) {
            app.dislayError(error);
        });
-   }); // end click listener du bouton start
-
-
-    });
-    
-
+    }); // end click listener du bouton choose
 },
-
 
 // liste les contraintes supportées par le navigateur
 // https://developer.mozilla.org/en-US/docs/Web/API/MediaDevices/getSupportedConstraints
@@ -164,7 +141,7 @@ dislayError: function(error) {
     document.getElementById('constraintList').classList.add('hidden')
     //je place une balise dans le code html pour afficher les messsages d'erreurs.
     let errorElement = document.querySelector('#errorMsg');
-    errorElement.innerHTML += '<p>' + error + '</p>';
+    errorElement.innerHTML += '<p> je suis dans display error'  + error + '</p>';
 },
 
 // faire une capture
