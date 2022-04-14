@@ -3,11 +3,50 @@
 const app = {
 init:function(){
     console.log('init');
-    app.camStreamer();
+    app.camStreamer(); 
+},
+
+// listeningChoiceCamButton: function (){
+//     document.getElementById('choose').addEventListener('click', app.listDevice()) 
+//     console.log('Je passe la')
+// },
+
+//lister tous le spérifériues de capture
+listDevice:function (){
+
+    let select = document.getElementById('select');
+
+    navigator.mediaDevices.enumerateDevices().then(function(devices) {
+    //je boucle sur chaque device dispo
+    devices.forEach(function(device) {
+            //si ce sont des device de type vidéo je les ajoute au select
+            if (device.kind === 'videoinput') {
+                const option = document.createElement('option');
+                //ici j'ai comme value de mes selects le nom des péréfériques dispo
+                option.value = device.deviceId;
+                const label = device.label || `Camera ${count++}`;
+                const textNode = document.createTextNode(label);
+                option.appendChild(textNode);
+                select.appendChild(option);
+            }//endif
+            // ici j'ai la liste de tou mes péréphériques
+             console.log(device.kind + ": " + device.label + " id = " + device.deviceId);   
+            });//end foreach
+        })//end navigator.mediadevice
+
+    .catch(function(err) {
+        console.log(err.name + ": " + err.message);
+    });  
 },
 
 // Stream vidéo
 camStreamer:function(){
+    app.listDevice();
+    
+
+    //je liste les périfériques
+    //app.listeningChoiceCamButton();
+
     //* variables globales
     // je récupère ma balise vidéo qui servira pour l'insertion du stream et je la masque par défaut.
     let video = document.querySelector('video')
@@ -20,7 +59,10 @@ camStreamer:function(){
     let stop = document.getElementById('stop');
     let canvas = document.querySelector("#canvas");
     canvas.classList.add('hidden');
-
+    
+    //* initialisation au click sur le bouton 'start cam'
+   start.addEventListener('click', event => {
+  
     //* Contraintes pour la vidéo et l'audio
     // https://developer.mozilla.org/en-US/docs/Web/API/MediaDevices/getUserMedia
     let constraints = window.constraints = {
@@ -31,49 +73,72 @@ camStreamer:function(){
         audio: false,
         video: true
     };
-    
-        //* initialisation au click sur le bouton 'start cam'
-        start.addEventListener('click', function() {
-        // les constaints passées ici comme argument vont créer une demande d'autorisation d'accès à la caméra.
+
+    let button = document.getElementById('choose');
+    button.addEventListener('click', event => {
+        console.log('je clique')
+        if (typeof currentStream !== 'undefined') {
+          stopMediaTracks(currentStream);
+        }
+        const videoConstraints = {};
+        if (select.value === '') {
+          videoConstraints.facingMode = 'environment';
+        } else {
+          videoConstraints.deviceId = { exact: select.value };
+        }
+        const constraints = {
+          video: videoConstraints,
+          audio: false
+        };
+
+
+                // les constaints passées ici comme argument vont créer une demande d'autorisation d'accès à la caméra.
         //* on lance le stream su l'utilisateur valide.
-        navigator.mediaDevices.getUserMedia(constraints).then(function success(stream) {
-
-             //* On insére le stream dans la balise <video></vidéo> 
-        video.srcObject = stream;
-        video.classList.remove('hidden')
-
-            // le stream se lance - je vérifie si il est actif et j'initialise l'affichage.
-            video.addEventListener("playing", () => {
-                video.style.width ='320px';
-                video.style.heigth ='240px';
-                constrainsList.classList.remove('hidden');
-                app.browserSuportedConstraints();
-            });
- 
-            //*Appel functions take et reset picture
-            app.takeCapture();
-            app.resetCapture();
-            
-            //* stop du stream au click
-            stop.addEventListener('click', function() {
-            document.getElementById('constraintList').classList.add('hidden')
-                stream.getTracks().forEach(function(track){
-                track.stop();
-                });
-            // fin du stream je reset la dimention de la fenêtre vidéo
-            video.classList.add('hidden');
-            canvas.classList.add('hidden');
-            alert('Souhaitez vous réellement arrêter de streamer ?');
-            });//end listener
-
-        })// end .then
         
-        .catch(function(error) {
-            app.dislayError(error);
-        });
-    }); // end click listener du bouton start
+        navigator.mediaDevices.getUserMedia(constraints).then(stream => {
+
+            //* On insére le stream dans la balise <video></vidéo> 
+           video.srcObject = stream;
+
+           video.classList.remove('hidden')
+           // le stream se lance - je vérifie si il est actif et j'initialise l'affichage.
+           video.addEventListener("playing", () => {
+               video.style.width ='320px';
+               video.style.heigth ='240px';
+               constrainsList.classList.remove('hidden');
+               app.browserSuportedConstraints();  
+               //*Appel functions take et reset picture
+                
+           });
+
+           app.takeCapture();
+           app.resetCapture(); 
+           
+           //* stop du stream au click
+           stop.addEventListener('click', function() {
+           document.getElementById('constraintList').classList.add('hidden')
+               stream.getTracks().forEach(function(track){
+               track.stop();
+               });
+           // fin du stream je reset la dimention de la fenêtre vidéo
+           video.classList.add('hidden');
+           canvas.classList.add('hidden');
+           //alert('Souhaitez vous réellement arrêter de streamer ?');
+           });//end listener
+
+       })// end .then
+       
+       .catch(function(error) {
+           app.dislayError(error);
+       });
+   }); // end click listener du bouton start
+
+
+    });
+    
 
 },
+
 
 // liste les contraintes supportées par le navigateur
 // https://developer.mozilla.org/en-US/docs/Web/API/MediaDevices/getSupportedConstraints
