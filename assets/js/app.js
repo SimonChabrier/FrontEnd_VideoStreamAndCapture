@@ -44,23 +44,23 @@ const app = {
     
         //* variables 'globales'
         let video = document.querySelector('video')
-        let constrainsList = document.getElementById('constraintList')
+        //let constrainsList = document.getElementById('constraintList')
         let stop = document.getElementById('stop');
         let catchButton = document.getElementById('catch');
         let clearButton = document.getElementById('reset');
         let canvas = document.querySelector("#canvas");
         let selectDisplay = document.getElementById('select');
         let errorMessage = document.getElementById('errorMsg');
-        let rightCol = document.getElementById('right');
+        //let rightCol = document.getElementById('right');
 
         video.classList.add('hidden');
-        constrainsList.classList.add('hidden');
+        //constrainsList.classList.add('hidden');
         stop.classList.add('hidden');
         catchButton.classList.add('hidden');
         clearButton.classList.add('hidden');
         canvas.classList.add('hidden');
         errorMessage.classList.add('hidden');
-        rightCol.classList.add('hidden');
+        //rightCol.classList.add('hidden');
 
 
         let start = document.getElementById('start');
@@ -95,6 +95,8 @@ const app = {
                 video.srcObject = stream;
                 
                 //*gestion de l'affichage des boutons
+                video.style.width ='320px';
+                video.style.heigth ='240px';
                 video.classList.remove('hidden')
                 catchButton.classList.remove('hidden');
                 clearButton.classList.remove('hidden');
@@ -105,10 +107,8 @@ const app = {
                 document.getElementById('errorMsg').classList.add('hidden');
                 document.getElementById('right').classList.remove('hidden');
                 document.getElementById('left').style.height ='auto';
-                video.style.width ='320px';
-                video.style.heigth ='240px';
-                constrainsList.classList.remove('hidden');
-                app.browserSuportedConstraints();   
+                //constrainsList.classList.remove('hidden');
+                //app.browserSuportedConstraints();   
                 });
                 
                 //*Appel functions take et reset capture canvas
@@ -124,7 +124,7 @@ const app = {
                 start.classList.add('visible');
                 start.classList.remove('hidden');
                 video.classList.add('hidden');
-                constrainsList.classList.add('hidden');
+                //constrainsList.classList.add('hidden');
                 stop.classList.add('hidden');
                 catchButton.classList.add('hidden');
                 clearButton.classList.add('hidden');
@@ -277,7 +277,7 @@ const app = {
 
     // reset display stream
     resetMediaStream: function(stream, video){
-        document.getElementById('constraintList').classList.add('hidden')
+        //document.getElementById('constraintList').classList.add('hidden')
         video.classList.add('hidden');
         canvas.classList.add('hidden');
 

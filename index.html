@@ -58,10 +58,11 @@
         <h2 id="errorMsg"></h2>
 
         <div class="container-fluid">
-            <!-- <div> -->
+            <!-- <div class="row"> -->
               <div class="col"><!--start col 1 -->
-                <div class ="main">   
-                    <div class="left" id="left">                    
+
+        <div class ="main">  
+                        <div class="left" id="left">                    
                         <!-- select -->
                         <select name="camselect" class="form-select" aria-label="Default select example" id="select">
                             <option value="">Choose a camera or leave the default one !</option>
@@ -77,18 +78,19 @@
                         <!-- capture -->
                         <canvas id="canvas" width="0" height="0"></canvas>
                         <!-- capture -->
-                    </div>
+        </div>
             
-                    <div class="right" id="right">       
+                    <!-- <div class="right" id="right">        -->
                         <!-- liste des contraintes supportées par le navigateur -->
-                        <div id="constraintList" class="hidden"></div>
-                    </div>
+                        <!-- <div id="constraintList" class="hidden"></div>
+                    </div> -->
+
                 </div>
                </div><!--end col 1 -->
 
-              <div class="col" id="imgContainer">
+              <div class="col" id="imgContainer"><!--start col 2 -->
                 <div id="canvasImg"><!-- affichage ici des images de l'API (GET) --></div>
-              </div>
+              </div><!--end col 2 -->
             </div>
           <!-- </div> -->
 
