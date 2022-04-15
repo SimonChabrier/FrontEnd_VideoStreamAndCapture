@@ -178,27 +178,32 @@ const app = {
             canvas.width = video.offsetWidth;
             canvas.height = video.offsetHeight;
             
-            catchPicture.addEventListener('click', function() {
+            catchPicture.addEventListener('click', () => {
             canvas.classList.remove('hidden');
             canvas.getContext('2d').drawImage(video, 0, 0, canvas.width, canvas.height);
             
-            //todo je prépare ma requête POST
             // https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API/Using_Fetch
+            //todo je prépare les datas Json à envoyer dans ma requête POST
             //* capture l'url canvas à transfèrer en api avec les paramètres jpg et qaulité
             let dataURL = canvas.toDataURL('image/jpeg', 1.0);
-            // insertion de mon image dans ma balise src
-            // document.getElementById('canvasImg').src = dataURL;
+            //* je crée une date
+            let createdAt = new Date();
 
-            //* ici je préprar le contenu des datas à poster avec l'image (pictureFile n'existe pas se serait une ligne de ma bdd et propriété de mon entité)
+            //* ici je préprare le contenu des datas à poster.
+            //!  ils doivent correspondre aux propriétés non nullables de mon entité.
             const data = { 
-                picture: dataURL 
+                picture: dataURL,
+                createdAt: createdAt
             };
-            //* préparation des Headers en json
+
+            //* préparation des Headers
             const httpHeaders = new Headers();
             httpHeaders.append('Content-Type', 'application/json');
-            // route de mon backend symfony
+            
+            //* route de mon back-end symfony
             const apiRootUrl = 'http://127.0.0.1:8000/api';
-            //* ici il faut que je poste sur une route api
+           
+            //* Je poste sur la route API 
             const fetchOptions = 
             {
               method: 'POST', // or 'POST --> doit correspondre à la mathode délcarée sur la route symfony'
@@ -211,38 +216,29 @@ const app = {
             fetch(apiRootUrl , fetchOptions)
 
             .then(response => {
-                
-                if (response.status !==201) 
-                //todo ici je récupère mon erreur et actuellement j'insére mon image
+
+                if (response.status !== 201) 
                 {
-                    //document.getElementById('canvasImg').src = dataURL;
-                    console.log(data)
                     throw 'Erreur avec la requête'; 
                 }
-                // si pas d'erreur je retourne mon json
                 return response.json();
                 }
-            )// end premier then
-
+            )
             .then(function(){
-                console.log('je fait autre chose dans le second then')
-                //exemple j'insère mon image
-                //document.getElementById('canvasImg').src = dataURL;
+                console.log('second then après post des datas, je resete le contenu de la div pour réafficher la liste avec le dernière photo prise ')
                 app.resetpictureDiv();
                 app.listAllPictures();
-            }
-            )
+            })
             .catch(function(errorMsg){
                 console.log(errorMsg)
             });
-
-            }); // en fetch
-            //todo fin de ma requête POST
-        });//end listener playing
+            }); // end fetch //todo fin de ma requête POST
+        });//end listener stream is playing
     },
 
+    // api GET on liste toutes les images
     listAllPictures: function () {
-        let target = document.getElementById('canvasImg');
+
         const apiRootUrl = 'http://127.0.0.1:8000/pictures'
 
         let config = {
@@ -252,18 +248,17 @@ const app = {
         };
 
         fetch (apiRootUrl, config)
-        .then(function(response){
+        .then(response => {
             return response.json();
         })
-        .then(function(data){
+        .then(data => {
             console.log(data)
             for (let i = 0; i < data.length; i ++){
-                
                 //output = document.getElementById('canvasImg').src = data[i].picture;
                 output = document.getElementById('canvasImg')
                 output.innerHTML += `
                 <img id="canvasImg" src="${data[i].picture}" alt="canvas" width="160" height="120">  
-                `
+              `
             }
         });
     },
