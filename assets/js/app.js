@@ -4,7 +4,7 @@ const app = {
     init:function(){
         console.log('init');
         app.camStreamer(); 
-        app.listAllPictures();
+        //app.listAllPictures();
     },
     
     //lister tous les périfériques de capture dispo
@@ -105,7 +105,7 @@ const app = {
                 //* si le stream est en bien en cours de lecture
                 video.addEventListener("playing", () => {
                 document.getElementById('errorMsg').classList.add('hidden');
-                document.getElementById('right').classList.remove('hidden');
+                //document.getElementById('right').classList.remove('hidden');
                 document.getElementById('left').style.height ='auto';
                 //constrainsList.classList.remove('hidden');
                 //app.browserSuportedConstraints();   
@@ -252,14 +252,15 @@ const app = {
             return response.json();
         })
         .then(data => {
-            console.log(data)
-            for (let i = 0; i < data.length; i ++){
-                //output = document.getElementById('canvasImg').src = data[i].picture;
+
+            for(value in data) {
+                //console.log(data[value].picture);
+    
                 output = document.getElementById('canvasImg')
                 output.innerHTML += `
-                <img id="canvasImg" src="${data[i].picture}" alt="canvas" width="160" height="120">  
+                <img id="canvasImg" src="${data[value].picture}" alt="canvas" width="160" height="120">  
               `
-            }
+             }
         });
     },
 
