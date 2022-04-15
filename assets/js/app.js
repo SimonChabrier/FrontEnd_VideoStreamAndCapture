@@ -168,7 +168,7 @@ const app = {
         errorElement.innerHTML += '<p>' + error + '</p>';
     },
     
-    // faire une capture
+    // faire une capture & API POST
     takeCapture:function () {
         let video = document.querySelector('video');
             // facultatif - on contrôle que la vidéo est bien en cours de lecture
@@ -236,10 +236,10 @@ const app = {
         });//end listener stream is playing
     },
 
-    // api GET on liste toutes les images
+    // API GET on liste toutes les images
     listAllPictures: function () {
 
-        const apiRootUrl = 'http://127.0.0.1:8000/pictures'
+        const apiRootUrl = 'http://127.0.0.1:8000/getpictures'
 
         let config = {
             method: 'GET',
@@ -286,6 +286,7 @@ const app = {
         });
     },
     
+
     resetpictureDiv:function(){
         document.getElementById('canvasImg').innerHTML = '';
     }
