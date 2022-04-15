@@ -286,7 +286,7 @@ const app = {
         });
     },
     
-
+    // reset all pictures div on Api Get request 
     resetpictureDiv:function(){
         document.getElementById('canvasImg').innerHTML = '';
     }
