@@ -4,6 +4,7 @@ const app = {
     init:function(){
         console.log('init');
         app.camStreamer(); 
+        app.listAllPictures();
     },
     
     //lister tous les périfériques de capture dispo
@@ -200,7 +201,7 @@ const app = {
             //* ici il faut que je poste sur une route api
             const fetchOptions = 
             {
-              method: 'PUT', // or 'POST --> doit correspondre à la mathode délcarée sur la route symfony'
+              method: 'POST', // or 'POST --> doit correspondre à la mathode délcarée sur la route symfony'
               mode : 'cors',
               cache : 'no-cache',
               headers: httpHeaders,
@@ -236,6 +237,32 @@ const app = {
             }); // en fetch
             //todo fin de ma requête POST
         });//end listener playing
+    },
+
+    listAllPictures: function () {
+        let target = document.getElementById('canvasImg');
+        const apiRootUrl = 'http://127.0.0.1:8000/pictures'
+
+        let config = {
+            method: 'GET',
+            mode: 'cors',
+            cache: 'no-cache'
+        };
+
+        fetch (apiRootUrl, config)
+        .then(function(response){
+            return response.json();
+        })
+        .then(function(data){
+            console.log(data)
+            for (let i = 0; i < data.length; i ++){
+                console.log(data[i].picture)
+                document.getElementById('canvasImg').src = data[i].picture;
+            }
+        });
+        
+
+
     },
 
     // supprimer la capture
