@@ -182,6 +182,7 @@ const app = {
             canvas.getContext('2d').drawImage(video, 0, 0, canvas.width, canvas.height);
             
             //todo je prépare ma requête POST
+            // https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API/Using_Fetch
             //* capture l'url canvas à transfèrer en api avec les paramètres jpg et qaulité
             let dataURL = canvas.toDataURL('image/jpeg', 1.0);
             // insertion de mon image dans ma balise src
@@ -189,35 +190,43 @@ const app = {
 
             //* ici je préprar le contenu des datas à poster avec l'image (pictureFile n'existe pas se serait une ligne de ma bdd et propriété de mon entité)
             const data = { 
-                pictureFile: dataURL 
+                picture: dataURL 
             };
             //* préparation des Headers en json
             const httpHeaders = new Headers();
             httpHeaders.append('Content-Type', 'application/json');
-
-            const apiRootUrl = 'http://127.0.0.1:5500';
+            // route de mon backend symfony
+            const apiRootUrl = 'http://127.0.0.1:8000/api';
             //* ici il faut que je poste sur une route api
             const fetchOptions = 
             {
-              method: 'POST', // or 'PUT'
+              method: 'PUT', // or 'POST --> doit correspondre à la mathode délcarée sur la route symfony'
               mode : 'cors',
               cache : 'no-cache',
               headers: httpHeaders,
               body: JSON.stringify(data),
             }
 
-            fetch(apiRootUrl + '/post' , fetchOptions)
+            fetch(apiRootUrl , fetchOptions)
 
             .then(response => {
-                if (response.status !==201) {
-                    throw 'Erreur avec la requête';
+                
+                if (response.status !==201) 
+                //todo ici je récupère mon erreur et actuellement j'insére mon image
+                {
+                    //document.getElementById('canvasImg').src = dataURL;
+                    console.log(data)
+                    throw 'Erreur avec la requête'; 
                 }
+                // si pas d'erreur je retourne mon json
                 return response.json();
                 }
             )// end premier then
 
             .then(function(){
                 console.log('je fait autre chose dans le second then')
+                //exemple j'insère mon image
+                //document.getElementById('canvasImg').src = dataURL;
             }
             )
             .catch(function(errorMsg){
