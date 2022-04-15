@@ -228,6 +228,8 @@ const app = {
                 console.log('je fait autre chose dans le second then')
                 //exemple j'insère mon image
                 //document.getElementById('canvasImg').src = dataURL;
+                app.resetpictureDiv();
+                app.listAllPictures();
             }
             )
             .catch(function(errorMsg){
@@ -256,13 +258,14 @@ const app = {
         .then(function(data){
             console.log(data)
             for (let i = 0; i < data.length; i ++){
-                console.log(data[i].picture)
-                document.getElementById('canvasImg').src = data[i].picture;
+                
+                //output = document.getElementById('canvasImg').src = data[i].picture;
+                output = document.getElementById('canvasImg')
+                output.innerHTML += `
+                <img id="canvasImg" src="${data[i].picture}" alt="canvas" width="160" height="120">  
+                `
             }
         });
-        
-
-
     },
 
     // supprimer la capture
@@ -288,6 +291,9 @@ const app = {
         });
     },
     
+    resetpictureDiv:function(){
+        document.getElementById('canvasImg').innerHTML = '';
+    }
 };
     
 document.addEventListener('DOMContentLoaded', app.init)
