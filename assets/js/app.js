@@ -4,6 +4,7 @@ const app = {
     init:function(){
         console.log('init');
         app.camStreamer(); 
+        app.listAllPictures();
     },
     
     //lister tous les périfériques de capture dispo
@@ -26,7 +27,7 @@ const app = {
                     select.appendChild(option);
                 }
                     //la liste de mes péréphériques
-                    console.log(device.kind + ": " + device.label + " id = " + device.deviceId);   
+                    //console.log(device.kind + ": " + device.label + " id = " + device.deviceId);   
             });
         })
 
@@ -113,6 +114,7 @@ const app = {
                 //*Appel functions take et reset capture canvas
                 app.takeCapture();
                 app.resetCaptureCanvas(); 
+                //*
 
                 //*Appel boutton stop stream et full resetndu stream en cours
                 stop.addEventListener('click', () => { 
@@ -179,10 +181,93 @@ const app = {
             catchPicture.addEventListener('click', function() {
             canvas.classList.remove('hidden');
             canvas.getContext('2d').drawImage(video, 0, 0, canvas.width, canvas.height);
+            
+            //todo je prépare ma requête POST
+            // https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API/Using_Fetch
+            //* capture l'url canvas à transfèrer en api avec les paramètres jpg et qaulité
+            let dataURL = canvas.toDataURL('image/jpeg', 1.0);
+            // insertion de mon image dans ma balise src
+            // document.getElementById('canvasImg').src = dataURL;
+
+            //* ici je préprar le contenu des datas à poster avec l'image (pictureFile n'existe pas se serait une ligne de ma bdd et propriété de mon entité)
+            const data = { 
+                picture: dataURL 
+            };
+            //* préparation des Headers en json
+            const httpHeaders = new Headers();
+            httpHeaders.append('Content-Type', 'application/json');
+            // route de mon backend symfony
+            const apiRootUrl = 'http://127.0.0.1:8000/api';
+            //* ici il faut que je poste sur une route api
+            const fetchOptions = 
+            {
+              method: 'POST', // or 'POST --> doit correspondre à la mathode délcarée sur la route symfony'
+              mode : 'cors',
+              cache : 'no-cache',
+              headers: httpHeaders,
+              body: JSON.stringify(data),
+            }
+
+            fetch(apiRootUrl , fetchOptions)
+
+            .then(response => {
+                
+                if (response.status !==201) 
+                //todo ici je récupère mon erreur et actuellement j'insére mon image
+                {
+                    //document.getElementById('canvasImg').src = dataURL;
+                    console.log(data)
+                    throw 'Erreur avec la requête'; 
+                }
+                // si pas d'erreur je retourne mon json
+                return response.json();
+                }
+            )// end premier then
+
+            .then(function(){
+                console.log('je fait autre chose dans le second then')
+                //exemple j'insère mon image
+                //document.getElementById('canvasImg').src = dataURL;
+                app.resetpictureDiv();
+                app.listAllPictures();
+            }
+            )
+            .catch(function(errorMsg){
+                console.log(errorMsg)
             });
+
+            }); // en fetch
+            //todo fin de ma requête POST
+        });//end listener playing
+    },
+
+    listAllPictures: function () {
+        let target = document.getElementById('canvasImg');
+        const apiRootUrl = 'http://127.0.0.1:8000/pictures'
+
+        let config = {
+            method: 'GET',
+            mode: 'cors',
+            cache: 'no-cache'
+        };
+
+        fetch (apiRootUrl, config)
+        .then(function(response){
+            return response.json();
+        })
+        .then(function(data){
+            console.log(data)
+            for (let i = 0; i < data.length; i ++){
+                
+                //output = document.getElementById('canvasImg').src = data[i].picture;
+                output = document.getElementById('canvasImg')
+                output.innerHTML += `
+                <img id="canvasImg" src="${data[i].picture}" alt="canvas" width="160" height="120">  
+                `
+            }
         });
     },
-    
+
     // supprimer la capture
     resetCaptureCanvas:function () {
         let resetCanvasButton = document.getElementById('reset');
@@ -206,6 +291,9 @@ const app = {
         });
     },
     
+    resetpictureDiv:function(){
+        document.getElementById('canvasImg').innerHTML = '';
+    }
 };
     
 document.addEventListener('DOMContentLoaded', app.init)
