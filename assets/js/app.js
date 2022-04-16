@@ -3,6 +3,7 @@
 const app = {
     init:function() {
         console.log('init');
+	  	app.listDevice();
         app.camStreamer(); 
         app.listAllPictures();
        if (app.getcookie() === 'user=PhotoBooth'){
@@ -43,7 +44,7 @@ const app = {
     camStreamer:function() {
     console.log('camStreamer:function')
         //je récupère la liste de mes devices pour initialiser les options de mon select.
-        app.listDevice();   
+        //app.listDevice();   
     
         //* elements necessaires ici en fonction des événements qui vont se passer.
         let video = document.querySelector('video')
@@ -102,7 +103,9 @@ const app = {
             //* si le stream est en bien en cours de lecture
             video.addEventListener("playing", () => {
             document.getElementById('errorMsg').classList.add('hidden');
-            document.getElementById('left').style.height ='auto';  
+            document.getElementById('left').style.height ='auto';
+		  	video.style.width ='320px';
+            video.style.heigth ='240px';
             });
 
             // prend la capture
@@ -216,7 +219,7 @@ const app = {
             httpHeaders.append('Content-Type', 'application/json');
             
             //* route de mon back-end symfony
-            const apiRootUrl = 'http://127.0.0.1:8000/api';
+            const apiRootUrl = 'https://photoboothback.simschab.fr/api';
         
             //* Je poste sur la route API 
             const fetchOptions = 
@@ -264,7 +267,7 @@ const app = {
     // API GET 
     listAllPictures: function () {
     console.log('listAllPictures: function')
-        const apiRootUrl = 'http://127.0.0.1:8000/getpictures'
+        const apiRootUrl = 'https://photoboothback.simschab.fr/getpictures'
 
         let config = {
             method: 'GET',
