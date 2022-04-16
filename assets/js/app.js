@@ -3,9 +3,9 @@
 const app = {
     init:function() {
         console.log('init');
+	  	app.listDevice();
         app.camStreamer(); 
         app.listAllPictures();
-        app.listDevice();
        if (app.getcookie() === 'user=PhotoBooth'){
         app.userEnterWithCookie();
        }
@@ -103,9 +103,9 @@ const app = {
             //* si le stream est en bien en cours de lecture
             video.addEventListener("playing", () => {
             document.getElementById('errorMsg').classList.add('hidden');
-            document.getElementById('left').style.height ='auto';  
-            //video.style.width ='320px';
-            //video.style.heigth ='240px';
+            document.getElementById('left').style.height ='auto';
+		  	video.style.width ='320px';
+            video.style.heigth ='240px';
             });
 
             // prend la capture
@@ -164,8 +164,6 @@ const app = {
             deleteButton.classList.remove('hidden');
             postButton.classList.remove('hidden');
             canvas.classList.remove('hidden');
-            console.log(canvas.width)
-            console.log(canvas.height)
             canvas.getContext('2d').drawImage(video, 0, 0, canvas.width, canvas.height);
             }); 
         });
@@ -177,6 +175,20 @@ const app = {
         }); 
         
         postButton.addEventListener("click", () => {
+         
+        if (app.getcookie() === 'user=PhotoBooth'){
+            // app.resetErrorPostMessage();
+            // app.resetCaptureCanvas(); 
+            // postErrorMessage.classList.remove('hidden');
+            // postErrorMessage.innerHTML += 'Vous avez déjà posté une photo ! ... revenez demain...pour en poster une autre'
+            // postButton.classList.add('hidden');
+            // deleteButton.classList.add('hidden');
+            // catchPicture.classList.add('hidden');
+            // canvas.classList.add('hidden');
+            // postButton.classList.add('hidden');
+            // deleteButton.classList.add('hidden');
+
+        } else { 
             postButton.classList.add('hidden');
             deleteButton.classList.add('hidden');
             catchPicture.classList.remove('hidden');
@@ -184,7 +196,7 @@ const app = {
             let dataURL = canvas.toDataURL('image/jpeg', 1.0);
             //*j'apelle ma fonction api POST au clic sur Post My picture et le lui passe mon canvas.
             app.postNewPictre(dataURL);
-            
+            } 
         }, false); 
     },
 
@@ -207,7 +219,7 @@ const app = {
             httpHeaders.append('Content-Type', 'application/json');
             
             //* route de mon back-end symfony
-            const apiRootUrl = 'http://127.0.0.1:8000/api';
+            const apiRootUrl = 'https://photoboothback.simschab.fr/api';
         
             //* Je poste sur la route API 
             const fetchOptions = 
@@ -255,7 +267,7 @@ const app = {
     // API GET 
     listAllPictures: function () {
     console.log('listAllPictures: function')
-        const apiRootUrl = 'http://127.0.0.1:8000/getpictures'
+        const apiRootUrl = 'https://photoboothback.simschab.fr/getpictures'
 
         let config = {
             method: 'GET',
