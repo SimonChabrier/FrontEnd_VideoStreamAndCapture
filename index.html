@@ -18,49 +18,176 @@
     <meta property="og:description" content="Stream your cam and capture picture" />
     <meta property="og:site_name" content="JS Cam Streamer and capture" />
 
-    <!-- adding for not have 404 on icon if no icon -->
-    <link rel="shortcut icon" href="#">
+    <!-- Bootstrap CSS & Js -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-F3w7mX95PdgyTmZZMECAngseQB83DfGTowi0iMjiWaeVhAn4FJkqJByhZMI3AhiU" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous" defer></script>
+    <!-- Boostrap for burgers, sliders... -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js" defer></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js" defer></script> 
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" defer></script>   
+    <!-- Bootstrap icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.1/font/bootstrap-icons.css">
 
-   <link rel="stylesheet" href="./assets/css/reset.css">
-   <link rel="stylesheet" href="./assets/css/style.css">
-    <title>WebCam Stream</title>
+    <!-- Fontawesome icons CDN -->
+    <script src="https://kit.fontawesome.com/115544430d.js" crossorigin="anonymous" defer></script>
+
+    <!-- adding for not have 404 on icon if no icon in JS if no icon present in assets directory -->
+    <!-- <link rel="shortcut icon" href="#"> -->
+
+    <!-- Add this App favicon -->
+    <link rel="shortcut icon" href="./assets/favicon.png" type="image/x-icon">
+
+    <link rel="stylesheet" href="./assets/css/reset.css">
+    <link rel="stylesheet" href="./assets/css/style.css">
+
+    <!-- insertion du script en bas de page -->
+    <script src="./assets/js/app.js" defer></script>
+
+    <title>JS Photo Booth</title>
 </head>
 <body>
-        <!-- titre + affichage des messages d'erreur -->
-        <h1>JS Photo Booth !</h1>
-        <h2 id="errorMsg"></h2>
-        <div style="text-align: center">
-            <div id="imgContainer">
-            <div id="canvasImg"></div>
-            </div>
-        <!-- <img id="canvasImg" src="" alt="canvas" width="320" height="240">    -->
-        </div>
-    <div class ="main">   
-        <div class="left" id="left">                    
+<!-- header jumbotron -->
+<div class="jumbotron jumbotron-fluid">
+    <div class="container">
+      <h1 class="display-4">JS Photo Booth !</h1>
+      <p class="lead">Take and share your best Selfie !!!</p>
+    </div>
+</div>
+<h2 id="errorMsg"></h2><!-- titre + affichage des messages d'erreur -->
+<div class="container-fluid">
+  <div class="col"><!--start col 1 -->
+        <div class ="main" id="videoBlock">  
+            <div class="left" id="left">                    
             <!-- select -->
-            <select name="camselect" id="select">
-                <option value="">Choose a camera or leave the default one !</option>
-            </select>
+              <div id="divSelect">
+                <select name="camselect" class="form-select" aria-label="Default select example" id="select">
+                    <option value="" id="options">Choose a camera or leave the default one !</option>
+                </select>
+              </div>
             <!-- buttons -->
-            <button type="submit" id="start">Start Cam</button>
-            <button type="submit" id="stop">Stop and Choose an other cam !</button>
+            <button type="button" class="btn btn-primary" id="start">Start Cam</button>
+            <button type="button" class="btn btn-info" id="stop">Stop or Choose an other cam !</button>
             <!-- stream vidéo -->
             <video id="videoElement" autoplay></video>
             <!-- stream vidéo -->
-            <button type="submit" id="catch">Take a picture</button>
-            <button type="submit" id="reset">Delete picture</button>
+            <button type="button" class="btn btn-primary" id="catch">Take a picture</button>
+            <button type="button" class="btn btn-warning" id="reset">Delete this picture</button>
+            <button type="button" class="btn btn-success" id="post">Share this picture</button>
             <!-- capture -->
             <canvas id="canvas" width="0" height="0"></canvas>
             <!-- capture -->
+          </div>
         </div>
-
-        <div class="right" id="right">       
-            <!-- liste des contraintes supportées par le navigateur -->
-            <div id="constraintList" class="hidden"></div>
-        </div>
-    </div>
+    </div><!--end col 1 -->
+      <div class="col" id="imgContainer"><!--start col 2 -->
+        <div id="canvasImg"><!-- affichage ici des images de l'API (GET) --></div>
+      </div><!--end col 2 -->
+</div>
+<!-- Footer start -->
+<footer class="text-center text-lg-start bg-light text-muted">
+    <!-- open container -->
+      <div class="container">
+        <!-- Start Social media -->
+        <section class="d-flex justify-content-center justify-content-lg-between p-4 border-bottom">
+          <!-- Left -->
+          <div class="me-5 d-none d-lg-block">
+            <span>My social links</span>
+          </div>
+          <!-- Left -->
+    
+          <!-- Right -->
+          <div> 
+            <a href="https://www.linkedin.com/in/simon-chabrier/" class="me-4 text-reset"><i class="fab fa-linkedin"></i></a>
+            <a href="https://github.com/SimonChabrier" class="me-4 text-reset"><i class="fab fa-github"></i></a>
+          </div>
+          <!-- Right -->
+        </section>
+        <!-- End Social media -->
+    
+        <!-- start 4 sections footer  -->
+        <section class="footerSection">
+          <div class="container text-center text-md-start mt-5">
+            <!-- Open Row -->
+            <div class="row mt-3">
+    
+              <!-- start Col 1 -->
+              <div class="col-md-3 col-lg-4 col-xl-3 mx-auto mb-4">
+                <h6 class="text-uppercase fw-bold mb-4">JS Photo-Booth :</h6>
+                   <ol>
+                    <li>Choose in your cam in list</li>
+                    <li>Take a picture</li>
+                    <li>Reset the picture</li>
+                    <li>Change your cam choice if you whant</li>
+                    <li>Take an oher picture</li>
+                    <li>Happy with your picture :</li>
+                    <li>Post your Picture</li>
+                    <li>View your picture in pictures</li>
+                    <li>Limit set to one image per day !</li>
+                    <li>So post your best..</li>
+                  </ol>
+              
+              </div>
+              <!-- end Col 1 -->
+    
+              <!-- start Col 2 -->
+              <div class="col-md-2 col-lg-2 col-xl-2 mx-auto mb-4">
+                <!-- Links -->
+                <h6 class="text-uppercase fw-bold mb-4">FRONT</h6>
+                <ol>
+                  <li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference" class="text-reset"><b>Java Script Vanilla</b></a></li>
+                  <li>Front in one domain</li>
+                  <li><a href="#" class="text-reset">Fetch API Get</a></li>
+                  <li><a href="#" class="text-reset">Fetch API Post</a></li>
+                  <li><a href="https://getbootstrap.com/" class="text-reset">Bootstrap</a></li>
+                  <li><a href="#" class="text-reset">Html / Css / Canvas ...</a></li>
+                  <hr>
+                    <li><a href="#!" class="text-reset">Mobil First Design</a></li>
+                    <li><a href="#!" class="text-reset">Full responsive</a></li>
+                  <hr>
+                </ol>
+              </div>
+              <!-- end Col 2 -->
+    
+              <!-- start Col 3 -->
+              <div class="col-md-3 col-lg-2 col-xl-2 mx-auto mb-4">
+                <!-- Links -->
+                <h6 class="text-uppercase fw-bold mb-4">BACK</h6>
+                <ol>
+                  <li><a href="https://symfony.com/5" class="text-reset"><b>Symfony 5</b></a></li>
+                  <li>Back on other domain</li>
+                  <li><a href="#" class="text-reset">Route API Get</a></li>
+                  <li><a href="#" class="text-reset">Route API Post</a></li>
+                  <li><a href="#" class="text-reset">Custom Queries</a></li>
+                  <li><a href="https://sql.sh/cours/select" class="text-reset">Sql ...</a></li>
+                </ol>
+              </div>
+              <!-- end Col 3 -->
+    
+              <!-- start Col 4 -->
+              <div class="col-md-4 col-lg-3 col-xl-3 mx-auto mb-md-0 mb-4">
+                <!-- Add Links -->
+                <h6 class="text-uppercase fw-bold mb-4"><i class="bi bi-person-circle"></i> Simon Chabrier</h6>
+                <p><i class="fas fa-home me-3"></i> Agen - 47000 </p>
+                <p><i class="fa-solid fa-at me-3"></i>simonchabrier@gmail.com</p>
+                <p><i class="fas fa-phone me-3"></i> 06 63 24 45 87</p>
+              </div>
+              <!-- end Col 4 -->
+            </div>
+            <!-- Close row -->
+          </div>
+        </section>
+        <!-- End 4 section Links  -->
+    
+          <!-- start Copyright -->
+          <div class="text-center p-4">
+          <hr>
+            <p>© 2022</p>
+          </div>
+          <!-- end Copyright -->
+    
+      </div>
+      <!-- end container -->  
+</footer>
+<!-- end Footer -->
 </body>
-
-<!-- insertion du script en bas de page -->
-<script src="./assets/js/app.js" defer></script>
 </html>
