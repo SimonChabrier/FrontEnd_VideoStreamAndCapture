@@ -46,70 +46,47 @@
     <title>JS Photo Booth</title>
 </head>
 <body>
-    <!-- header jumbotron -->
-    <div class="jumbotron jumbotron-fluid">
-        <div class="container">
-          <h1 class="display-4">JS Photo Booth !</h1>
-          <p class="lead">Take and share your best Selfie !!!</p>
-        </div>
+<!-- header jumbotron -->
+<div class="jumbotron jumbotron-fluid">
+    <div class="container">
+      <h1 class="display-4">JS Photo Booth !</h1>
+      <p class="lead">Take and share your best Selfie !!!</p>
     </div>
-
-        <!-- titre + affichage des messages d'erreur -->
-        <h2 id="errorMsg"></h2>
-
-        <div class="container-fluid">
-            <!-- <div class="row"> -->
-              <div class="col"><!--start col 1 -->
-
+</div>
+<h2 id="errorMsg"></h2><!-- titre + affichage des messages d'erreur -->
+<div class="container-fluid">
+  <div class="col"><!--start col 1 -->
         <div class ="main" id="videoBlock">  
-                        <div class="left" id="left">                    
-                        <!-- select -->
-                        <div id="divSelect">
-                        <select name="camselect" class="form-select" aria-label="Default select example" id="select">
-                            <option value="" id="options">Choose a camera or leave the default one !</option>
-                        </select>
-                      </div>
-                        <!-- buttons -->
-                        <button type="button" class="btn btn-primary" id="start">Start Cam</button>
-                        <button type="button" class="btn btn-warning" id="stop">Stop and Choose an other cam !</button>
-                        <!-- stream vidéo -->
-                        <video id="videoElement" autoplay></video>
-                        <!-- stream vidéo -->
-                        <button type="button" class="btn btn-primary" id="catch">Take a picture</button>
-                        <button type="button" class="btn btn-warning" id="reset">Delete picture</button>
-                        <button type="button" class="btn btn-success" id="post">Post my picture</button>
-                        <!-- capture -->
-                        <canvas id="canvas" width="0" height="0"></canvas>
-                        <!-- capture -->
+            <div class="left" id="left">                    
+            <!-- select -->
+              <div id="divSelect">
+                <select name="camselect" class="form-select" aria-label="Default select example" id="select">
+                    <option value="" id="options">Choose a camera or leave the default one !</option>
+                </select>
+              </div>
+            <!-- buttons -->
+            <button type="button" class="btn btn-primary" id="start">Start Cam</button>
+            <button type="button" class="btn btn-info" id="stop">Stop or Choose an other cam !</button>
+            <!-- stream vidéo -->
+            <video id="videoElement" autoplay></video>
+            <!-- stream vidéo -->
+            <button type="button" class="btn btn-primary" id="catch">Take a picture</button>
+            <button type="button" class="btn btn-warning" id="reset">Delete this picture</button>
+            <button type="button" class="btn btn-success" id="post">Share this picture</button>
+            <!-- capture -->
+            <canvas id="canvas" width="0" height="0"></canvas>
+            <!-- capture -->
+          </div>
         </div>
-            
-                    <!-- <div class="right" id="right">        -->
-                        <!-- liste des contraintes supportées par le navigateur -->
-                        <!-- <div id="constraintList" class="hidden"></div>
-                    </div> -->
-
-                </div>
-               </div><!--end col 1 -->
-
-              <div class="col" id="imgContainer"><!--start col 2 -->
-                <div id="canvasImg"><!-- affichage ici des images de l'API (GET) --></div>
-              </div><!--end col 2 -->
-            </div>
-          <!-- </div> -->
-
-        <!-- images container -->
-        <!-- <div class ="container-fluid" id="imgContainer">
-            <div id="canvasImg"><!-- affichage ici des images de l'API (GET)</div>
-        </div> -->
-     
-
-
-
+    </div><!--end col 1 -->
+      <div class="col" id="imgContainer"><!--start col 2 -->
+        <div id="canvasImg"><!-- affichage ici des images de l'API (GET) --></div>
+      </div><!--end col 2 -->
+</div>
 <!-- Footer start -->
 <footer class="text-center text-lg-start bg-light text-muted">
     <!-- open container -->
       <div class="container">
-    
         <!-- Start Social media -->
         <section class="d-flex justify-content-center justify-content-lg-between p-4 border-bottom">
           <!-- Left -->
@@ -119,12 +96,7 @@
           <!-- Left -->
     
           <!-- Right -->
-          <div>
-         
-            <a href="" class="me-4 text-reset"><i class="fab fa-facebook-f"></i></a>
-            <a href="" class="me-4 text-reset"><i class="fab fa-twitter"></i></a>
-            <a href="" class="me-4 text-reset"><i class="fab fa-instagram"></i></a> 
-    
+          <div> 
             <a href="https://www.linkedin.com/in/simon-chabrier/" class="me-4 text-reset"><i class="fab fa-linkedin"></i></a>
             <a href="https://github.com/SimonChabrier" class="me-4 text-reset"><i class="fab fa-github"></i></a>
           </div>
@@ -140,17 +112,18 @@
     
               <!-- start Col 1 -->
               <div class="col-md-3 col-lg-4 col-xl-3 mx-auto mb-4">
-                <h6 class="text-uppercase fw-bold mb-4">Symfony 5 user Starter Pack comes ready for :</h6>
+                <h6 class="text-uppercase fw-bold mb-4">JS Photo-Booth :</h6>
                    <ol>
-                    <li>Register & Autologin</li>
-                    <li>Login & Logout</li>
-                    <li>Email confirmation</li>
-                    <li>Reset password</li>
-                    <li>Renew password for user logged-In</li>
-                    <li>Remember-me</li>
-                    <li>Redirect on last page visited after login</li>
-                    <li>Max login attempts</li>
-                    <li>Command for regenerate App secret</li>
+                    <li>Choose in your cam in list</li>
+                    <li>Take a picture</li>
+                    <li>Reset the picture</li>
+                    <li>Change your cam choice if you whant</li>
+                    <li>Take an oher picture</li>
+                    <li>Happy with your picture :</li>
+                    <li>Post your Picture</li>
+                    <li>View your picture in pictures</li>
+                    <li>Limit set to one image per day !</li>
+                    <li>So post your best..</li>
                   </ol>
               
               </div>
@@ -159,34 +132,33 @@
               <!-- start Col 2 -->
               <div class="col-md-2 col-lg-2 col-xl-2 mx-auto mb-4">
                 <!-- Links -->
-                <h6 class="text-uppercase fw-bold mb-4">Technologies</h6>
+                <h6 class="text-uppercase fw-bold mb-4">FRONT</h6>
                 <ol>
-                  <li><a href="https://symfony.com/5" class="text-reset">Symfony 5</a></li>
+                  <li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference" class="text-reset"><b>Java Script Vanilla</b></a></li>
+                  <li>Front in one domain</li>
+                  <li><a href="#" class="text-reset">Fetch API Get</a></li>
+                  <li><a href="#" class="text-reset">Fetch API Post</a></li>
                   <li><a href="https://getbootstrap.com/" class="text-reset">Bootstrap</a></li>
-                  <li><a href="https://sass-lang.com/" class="text-reset">Sass</a></li>
-                  <li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference" class="text-reset">Js</a></li>
-                  <li><a href="https://developer.nytimes.com/" class="text-reset">Api</a></li>
-                  <li><a href="https://www.canva.com/" class="text-reset">Canvas</a></li>
+                  <li><a href="#" class="text-reset">Html / Css / Canvas ...</a></li>
                   <hr>
                     <li><a href="#!" class="text-reset">Mobil First Design</a></li>
                     <li><a href="#!" class="text-reset">Full responsive</a></li>
                   <hr>
                 </ol>
-                <h6 class="text-uppercase fw-bold mb-4">Tools</h6>
-                <ol>
-                  <li><a href="https://trello.com/fr" class="text-reset">Trello</a></li>
-                  <li><a href="https://www.canva.com/" class="text-reset">Canvas</a></li>
-                  <li><a href="https://whimsical.com/" class="text-reset">Whimsical</a></li>
-                  <li><a href="https://lucid.app/" class="text-reset">Lucid</a></li>
               </div>
               <!-- end Col 2 -->
     
               <!-- start Col 3 -->
               <div class="col-md-3 col-lg-2 col-xl-2 mx-auto mb-4">
                 <!-- Links -->
-                <h6 class="text-uppercase fw-bold mb-4">Active Links</h6>
+                <h6 class="text-uppercase fw-bold mb-4">BACK</h6>
                 <ol>
-                 <li></li>
+                  <li><a href="https://symfony.com/5" class="text-reset"><b>Symfony 5</b></a></li>
+                  <li>Back on other domain</li>
+                  <li><a href="#" class="text-reset">Route API Get</a></li>
+                  <li><a href="#" class="text-reset">Route API Post</a></li>
+                  <li><a href="#" class="text-reset">Custom Queries</a></li>
+                  <li><a href="https://sql.sh/cours/select" class="text-reset">Sql ...</a></li>
                 </ol>
               </div>
               <!-- end Col 3 -->
@@ -217,6 +189,5 @@
       <!-- end container -->  
 </footer>
 <!-- end Footer -->
-
 </body>
 </html>

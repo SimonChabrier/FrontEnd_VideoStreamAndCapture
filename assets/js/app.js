@@ -1,7 +1,7 @@
 // https://developer.mozilla.org/en-US/docs/Web/API/MediaStream
 
 const app = {
-    init:function(){
+    init:function() {
         console.log('init');
         app.camStreamer(); 
         app.listAllPictures();
@@ -11,7 +11,7 @@ const app = {
     },
     
     //lister tous les périfériques de capture dispo
-    listDevice:function (){
+    listDevice:function () {
         let select = document.getElementById('select');
         // je récupère les devices vidéo et audio diponnibles sur mon péréphérique
         navigator.mediaDevices.enumerateDevices().then(function(devices) {
@@ -40,7 +40,7 @@ const app = {
     },
     
     // Stream vidéo
-    camStreamer:function(){
+    camStreamer:function() {
     console.log('camStreamer:function')
         //je récupère la liste de mes devices pour initialiser les options de mon select.
         app.listDevice();   
@@ -258,7 +258,7 @@ const app = {
         MainVideoDiv.classList.add('hidden');
         postErrorMessage.classList.remove('hidden');
         postErrorMessage.style.background = "#298838";
-        postErrorMessage.innerHTML += 'Super Merci pour l\'ajout de votre image !'
+        postErrorMessage.innerHTML += ' -----> Image ajoutée <----- '
     },
 
     // API GET 
@@ -353,7 +353,7 @@ const app = {
     },
 
     // je crée un cookie pour l'app avec une date d'expiration de 1 jour.
-    setCookie:function (){
+    setCookie:function () {
     let date = new Date(Date.now() + 86400000); //86400000ms = 1 jour
     date = date.toUTCString();
     let path = window.location.origin;
@@ -362,19 +362,19 @@ const app = {
     },
 
     // je vérifie si j'ai le cookie ou pas dans la navigateur de l'utilisateur
-    getcookie:function(){  
+    getcookie:function() {  
         let decodedCookie = decodeURIComponent(document.cookie);
         return decodedCookie
     },
 
-    userEnterWithCookie(){
+    userEnterWithCookie :function() {
         let postErrorMessage = document.getElementById('errorMsg');
         let homeSelect = document.getElementById('divSelect');
         let homeStart = document.getElementById('start');
         homeSelect.classList.add('hidden');
         homeStart.classList.add('hidden');
         postErrorMessage.classList.remove('hidden');
-        postErrorMessage.innerHTML += 'Vous avez déjà posté une photo ! ... revenez demain...pour en poster une autre'
+        postErrorMessage.innerHTML += 'Vous avez déjà posté une photo ! ... revenez demain pour en poster une autre'
     }
 
 

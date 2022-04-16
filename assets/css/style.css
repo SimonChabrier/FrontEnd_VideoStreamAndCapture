@@ -1,90 +1,132 @@
 body {
-font-family: Arial, Helvetica, sans-serif;
+    font-family: Arial, Helvetica, sans-serif;
 }
 
 h1{
-text-align: center;
-font-size: 1.5rem;
-padding: 1rem;
-margin-bottom: 1rem;
-margin: 1rem 2rem;
-border-radius: .3rem;
-color: #348496
+    text-align: center;
+    font-size: 1.5rem;
+    padding: 1rem;
+    margin-bottom: 1rem;
+    margin: 1rem 2rem;
+    border-radius: .3rem;
+    color: #348496
 }
-
-.lead {
-text-align: center;
-}
-
-.jumbotron.jumbotron-fluid {
-background: #F8F9FA;
-padding-bottom: 2rem;
-}
-
 
 h2 {
-text-align: center;
-font-size: 1.2rem;
-background-color: rgb(101, 101, 101);
-color: #F8F9FA;
-padding: 1rem;
-margin-bottom: 1rem;
+    text-align: center;
+    font-size: 1.2rem;
+    background-color: rgb(101, 101, 101);
+    color: #F8F9FA;
+    padding: 1rem;
+    margin-bottom: 1rem;
+    }
+
+a {
+    text-decoration: none;
 }
 
-li{
-line-height: 1.8rem;
+b {
+    font-weight: bold;
 }
 
-.main {
-display: flex;
-flex-wrap: wrap;
-gap: 1rem;
-justify-content: center;
+span, p {
+    color: #348496
 }
 
-.main .left {
-    height: fit-content;
-}
-
-.left {
-display: flex;
-flex-direction: column;
-gap: 1rem;
-margin-top: 1.5rem;
-}
-
-.hidden {
-display: none;
-padding: 0;
-}
-
-.right {
-height: 640px;
-overflow: auto;
-}
-
-#constraintList {
-padding: 0 25px;
+li {
+    line-height: 1.8rem;
 }
 
 #canvas {
-background: rgb(21 21 21);
+    background: rgb(21 21 21);
 }
 
 #imgContainer {
-max-height: 720px;
-overflow: auto;
-margin-bottom: 1.5rem;
-margin-top: 1.5rem;
-text-align: center;
+    max-height: 720px;
+    overflow: auto;
+    margin-bottom: 1.5rem;
+    margin-top: 1.5rem;
+    text-align: center;
+}
+
+#canvas {
+    border: .1em dotted #348496;
+    background: #f5f5f6;
+    border-radius: 1rem;
+}
+
+#canvasImg img {
+max-width: 160px;
 }
 
 #videoElement {
-background: rgb(83, 83, 83);
-width: auto;
-height: 240px;
+    background: rgb(83, 83, 83);
+    width: auto;
+    height: 240px;
 }
 
 #errorMsg {
-background: #348496;
+    background: #348496;
 }
+
+.jumbotron.jumbotron-fluid {
+    background: #F8F9FA;
+    padding-bottom: 2rem;
+}
+
+.lead {
+    text-align: center;
+}
+
+.main {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    justify-content: center;
+}
+
+.left {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    margin-top: 1.5rem;
+}
+
+.btn {
+color: #f5f5f6
+}
+
+.fab {
+    color: #348496
+}
+
+.fas,
+.fa-solid,
+.fw-bold{
+    color: #348496
+}
+
+.fas,
+.fa-solid{
+    line-height: 1.7rem;
+}
+
+.hidden {
+    display: none;
+    padding: 0;
+}
+
+
+
+/* .main .left {
+    height: fit-content;
+} */
+
+/* .right {
+height: 640px;
+overflow: auto;
+} */
+
+/* #constraintList {
+padding: 0 25px;
+} */
