@@ -43,7 +43,7 @@
     <!-- insertion du script en bas de page -->
     <script src="./assets/js/app.js" defer></script>
 
-    <title>WebCam Stream</title>
+    <title>JS Photo Booth</title>
 </head>
 <body>
     <!-- header jumbotron -->
@@ -61,12 +61,14 @@
             <!-- <div class="row"> -->
               <div class="col"><!--start col 1 -->
 
-        <div class ="main">  
+        <div class ="main" id="videoBlock">  
                         <div class="left" id="left">                    
                         <!-- select -->
+                        <div id="divSelect">
                         <select name="camselect" class="form-select" aria-label="Default select example" id="select">
-                            <option value="">Choose a camera or leave the default one !</option>
+                            <option value="" id="options">Choose a camera or leave the default one !</option>
                         </select>
+                      </div>
                         <!-- buttons -->
                         <button type="button" class="btn btn-primary" id="start">Start Cam</button>
                         <button type="button" class="btn btn-warning" id="stop">Stop and Choose an other cam !</button>
@@ -74,7 +76,8 @@
                         <video id="videoElement" autoplay></video>
                         <!-- stream vidéo -->
                         <button type="button" class="btn btn-primary" id="catch">Take a picture</button>
-                        <button type="button" class="btn btn-danger" id="reset">Delete picture</button>
+                        <button type="button" class="btn btn-warning" id="reset">Delete picture</button>
+                        <button type="button" class="btn btn-success" id="post">Post my picture</button>
                         <!-- capture -->
                         <canvas id="canvas" width="0" height="0"></canvas>
                         <!-- capture -->
