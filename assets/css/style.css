@@ -41,6 +41,10 @@ li {
     background: rgb(21 21 21);
 }
 
+#canvasImg img {
+    width: auto;
+}
+
 #imgContainer {
     max-height: 720px;
     overflow: auto;
@@ -55,14 +59,10 @@ li {
     border-radius: 1rem;
 }
 
-#canvasImg img {
-max-width: 160px;
-}
+
 
 #videoElement {
     background: rgb(83, 83, 83);
-    width: auto;
-    height: 240px;
 }
 
 #errorMsg {
