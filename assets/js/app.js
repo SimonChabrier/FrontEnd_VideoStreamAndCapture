@@ -3,35 +3,46 @@
 const app = {
     init:function() {
         console.log('init');
-	  	app.listDevice();
-        app.camStreamer(); 
+        app.createListDevice();
         app.listAllPictures();
-       if (app.getcookie() === 'user=PhotoBooth'){
-        app.userEnterWithCookie();
-       }
-    },
+        app.isFacebookApp();
+        if (app.getcookie() === 'user=PhotoBooth'){ app.userEnterWithCookie();}
+        
+        // if(app.isFacebookApp()){
+        //     app.onFacebooKload();
+        // }
+},
     
     //lister tous les périfériques de capture dispo
-    listDevice:function () {
-        let select = document.getElementById('select');
-        // je récupère les devices vidéo et audio diponnibles sur mon péréphérique
+    createListDevice:function () {
+        //todo celui là il faut la laisser là.
+        app.camStreamer();
+        // je récupère les devices vidéo et audio dipo sur mon péréphérique
         navigator.mediaDevices.enumerateDevices().then(function(devices) {
+          
             //je boucle sur chaque péréfériques audio et vidéo existants
             devices.forEach(function(device) {
                 //si ce sont des device de type vidéo alors je les ajoutent dans les options de mon select
                 if (device.kind === 'videoinput') 
-                {
+                {   
+                    
+                    const select = document.getElementById('select');
                     const option = document.createElement('option');
                     option.nodeType = 'submit';
+
                     //je passe aux value de mon select le nom des péréfériques dispo
                     option.value = device.deviceId;
-                    const label = device.label || `Camera ${count++}`;
+                    const label = device.label;
+                    console.log(device.label)
+                    //todo ici il faut arriver à afficher l'information.
                     const textNode = document.createTextNode(label);
                     option.appendChild(textNode);
+
                     select.appendChild(option);
+                    
                 }
                     //la liste de mes péréphériques
-                    //console.log(device.kind + ": " + device.label + " id = " + device.deviceId);   
+                    console.log(device.kind + ": " + device.label + " id = " + device.deviceId);   
             });
         })
 
@@ -43,9 +54,8 @@ const app = {
     // Stream vidéo
     camStreamer:function() {
     console.log('camStreamer:function')
-        //je récupère la liste de mes devices pour initialiser les options de mon select.
-        //app.listDevice();   
-    
+        //je récupère la liste de mes devices pour initialiser les options de mon select.  
+        
         //* elements necessaires ici en fonction des événements qui vont se passer.
         let video = document.querySelector('video')
         let stop = document.getElementById('stop');
@@ -87,10 +97,10 @@ const app = {
           video: videoConstraints,
           audio: false
         };
-       
+        
             // les constaints passées ici comme argument vont créer une demande d'autorisation d'accès à la caméra. 
             navigator.mediaDevices.getUserMedia(constraints).then(stream => {
-
+            
             //todo On insére le stream dans la balise <video></vidéo> 
             video.srcObject = stream;
             
@@ -378,7 +388,26 @@ const app = {
         homeStart.classList.add('hidden');
         postErrorMessage.classList.remove('hidden');
         postErrorMessage.innerHTML += 'Vous avez déjà posté une photo ! ... revenez demain pour en poster une autre'
-    }
+    },
+
+    // détecter la navigateur de facebook
+    isFacebookApp : function() {
+        var ua = navigator.userAgent || navigator.vendor || window.opera;
+        return (ua.indexOf("FBAN") > -1) || (ua.indexOf("FBAV") > -1);
+    },
+
+    //ce que l'on fait si c'est facebook ! 
+    onFacebooKload: function() {
+
+        if (!navigator.mediaDevices || !navigator.mediaDevices.enumerateDevices) {
+            alert("enumerateDevices() not supported.");
+            return;
+          }
+          
+          navigator.mediaDevices.enumerateDevices().then(gotDevices);
+
+        },
+
 
 
 };
