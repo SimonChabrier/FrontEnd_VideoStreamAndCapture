@@ -8,13 +8,13 @@
     <meta name="copyright" content="Simon Chabrier"/>
 
     <!-- Linkedin Pict -->
-    <meta name="image" property="og:image" content="https://js.simschab.fr/picgenerator/assets/images/linkedinShare.png"/>
+    <!-- <meta name="image" property="og:image" content="https://js.simschab.fr/cam/assets/images/linkedinShare.png"/> -->
 
     <!-- Facebook - you can use 1200px by 630px picture -->
 
     <meta property="og:title" content="Js Vanilla cam streamer and capture" />
     <meta property="og:url" content="#" />
-    <meta property="og:image" content="#" />
+    <meta property="og:image" content="https://js.simschab.fr/cam/assets/images/FacebookShare.png" />
     <meta property="og:description" content="Stream your cam and capture picture" />
     <meta property="og:site_name" content="JS Cam Streamer and capture" />
 
@@ -54,6 +54,12 @@
     </div>
 </div>
 <h2 id="errorMsg"></h2><!-- titre + affichage des messages d'erreur -->
+
+
+
+<div id="facebookAlert">
+</div>
+
 <div class="container-fluid">
   <div class="col"><!--start col 1 -->
         <div class ="main" id="videoBlock">  
@@ -61,12 +67,13 @@
             <!-- select -->
               <div id="divSelect">
                 <select name="camselect" class="form-select" aria-label="Default select example" id="select">
-                    <option value="" id="options">Choose a camera or leave the default one !</option>
+                    <option value="" id="options">Default Front Cam !</option>
                 </select>
               </div>
             <!-- buttons -->
             <button type="button" class="btn btn-primary" id="start">Start Cam</button>
             <button type="button" class="btn btn-info" id="stop">Stop or Choose an other cam !</button>
+            
             <!-- stream vidéo -->
             <video id="videoElement" autoplay></video>
             <!-- stream vidéo -->
@@ -189,5 +196,6 @@
       <!-- end container -->  
 </footer>
 <!-- end Footer -->
+<div id="constraintList"></div>
 </body>
 </html>
