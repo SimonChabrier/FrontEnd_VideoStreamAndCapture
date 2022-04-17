@@ -19,26 +19,27 @@ const app = {
         app.camStreamer();
         // je récupère les devices vidéo et audio dipo sur mon péréphérique
         navigator.mediaDevices.enumerateDevices().then(function(devices) {
-          
+            let count = 1;
+            let label = '';
             //je boucle sur chaque péréfériques audio et vidéo existants
             devices.forEach(function(device) {
+                
                 //si ce sont des device de type vidéo alors je les ajoutent dans les options de mon select
                 if (device.kind === 'videoinput') 
                 {   
                     
-                    let select = document.getElementById('select');
-                    let option = document.createElement('option');
+                    let select = document.getElementById('select'); // j'ai mon élément sélect qui existe déjà en dur
+                    let option = document.createElement('option'); // je crée un élément option
 
-                    option.nodeType = 'submit';
+                    //option.nodeType = 'submit'; // je lui dit qu'il est de type submit pas besoin pace que je sumbit au clik sur le bouton
                     option.value = device.deviceId;
-
-                    let label = device.label;
-                    let camName = document.createTextNode('nom de la cam ' + label);
+                    console.log(device.label)
+                    let label = device.label; // la j'ai le nom de chaque cam à chaque tour de boucle
+                    let camName = document.createTextNode(label + ` Camera ${count++}`); //! ici ça merde label ne s'affiche pas sur facebook !!!
                     //todo ici il faut arriver à afficher l'information.
                     
-                    select.appendChild(option);
+                    select.appendChild(option); // j'attache mes options à mon element select
                     option.appendChild(camName);
-                    
                     
                 }
                     //la liste de mes péréphériques
