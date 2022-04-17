@@ -49,6 +49,14 @@ li {
     height: 200px;
 }
 
+div#canvasImg {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    overflow: auto;
+    flex-wrap: wrap;
+}
+
 #imgContainer {
     max-height: 720px;
     overflow: auto;
