@@ -26,19 +26,19 @@ const app = {
                 if (device.kind === 'videoinput') 
                 {   
                     
-                    const select = document.getElementById('select');
-                    const option = document.createElement('option');
+                    let select = document.getElementById('select');
+                    let option = document.createElement('option');
+
                     option.nodeType = 'submit';
-
-                    //je passe aux value de mon select le nom des péréfériques dispo
                     option.value = device.deviceId;
-                    const label = device.label;
-                    console.log(device.label)
-                    //todo ici il faut arriver à afficher l'information.
-                    const textNode = document.createTextNode(label);
-                    option.appendChild(textNode);
 
+                    let label = device.label;
+                    let camName = document.createTextNode('nom de la cam ' + label);
+                    //todo ici il faut arriver à afficher l'information.
+                    
                     select.appendChild(option);
+                    option.appendChild(camName);
+                    
                     
                 }
                     //la liste de mes péréphériques
@@ -47,6 +47,7 @@ const app = {
         })
 
         .catch(function(err) {
+            alert('impossible d\'initialiser les péréfériques')
             app.dislayError(' Erreur dans la listDevice ' + err.name + ": " + err.message);
         });  
     },
