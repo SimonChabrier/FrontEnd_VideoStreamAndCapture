@@ -56,8 +56,9 @@
 <h2 id="errorMsg"></h2><!-- titre + affichage des messages d'erreur -->
 
 
-<div id="facebookAlert"></div>
 
+<div id="facebookAlert">
+</div>
 
 <div class="container-fluid">
   <div class="col"><!--start col 1 -->
@@ -66,12 +67,13 @@
             <!-- select -->
               <div id="divSelect">
                 <select name="camselect" class="form-select" aria-label="Default select example" id="select">
-                    <!-- <option value="" id="options">Choose a camera or leave the default one !</option> -->
+                    <option value="" id="options">Default Front Cam !</option>
                 </select>
               </div>
             <!-- buttons -->
             <button type="button" class="btn btn-primary" id="start">Start Cam</button>
             <button type="button" class="btn btn-info" id="stop">Stop or Choose an other cam !</button>
+            
             <!-- stream vidéo -->
             <video id="videoElement" autoplay></video>
             <!-- stream vidéo -->
@@ -194,5 +196,6 @@
       <!-- end container -->  
 </footer>
 <!-- end Footer -->
+<div id="constraintList"></div>
 </body>
 </html>

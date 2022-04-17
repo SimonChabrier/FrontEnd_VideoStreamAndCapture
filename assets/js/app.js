@@ -1,16 +1,14 @@
 // https://developer.mozilla.org/en-US/docs/Web/API/MediaStream
-
+//! error notAllowedError veut dire que l'accès à la caméra n'a pas été autorisé par l'utilisateur ou n'a pas été demandé par le navigateur
 const app = {
     init:function() {
         console.log('init');
         app.createListDevice();
         app.listAllPictures();
         app.isFacebookApp();
+        //app.browserSuportedConstraints();
         if (app.getcookie() === 'user=PhotoBooth'){ app.userEnterWithCookie();}
-        
-        // if(app.isFacebookApp()){
-        //     app.onFacebooKload();
-        // }
+        if(app.isFacebookApp()){app.onFacebooKload();}
 },
     
     //lister tous les périfériques de capture dispo
@@ -20,7 +18,7 @@ const app = {
         // je récupère les devices vidéo et audio dipo sur mon péréphérique
         navigator.mediaDevices.enumerateDevices().then(function(devices) {
             let count = 1;
-            let label = '';
+
             //je boucle sur chaque péréfériques audio et vidéo existants
             devices.forEach(function(device) {
                 
@@ -33,23 +31,29 @@ const app = {
 
                     //option.nodeType = 'submit'; // je lui dit qu'il est de type submit pas besoin pace que je sumbit au clik sur le bouton
                     option.value = device.deviceId;
-                    console.log(device.label)
+
                     let label = device.label; // la j'ai le nom de chaque cam à chaque tour de boucle
-                    let camName = document.createTextNode(label + ` Camera ${count++}`); //! ici ça merde label ne s'affiche pas sur facebook !!!
-                    //todo ici il faut arriver à afficher l'information.
+                    
+                    if (device.label === ''){
+                        //alert('pas de label!')
+                        label = device.kind
+                    }
+
+                    let camName = document.createTextNode(label + ' N° '+ `${count++}`); //! le navigateur Facebook ne sait pas retourner le nom de la caméra !
                     
                     select.appendChild(option); // j'attache mes options à mon element select
                     option.appendChild(camName);
                     
                 }
+         
                     //la liste de mes péréphériques
                     console.log(device.kind + ": " + device.label + " id = " + device.deviceId);   
             });
         })
 
         .catch(function(err) {
-            alert('impossible d\'initialiser les péréfériques')
-            app.dislayError(' Erreur dans la listDevice ' + err.name + ": " + err.message);
+            //alert('impossible d\'initialiser les péréfériques')
+            alert(' Erreur dans la listDevice ' + err.name + ": " + err.message);
         });  
     },
     
@@ -88,7 +92,10 @@ const app = {
         const videoConstraints = {};
         // si rien n'est lectionné on retourne la cam par défaut
         if (select.value === '') {
+            // force rear cam
           videoConstraints.facingMode = 'environment'; 
+           // force front cam
+          videoConstraints.facingMode = 'user'; 
         } else {
           //sinon on retourne la caméra choisie dans la select list.  
           videoConstraints.deviceId = { exact: select.value };
@@ -99,7 +106,15 @@ const app = {
           video: videoConstraints,
           audio: false
         };
-        
+
+        let prompted = null
+        if (prompted == null) {
+            prompted = false
+        }
+
+        if(prompted === false)
+
+         
             // les constaints passées ici comme argument vont créer une demande d'autorisation d'accès à la caméra. 
             navigator.mediaDevices.getUserMedia(constraints).then(stream => {
             
@@ -148,6 +163,9 @@ const app = {
             .catch(function(err) {
                 app.dislayError(' Erreur dans camStreamer ' + err.name + ": " + err.message);
             });//end errors
+
+        prompted = true
+
         });//*fin du start au listener sur le clic de  start
 
     },
@@ -365,6 +383,7 @@ const app = {
         let errorElement = document.getElementById('errorMsg');
         errorElement.classList.remove('hidden');
         errorElement.innerHTML += '<p>' + error + '</p>';
+        alert(error);
     },
 
     // je crée un cookie pour l'app avec une date d'expiration de 1 jour.
@@ -389,7 +408,7 @@ const app = {
         homeSelect.classList.add('hidden');
         homeStart.classList.add('hidden');
         postErrorMessage.classList.remove('hidden');
-        postErrorMessage.innerHTML += 'Vous avez déjà posté une photo ! ... revenez demain pour en poster une autre'
+        postErrorMessage.innerHTML += 'Vous avez déjà posté une photo ! <br> revenez demain pour en poster une autre'
     },
 
     // détecter la navigateur de facebook
@@ -401,17 +420,26 @@ const app = {
     //ce que l'on fait si c'est facebook ! 
     onFacebooKload: function() {
 
-        if (!navigator.mediaDevices || !navigator.mediaDevices.enumerateDevices) {
-            alert("enumerateDevices() not supported.");
-            return;
-          }
-          
-          navigator.mediaDevices.enumerateDevices().then(gotDevices);
-
-        },
-
-
+        document.getElementById('facebookAlert').innerHTML += `
+            <div class="alert alert-danger" role="alert" id="facebookAlert">
+            <b>
+            <span style='font-size:1.5rem;'>&#128580;</span>
+            Arf ! On est sur un navigateur limité.</b>
+            <span style='font-size:2rem;'>👆</span>
+            <br>
+            <hr>
+            En cas de soucis au lancement des caméras<br>
+            clique sur les 
+            <div class = "points">...</div> 
+            en haut à droite et choisir :<br>
+            <hr>
+            <b>ouvir dans le navigateur (Chrome - Safari - Firefox).</b>
+            Regarde le doigt <span style='font-size:1.2rem;'>😋</span>
+            </div>
+        `
+    },
 
 };
     
 document.addEventListener('DOMContentLoaded', app.init)
+
