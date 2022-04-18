@@ -6,17 +6,16 @@
 //todo problème N°3 l'autorisation d'utiliser la caméra est demandé à chaque changement de caméra sur facebook
 
 const app = {
+
     init:function() {
-        console.log('init');
-        
-        app.camStreamer();
-        //app.listAllPictures();
-        app.isFacebookApp();
-        //app.dislayError();
-        //app.browserSuportedConstraints();
-        if (app.getcookie() === 'user=PhotoBooth'){ app.userEnterWithCookie();}
-        if(app.isFacebookApp()){app.onFacebooKload();}
-},
+
+      console.log('init');
+
+      app.camStreamer();
+      app.listAllPictures();
+      if (app.getcookie() === 'user=PhotoBooth'){app.userEnterWithCookie()}
+      if (app.isFacebookApp()){app.onFacebooKload()}
+    },
     
     //lister tous les périfériques de capture dispo
     createListDevice:function () {
@@ -82,19 +81,18 @@ const app = {
 
           //* lancement du stream au click sur le bouton Stat Cam
           document.getElementById('start').addEventListener('click', () => {
-
+          app.resetCanvasContext();
           //* getUserMedia: demande d'autorisation d'accès à la caméra. 
           navigator.mediaDevices.getUserMedia(constraints).then(stream => {
           
           userHasGrantedPermission = true;
 
           if (userHasGrantedPermission === true && stream.active === true) {
+
           
           //* on a eu l'autorisation ET on a un stream on insère
           document.querySelector('video').srcObject = stream
-          //* On autorise la prise d'une capture
-          app.takeCapture();
-         
+        
           //* on affiche ou masque les boutons que l'on souhaite
           startStateElements.forEach(function(elements) {
           elements.removeAttribute('hidden');
@@ -104,6 +102,9 @@ const app = {
           elements.setAttribute('hidden', true)
           });
 
+          //* On autorise la prise d'une capture
+          app.takeCapture();
+          
           //* ici on monitore en console toutes les valeurs de notre objet MediaStream
           const getStreamValues = stream.getTracks();
 
@@ -115,23 +116,24 @@ const app = {
 
                 //* On boucle sur les paires clé/valeur de chacun de nos objets    
                 for (const [key, value] of Object.entries(trackSettings)) {
-                  console.log('TRACK SETTINGS ' + key + ' : ' + value);
+                  //console.log('TRACK SETTINGS ' + key + ' : ' + value);
                 };
                 
                 for (const [key, value] of Object.entries(trackCapabilities)) {
-                    console.log('TRACK CAPABILITIES ' + key + ' : ');
+                    //console.log('TRACK CAPABILITIES ' + key + ' : ');
                     //si on ajoute un texte avant value il n'affiche pas les valeurs json idexées dans les clés ! 
-                    console.log(value);
+                    //console.log(value);
                 };
 
                 for (const [key, value] of Object.entries(trackConstraints)) {
-                  console.log('TRACK CONSTRAINTS ' + key + ' : ' + value);
+                  //console.log('TRACK CONSTRAINTS ' + key + ' : ' + value);
                 };
           });
           
           //* stop all tacks
           document.querySelector('#stop').addEventListener('click', () => { 
           document.querySelector('#start').removeAttribute('hidden');
+          app.resetCanvasContext();
           //* loop on MediaStream and use native MediaStream Object stop() function
           const streamValues = stream.getTracks();
           streamValues.forEach(function(track) {
@@ -161,54 +163,44 @@ const app = {
     // Faire une capture dans un canvas
     takeCapture:function () {
     console.log('takeCapture:function')
-    
-        let video = document.querySelector('video');
-        let postButton = document.getElementById('post');
-        let deleteButton = document.getElementById('reset');
-        let catchPicture = document.getElementById('catch');
-        deleteButton.classList.add('hidden');
-        catchPicture.classList.remove('hidden');
-        
-        // facultatif - on contrôle que la vidéo est bien en cours de lecture
-        video.addEventListener("playing", () => {
-        catchPicture.classList.remove('hidden');
-        let canvas = document.querySelector("#canvas");
-        canvas.width = video.offsetWidth;
-        canvas.height = video.offsetHeight;
-        // si j'ai bien un stream alors, au click je fait mon canvas à partir de l'image interceptée sur le stream en cours
-            catchPicture.addEventListener('click', () => {
-            // reset la canvas contenant la campture
-            app.resetCaptureCanvas();  
-            catchPicture.classList.add('hidden');
-            deleteButton.classList.remove('hidden');
-            postButton.classList.remove('hidden');
-            canvas.classList.remove('hidden');
-            canvas.getContext('2d').drawImage(video, 0, 0, canvas.width, canvas.height);
-            }); 
-        });
 
-        deleteButton.addEventListener('click', () => {
-        deleteButton.classList.add('hidden');
-        post.classList.add('hidden');
-        catchPicture.classList.remove('hidden');
-        }); 
-        
-        postButton.addEventListener("click", () => {
-         
-            postButton.classList.add('hidden');
-            deleteButton.classList.add('hidden');
-            catchPicture.classList.remove('hidden');
-            canvas.classList.add('hidden');
-            let dataURL = canvas.toDataURL('image/jpeg', 1.0);
-            //*j'apelle ma fonction api POST au clic sur Post My picture et le lui passe mon canvas.
-            app.postNewPictre(dataURL);
- 
-        }, false); 
+      document.querySelector('#reset').setAttribute('hidden', true)
+
+      document.querySelector('#catch').addEventListener('click', () => {
+
+      let ElementsToHide = document.querySelectorAll('#canvas, #post, #reset');
+
+      ElementsToHide.forEach(function(elements) {
+      elements.removeAttribute('hidden');
+      });
+
+      document.querySelector('#catch').setAttribute('hidden', true)
+
+      let video = document.querySelector('video');
+      let canvas = document.querySelector('canvas');
+      canvas.width = video.offsetWidth;
+      canvas.height = video.offsetHeight;
+      canvas.getContext('2d').drawImage(video, 0, 0, canvas.width, canvas.height);
+      });
+
+      //reset canvas si clic sur delete picture.
+      document.querySelector('#reset').addEventListener('click', () => {
+      app.resetCanvasContext();
+      }); 
+      
+      //reset canvas si clic sur Share this Picture 
+      //todo vérifier si ça a poste pas un canvas vide du coup ! 
+      document.querySelector('#post').addEventListener("click", () => {
+      app.resetCanvasContext();
+      let dataURL = canvas.toDataURL('image/jpeg', 1.0);
+      //*j'apelle ma fonction api POST au clic sur Post My picture et le lui passe mon canvas.
+      app.postNewPicture(dataURL);
+      }, false); 
     },
 
     // API POST
-    postNewPictre:function(dataURL) {
-    console.log('postNewPictre:function')
+    postNewPicture:function(dataURL) {
+    console.log('postNewPicture:function')
 
             //* je crée une date
             let createdAt = new Date();
@@ -259,6 +251,50 @@ const app = {
                 console.log(errorMsg)
             });
     },
+    
+    // API GET 
+    listAllPictures: function () {
+      console.log('listAllPictures: function')
+          const apiRootUrl = 'https://photoboothback.simschab.fr/getpictures'
+  
+          let config = {
+              method: 'GET',
+              mode: 'cors',
+              cache: 'no-cache'
+          };
+  
+          fetch (apiRootUrl, config)
+          .then(response => {
+              return response.json();
+          })
+          .then(data => {
+  
+              for(value in data) {
+                  //console.log(data[value].picture);
+      
+                  output = document.getElementById('canvasImg')
+                  output.innerHTML += `
+                  <img id="canvasImg" src="${data[value].picture}" alt="canvas" width="160" height="120">  
+                `
+                }
+          });
+      },
+    
+    //resetCanvasContext
+    resetCanvasContext:function(){
+    console.log('resetCanvasContext:function')
+
+    let ElementsToHide = document.querySelectorAll('#canvas, #post, #reset');
+      
+    ElementsToHide.forEach(function(elements) {
+    elements.setAttribute('hidden', true)  
+    });
+
+    document.querySelector('#catch').removeAttribute('hidden')
+    let canvas = document.querySelector('canvas'); 
+    let context = canvas.getContext('2d');
+    context.clearRect(0, 0, canvas.width, canvas.height)
+    },
 
     //reset de la div main vidéo après post
     resetMainVideoDiv:function(){
@@ -268,43 +304,6 @@ const app = {
         postErrorMessage.classList.remove('hidden');
         postErrorMessage.style.background = "#298838";
         postErrorMessage.innerHTML += ' -----> Image ajoutée <----- '
-    },
-
-    // API GET 
-    listAllPictures: function () {
-    console.log('listAllPictures: function')
-        const apiRootUrl = 'https://photoboothback.simschab.fr/getpictures'
-
-        let config = {
-            method: 'GET',
-            mode: 'cors',
-            cache: 'no-cache'
-        };
-
-        fetch (apiRootUrl, config)
-        .then(response => {
-            return response.json();
-        })
-        .then(data => {
-
-            for(value in data) {
-                //console.log(data[value].picture);
-    
-                output = document.getElementById('canvasImg')
-                output.innerHTML += `
-                <img id="canvasImg" src="${data[value].picture}" alt="canvas" width="160" height="120">  
-              `
-             }
-        });
-    },
-
-    //supprimer la capture
-    resetCaptureCanvas:function () {
-    console.log('resetCaptureCanvas:function')
-        let resetCanvasButton = document.getElementById('reset');
-        resetCanvasButton.addEventListener('click', () => {
-        canvas.classList.add('hidden');
-        });
     },
 
     // reset all pictures in div on Api GET request pur éviter de remplir à nouveau la div
@@ -375,6 +374,7 @@ const app = {
 
     // détecter la navigateur de facebook
     isFacebookApp : function() {
+      console.log('isFacebookApp')
         var ua = navigator.userAgent || navigator.vendor || window.opera;
         return (ua.indexOf("FBAN") > -1) || (ua.indexOf("FBAV") > -1);
     },
