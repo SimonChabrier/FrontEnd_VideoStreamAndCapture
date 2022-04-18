@@ -1,5 +1,8 @@
 // https://developer.mozilla.org/en-US/docs/Web/API/MediaStream
-//! error notAllowedError veut dire que l'accès à la caméra n'a pas été autorisé par l'utilisateur ou n'a pas été demandé par le navigateur
+//todo promblème N°1 les devices n'ont pas de name avant que l'on actualise la page au moins une fois..
+//todo problème N°2 le canvas ne se vide pas qaund on change de caméra chaque ACTION de capture est mémorisée il postera la dernière image mais autant de fois qu'on aura changé de caméra
+//todo problème N°3 l'autorisation d'utiliser la caméra est demandé à chaque changement de caméra sur facebook
+
 const app = {
     init:function() {
         console.log('init');
