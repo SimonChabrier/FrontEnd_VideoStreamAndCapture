@@ -101,54 +101,50 @@ const app = {
           });
 
           isCurentlyStreaming.forEach(function(elements){
-          elements.classList.add('hidden');
+          elements.setAttribute('hidden', true)
           });
 
-          //* on se récupère un peu d'info en console
+          //* ici on monitore en console toutes les valeurs de notre objet MediaStream
           const getStreamValues = stream.getTracks();
 
           getStreamValues.forEach(function(track) {
-          let trackSettings = track.getSettings();
-          let trackCapbilities = track.getCapabilities();
-          let trackConstraints = track.getConstraints();
-              for (const [key, value] of Object.entries(trackSettings)) {
-                console.log('TRACK SETTINGS ' + key + ' : ' + value);
-              }
+            //* on initialise nos variables avec les valeurs de retour de nos méthodes propres à MediaStream
+            let trackSettings = track.getSettings();
+            let trackCapbilities = track.getCapabilities();
+            let trackConstraints = track.getConstraints();
 
-              for (const [key, value] of Object.entries(trackCapbilities)) {
-                console.log('TRACK CAPABILITIES ' +key + ' : ' + value);
-              }
-
-              for (const [key, value] of Object.entries(trackConstraints)) {
-                console.log('TRACK CONSTRAINTS ' + key + ' : ' + value);
-              }
-          });//end foreach
-
+                //* On boucle sur les paires clé/valeur de chacun de nos objets    
+                for (const [key, value] of Object.entries(trackSettings)) {
+                  console.log('TRACK SETTINGS ' + key + ' : ' + value);
+                };
+                
+                for (const [key, value] of Object.entries(trackCapbilities)) {
+                  console.log('TRACK CAPABILITIES ' +key + ' : ' + value);
+                };
+                
+                for (const [key, value] of Object.entries(trackConstraints)) {
+                  console.log('TRACK CONSTRAINTS ' + key + ' : ' + value);
+                };
+          });
+          
           //* stop all tacks
           document.querySelector('#stop').addEventListener('click', () => { 
-          //todo vois si on peu faire plus clean pour le bouton strat quand on stope.
-          startBut = document.getElementById('start');
-          startBut.classList.remove('hidden');
-          
-          //* ici on monitore toutes les valeurs de notre objet MediaStream
+          document.querySelector('#start').removeAttribute('hidden');
+          //* loop on MediaStream and use native MediaStream Object stop() function
           const streamValues = stream.getTracks();
           streamValues.forEach(function(track) {
-            track.getSettings();
-            console.log(track.getSettings())
-            track.getCapabilities()
-            console.log(track.getCapabilities())
             track.stop();
           });
 
           
-          //*état d'affichage au départ.
+          //* on réinitialise l'état de l'affichage du départ.
           startStateElements.forEach(function(elements) {
           elements.setAttribute('hidden', true);
             });//end foreach
 
           });
-          
-        }//end if Stream
+
+        };//end if is grantedCam and streamActive
 
         })//end stream GetUSerMedia
 
