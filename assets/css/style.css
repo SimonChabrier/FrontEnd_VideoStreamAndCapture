@@ -33,7 +33,8 @@ b {
 }
 
 span, p {
-    color: #348496
+    color: #ffffff;
+	margin-bottom: 1rem!important;
 }
 
 li {
@@ -47,14 +48,6 @@ li {
 #canvasImg img {
     width: auto;
     height: 200px;
-}
-
-div#canvasImg {
-    display: flex;
-    gap: 1rem;
-    justify-content: center;
-    overflow: auto;
-    flex-wrap: wrap;
 }
 
 #imgContainer {

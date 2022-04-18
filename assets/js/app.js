@@ -1,14 +1,18 @@
 // https://developer.mozilla.org/en-US/docs/Web/API/MediaStream
+//* Contraintes pour la vidéo dynamisée par les valeurs des if/else ci-dessus.
+// https://developer.mozilla.org/en-US/docs/Web/API/MediaDevices/getUserMedia
 //todo promblème N°1 les devices n'ont pas de name avant que l'on actualise la page au moins une fois..
-//todo problème N°2 le canvas ne se vide pas qaund on change de caméra chaque ACTION de capture est mémorisée il postera la dernière image mais autant de fois qu'on aura changé de caméra
+//todo problème N°2 le canvas ne se vide pas quand on change de caméra chaque ACTION de capture est mémorisée comme si il avait un compteur ! il postera la dernière image mais autant de fois qu'on aura changé de caméra
 //todo problème N°3 l'autorisation d'utiliser la caméra est demandé à chaque changement de caméra sur facebook
 
 const app = {
     init:function() {
         console.log('init');
-        app.createListDevice();
-        app.listAllPictures();
+        
+        app.camStreamer();
+        //app.listAllPictures();
         app.isFacebookApp();
+        //app.dislayError();
         //app.browserSuportedConstraints();
         if (app.getcookie() === 'user=PhotoBooth'){ app.userEnterWithCookie();}
         if(app.isFacebookApp()){app.onFacebooKload();}
@@ -16,39 +20,30 @@ const app = {
     
     //lister tous les périfériques de capture dispo
     createListDevice:function () {
-        //todo celui là il faut la laisser là.
-        app.camStreamer();
         // je récupère les devices vidéo et audio dipo sur mon péréphérique
-        navigator.mediaDevices.enumerateDevices().then(function(devices) {
+        navigator.mediaDevices.enumerateDevices()
+        .then(function(devices) {
             let count = 1;
 
-            //je boucle sur chaque péréfériques audio et vidéo existants
-            devices.forEach(function(device) {
-                
-                //si ce sont des device de type vidéo alors je les ajoutent dans les options de mon select
-                if (device.kind === 'videoinput') 
-                {   
-                    
-                    let select = document.getElementById('select'); // j'ai mon élément sélect qui existe déjà en dur
-                    let option = document.createElement('option'); // je crée un élément option
+            devices.forEach(function(device) {  
 
-                    //option.nodeType = 'submit'; // je lui dit qu'il est de type submit pas besoin pace que je sumbit au clik sur le bouton
-                    option.value = device.deviceId;
+                if (device.kind === 'videoinput') {   
 
-                    let label = device.label; // la j'ai le nom de chaque cam à chaque tour de boucle
-                    
-                    if (device.label === ''){
-                        //alert('pas de label!')
-                        label = device.kind
-                    }
+                let select = document.getElementById('select'); // j'ai mon élément sélect qui existe déjà en dur
+                let option = document.createElement('option'); // je crée un élément option
 
-                    let camName = document.createTextNode(label + ' N° '+ `${count++}`); //! le navigateur Facebook ne sait pas retourner le nom de la caméra !
-                    
-                    select.appendChild(option); // j'attache mes options à mon element select
-                    option.appendChild(camName);
-                    
+                option.value = device.deviceId;
+
+                let label = device.label; // nom de la cam
+                if (device.label === ''){
+                  label = device.kind
                 }
-         
+
+                let camName = document.createTextNode(label + ' N° '+ `${count++}`);
+                
+                select.appendChild(option); // j'attache mes options à mon element select
+                option.appendChild(camName);   
+                }
                     //la liste de mes péréphériques
                     console.log(device.kind + ": " + device.label + " id = " + device.deviceId);   
             });
@@ -62,114 +57,85 @@ const app = {
     
     // Stream vidéo
     camStreamer:function() {
-    console.log('camStreamer:function')
-        //je récupère la liste de mes devices pour initialiser les options de mon select.  
-        
-        //* elements necessaires ici en fonction des événements qui vont se passer.
-        let video = document.querySelector('video')
-        let stop = document.getElementById('stop');
-        let catchButton = document.getElementById('catch');
-        let postButton = document.getElementById('post');
-        let clearButton = document.getElementById('reset');
-        let canvas = document.querySelector("#canvas");
-        let selectDisplay = document.getElementById('select');
-        let errorMessage = document.getElementById('errorMsg');
-        let start = document.getElementById('start');
+    
+        let startStateElements = document.querySelectorAll('#catch, #reset, #post, #canvas, #videoElement, #stop, #errorMsg');
+        let isStreamingState = document.querySelectorAll('#start, #post, #errorMsg, #canvas');
         
         //*état d'affichage au départ.
-        video.classList.add('hidden');
-        stop.classList.add('hidden');
-        catchButton.classList.add('hidden');
-        postButton.classList.add('hidden');
-        clearButton.classList.add('hidden');
-        canvas.classList.add('hidden');
-        errorMessage.classList.add('hidden');
-
-        //* lancement du stream au click sur le bouton Stat Cam
-        start.addEventListener('click', () => {
-         
-        selectDisplay.classList.add('hidden');
-        start.classList.add('hidden');
-
-        // j'initialise un objet vide pour le moment qui prendra les valeurs de if/else
-        const videoConstraints = {};
-        // si rien n'est lectionné on retourne la cam par défaut
-        if (select.value === '') {
-            // force rear cam
-          videoConstraints.facingMode = 'environment'; 
-           // force front cam
-          videoConstraints.facingMode = 'user'; 
-        } else {
-          //sinon on retourne la caméra choisie dans la select list.  
-          videoConstraints.deviceId = { exact: select.value };
-        };
-        //* Contraintes pour la vidéo dynamisée par les valeurs des if/else ci-dessus.
-        // https://developer.mozilla.org/en-US/docs/Web/API/MediaDevices/getUserMedia
-        const constraints = {
-          video: videoConstraints,
-          audio: false
-        };
-
-        let prompted = null
-        if (prompted == null) {
-            prompted = false
-        }
-
-        if(prompted === false)
-
-         
-            // les constaints passées ici comme argument vont créer une demande d'autorisation d'accès à la caméra. 
-            navigator.mediaDevices.getUserMedia(constraints).then(stream => {
-            
-            //todo On insére le stream dans la balise <video></vidéo> 
-            video.srcObject = stream;
-            
-            //* ça streame on affiche ou masque les boutons que l'on souhaite
-            video.classList.remove('hidden')
-            catchButton.classList.remove('hidden');
-            clearButton.classList.remove('hidden');
-            stop.classList.remove('hidden');
-
-            //* si le stream est en bien en cours de lecture
-            video.addEventListener("playing", () => {
-            document.getElementById('errorMsg').classList.add('hidden');
-            document.getElementById('left').style.height ='auto';
-		  	video.style.width ='320px';
-            video.style.heigth ='240px';
-            });
-
-            // prend la capture
-            app.takeCapture();
+        startStateElements.forEach(function(elements) {
+        elements.setAttribute('hidden', true);
+        });
         
-            //*Appel boutton stop stream et full reset du stream en cours
-            stop.addEventListener('click', () => { 
+        //* lancement du stream au click sur le bouton Stat Cam
+        document.getElementById('start').addEventListener('click', () => {
 
-            //* je reset les médias en cours de lecture pour switcher de cam.
-            // parce que problème si deux cam avant et deux cam arrière
-            // on ne peut pas passer de l'une à l'autre (Cam avant 1 -> Cam avant 2) ou (Cam arrière 1 -> Cam arrière 2) à la volée
-            // on n'aurai pas le problème pour passer d'une cam avant à une cam arrière à la volée.
-            app.resetMediaStream(stream, video, postButton);
+          // j'initialise un objet vide pour le moment qui prendra les valeurs de if/else
+          const videoConstraints = {};
+          // si pas de valeur passée dans le select
+          if (select.value === ''){
+          //rear cam
+          //videoConstraints.facingMode = 'environment'; 
+          //front cam
+          videoConstraints.facingMode = 'user'; 
+          } else {
+            //sinon on retourne la caméra choisie dans les options du select.  
+            videoConstraints.deviceId = { exact: select.value };
+          };
 
-            selectDisplay.classList.remove('hidden');
-            stop.classList.add('hidden');
-            catchButton.classList.add('hidden');
-            start.classList.add('visible');
-            start.classList.remove('hidden');
-            selectDisplay.classList.add('visible');
-            start.classList.add('visible');
-            video.classList.add('hidden');
-            clearButton.classList.add('hidden');
-            canvas.classList.add('hidden');
-            });
+          const constraints = {
+            video: videoConstraints,
+            audio: false,
+          };
+          
+          // les constaints passées ici comme argument vont créer une demande d'autorisation d'accès à la caméra. 
+          navigator.mediaDevices.getUserMedia(constraints).then(stream => {
 
-        })//en stream
-            .catch(function(err) {
-                app.dislayError(' Erreur dans camStreamer ' + err.name + ": " + err.message);
-            });//end errors
+          //* on a l'autorisation alors on crée la liste des devices
+          app.createListDevice();
 
-        prompted = true
+          if(stream){
+          document.querySelector('video').srcObject = stream
+          document.querySelector('video').style.width ='100%';
+          document.querySelector('video').style.heigth ='auto';
+          
+          //* ça streame on affiche ou masque les boutons que l'on souhaite
+          startStateElements.forEach(function(elements) {
+          elements.setAttribute('visible', true);
+          elements.removeAttribute('hidden');
+          });
 
-        });//*fin du start au listener sur le clic de  start
+          isStreamingState.forEach(function(elements){
+          elements.classList.add('hidden');
+          });
+
+          //* On autorise la prise d'une capture
+          app.takeCapture();
+      
+          //* stop all tacks
+          document.querySelector('#stop').addEventListener('click', () => { 
+          //todo vois si on peu faire plus clean pour le bouton strat quand on stope.
+          startBut = document.getElementById('start');
+          startBut.classList.remove('hidden');
+
+          const tracks = stream.getTracks();
+          tracks.forEach(function(track) {
+            track.stop();
+          });
+          
+              //*état d'affichage au départ.
+              startStateElements.forEach(function(elements) {
+              elements.setAttribute('hidden', true);
+              });
+          });
+        }//end if Stream
+
+        })//end stream GetUSerMedia
+
+        .catch(function(err) {
+            app.dislayError(' Erreur dans camStreamer ' + err.name + ": " + err.message + ' L\'autorisation d\'accès à votre caméra n\'a pas été validé !');
+        });
+
+      });//end click start listener
 
     },
     
@@ -209,19 +175,6 @@ const app = {
         
         postButton.addEventListener("click", () => {
          
-        if (app.getcookie() === 'user=PhotoBooth'){
-            // app.resetErrorPostMessage();
-            // app.resetCaptureCanvas(); 
-            // postErrorMessage.classList.remove('hidden');
-            // postErrorMessage.innerHTML += 'Vous avez déjà posté une photo ! ... revenez demain...pour en poster une autre'
-            // postButton.classList.add('hidden');
-            // deleteButton.classList.add('hidden');
-            // catchPicture.classList.add('hidden');
-            // canvas.classList.add('hidden');
-            // postButton.classList.add('hidden');
-            // deleteButton.classList.add('hidden');
-
-        } else { 
             postButton.classList.add('hidden');
             deleteButton.classList.add('hidden');
             catchPicture.classList.remove('hidden');
@@ -229,7 +182,7 @@ const app = {
             let dataURL = canvas.toDataURL('image/jpeg', 1.0);
             //*j'apelle ma fonction api POST au clic sur Post My picture et le lui passe mon canvas.
             app.postNewPictre(dataURL);
-            } 
+ 
         }, false); 
     },
 
@@ -334,19 +287,6 @@ const app = {
         });
     },
 
-    // reset display stream
-    resetMediaStream: function(stream, video, post){
-    console.log('resetMediaStream: function(stream, video)')
-        
-        video.classList.add('hidden');
-        canvas.classList.add('hidden');
-        post.classList.add('hidden');
-        //stop all tracks
-        stream.getTracks().forEach(function(track){
-        track.stop();
-        });
-    },
-    
     // reset all pictures in div on Api GET request pur éviter de remplir à nouveau la div
     resetpictureDiv:function(){
     console.log('resetpictureDiv:function')
@@ -379,14 +319,13 @@ const app = {
     dislayError: function(error) {
     console.log('dislayError: function') 
         //si on rentre ici c'est qu'il y a une erreur
-        document.getElementById('constraintList').classList.add('hidden')
-        document.getElementById('select').classList.remove('hidden')
-        document.getElementById('start').classList.remove('hidden')
-        //je place une balise dans le code html pour afficher les messsages d'erreurs.
+        let errorlements = document.querySelectorAll('#errorMsg')
+        errorlements.forEach(function(elements) {
+        elements.removeAttribute('hidden');
+        });
         let errorElement = document.getElementById('errorMsg');
-        errorElement.classList.remove('hidden');
+        //errorElement.classList.remove('hidden');
         errorElement.innerHTML += '<p>' + error + '</p>';
-        alert(error);
     },
 
     // je crée un cookie pour l'app avec une date d'expiration de 1 jour.
