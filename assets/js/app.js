@@ -110,7 +110,7 @@ const app = {
           getStreamValues.forEach(function(track) {
             //* on initialise nos variables avec les valeurs de retour de nos méthodes propres à MediaStream
             let trackSettings = track.getSettings();
-            let trackCapbilities = track.getCapabilities();
+            let trackCapabilities = track.getCapabilities();
             let trackConstraints = track.getConstraints();
 
                 //* On boucle sur les paires clé/valeur de chacun de nos objets    
@@ -118,10 +118,12 @@ const app = {
                   console.log('TRACK SETTINGS ' + key + ' : ' + value);
                 };
                 
-                for (const [key, value] of Object.entries(trackCapbilities)) {
-                  console.log('TRACK CAPABILITIES ' +key + ' : ' + value);
+                for (const [key, value] of Object.entries(trackCapabilities)) {
+                    console.log('TRACK CAPABILITIES ' + key + ' : ');
+                    //si on ajoute un texte avant value il n'affiche pas les valeurs json idexées dans les clés ! 
+                    console.log(value);
                 };
-                
+
                 for (const [key, value] of Object.entries(trackConstraints)) {
                   console.log('TRACK CONSTRAINTS ' + key + ' : ' + value);
                 };
@@ -159,6 +161,7 @@ const app = {
     // Faire une capture dans un canvas
     takeCapture:function () {
     console.log('takeCapture:function')
+    
         let video = document.querySelector('video');
         let postButton = document.getElementById('post');
         let deleteButton = document.getElementById('reset');
