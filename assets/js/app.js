@@ -60,7 +60,7 @@ const app = {
     
           let startStateElements = document.querySelectorAll('#catch, #reset, #post, #canvas, #videoElement, #stop, #errorMsg');
           let isCurentlyStreaming = document.querySelectorAll('#start, #post, #errorMsg, #canvas');
-          let isGrantedCam = false;
+          let userHasGrantedPermission = false;
           
           //* état d'affichage au départ.
           startStateElements.forEach(function(elements) {
@@ -86,9 +86,9 @@ const app = {
           //* getUserMedia: demande d'autorisation d'accès à la caméra. 
           navigator.mediaDevices.getUserMedia(constraints).then(stream => {
           
-          isGrantedCam = true;
+          userHasGrantedPermission = true;
 
-          if (isGrantedCam === true && stream.active === true) {
+          if (userHasGrantedPermission === true && stream.active === true) {
           
           //* on a eu l'autorisation ET on a un stream on insère
           document.querySelector('video').srcObject = stream
