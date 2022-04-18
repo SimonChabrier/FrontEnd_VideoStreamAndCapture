@@ -33,7 +33,7 @@ b {
 }
 
 span, p {
-    color: #348496
+	margin-bottom: 1rem!important;
 }
 
 li {
@@ -47,6 +47,14 @@ li {
 #canvasImg img {
     width: auto;
     height: 200px;
+}
+
+div#canvasImg {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
 }
 
 #imgContainer {
@@ -65,6 +73,8 @@ li {
 
 #videoElement {
     background: rgb(83, 83, 83);
+    width: 320px;
+    height: auto;
 }
 
 #errorMsg {
@@ -77,6 +87,10 @@ li {
 
 #facebookAlert{
     text-align: center!important;
+}
+
+.container {
+    text-align: center;
 }
 
 .points{
@@ -96,6 +110,7 @@ li {
 
 .lead {
     text-align: center;
+    color: #348496;
 }
 
 .main {
