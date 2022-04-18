@@ -65,7 +65,8 @@ li {
 }
 
 #videoElement {
-    background: rgb(83, 83, 83);
+    width: 100%;
+    height: auto;
 }
 
 #errorMsg {
@@ -97,6 +98,7 @@ li {
 
 .lead {
     text-align: center;
+    color: #348496;
 }
 
 .main {

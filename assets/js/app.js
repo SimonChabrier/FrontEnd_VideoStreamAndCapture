@@ -58,75 +58,96 @@ const app = {
     // Stream vidéo
     camStreamer:function() {
     
-        let startStateElements = document.querySelectorAll('#catch, #reset, #post, #canvas, #videoElement, #stop, #errorMsg');
-        let isStreamingState = document.querySelectorAll('#start, #post, #errorMsg, #canvas');
-        
-        //*état d'affichage au départ.
-        startStateElements.forEach(function(elements) {
-        elements.setAttribute('hidden', true);
-        });
-        
-        //* lancement du stream au click sur le bouton Stat Cam
-        document.getElementById('start').addEventListener('click', () => {
-
-          // j'initialise un objet vide pour le moment qui prendra les valeurs de if/else
+          let startStateElements = document.querySelectorAll('#catch, #reset, #post, #canvas, #videoElement, #stop, #errorMsg');
+          let isCurentlyStreaming = document.querySelectorAll('#start, #post, #errorMsg, #canvas');
+          let isGrantedCam = false;
+          
+          //* état d'affichage au départ.
+          startStateElements.forEach(function(elements) {
+          elements.setAttribute('hidden', true);
+          });
+          
+          //* pré - initialisation des constraints.
           const videoConstraints = {};
+
           // si pas de valeur passée dans le select
           if (select.value === ''){
-          //rear cam
-          //videoConstraints.facingMode = 'environment'; 
-          //front cam
           videoConstraints.facingMode = 'user'; 
           } else {
-            //sinon on retourne la caméra choisie dans les options du select.  
             videoConstraints.deviceId = { exact: select.value };
           };
 
-          const constraints = {
-            video: videoConstraints,
-            audio: false,
-          };
-          
-          // les constaints passées ici comme argument vont créer une demande d'autorisation d'accès à la caméra. 
+          //* état final des constraints
+          const constraints = { video: videoConstraints, audio: false};
+
+          //* lancement du stream au click sur le bouton Stat Cam
+          document.getElementById('start').addEventListener('click', () => {
+
+          //* getUserMedia: demande d'autorisation d'accès à la caméra. 
           navigator.mediaDevices.getUserMedia(constraints).then(stream => {
-
-          //* on a l'autorisation alors on crée la liste des devices
-          app.createListDevice();
-
-          if(stream){
-          document.querySelector('video').srcObject = stream
-          document.querySelector('video').style.width ='100%';
-          document.querySelector('video').style.heigth ='auto';
           
-          //* ça streame on affiche ou masque les boutons que l'on souhaite
+          isGrantedCam = true;
+
+          if (isGrantedCam === true && stream.active === true) {
+          
+          //* on a eu l'autorisation ET on a un stream on insère
+          document.querySelector('video').srcObject = stream
+          //* On autorise la prise d'une capture
+          app.takeCapture();
+         
+          //* on affiche ou masque les boutons que l'on souhaite
           startStateElements.forEach(function(elements) {
-          elements.setAttribute('visible', true);
           elements.removeAttribute('hidden');
           });
 
-          isStreamingState.forEach(function(elements){
+          isCurentlyStreaming.forEach(function(elements){
           elements.classList.add('hidden');
           });
 
-          //* On autorise la prise d'une capture
-          app.takeCapture();
-      
+          //* on se récupère un peu d'info en console
+          const getStreamValues = stream.getTracks();
+
+          getStreamValues.forEach(function(track) {
+          let trackSettings = track.getSettings();
+          let trackCapbilities = track.getCapabilities();
+          let trackConstraints = track.getConstraints();
+              for (const [key, value] of Object.entries(trackSettings)) {
+                console.log('TRACK SETTINGS ' + key + ' : ' + value);
+              }
+
+              for (const [key, value] of Object.entries(trackCapbilities)) {
+                console.log('TRACK CAPABILITIES ' +key + ' : ' + value);
+              }
+
+              for (const [key, value] of Object.entries(trackConstraints)) {
+                console.log('TRACK CONSTRAINTS ' + key + ' : ' + value);
+              }
+          });//end foreach
+
           //* stop all tacks
           document.querySelector('#stop').addEventListener('click', () => { 
           //todo vois si on peu faire plus clean pour le bouton strat quand on stope.
           startBut = document.getElementById('start');
           startBut.classList.remove('hidden');
-
-          const tracks = stream.getTracks();
-          tracks.forEach(function(track) {
+          
+          //* ici on monitore toutes les valeurs de notre objet MediaStream
+          const streamValues = stream.getTracks();
+          streamValues.forEach(function(track) {
+            track.getSettings();
+            console.log(track.getSettings())
+            track.getCapabilities()
+            console.log(track.getCapabilities())
             track.stop();
           });
+
           
-              //*état d'affichage au départ.
-              startStateElements.forEach(function(elements) {
-              elements.setAttribute('hidden', true);
-              });
+          //*état d'affichage au départ.
+          startStateElements.forEach(function(elements) {
+          elements.setAttribute('hidden', true);
+            });//end foreach
+
           });
+          
         }//end if Stream
 
         })//end stream GetUSerMedia
