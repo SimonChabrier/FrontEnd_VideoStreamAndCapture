@@ -572,7 +572,6 @@ const app = {
 
   },
 
-    //return check;
 };
 
 
