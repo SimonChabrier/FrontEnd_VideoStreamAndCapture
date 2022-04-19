@@ -1,6 +1,8 @@
 // https://developer.mozilla.org/en-US/docs/Web/API/MediaStream
 //* Contraintes pour la vidéo dynamisée par les valeurs des if/else ci-dessus.
 // https://developer.mozilla.org/en-US/docs/Web/API/MediaDevices/getUserMedia
+ // liste les contraintes supportées par le navigateur
+  // https://developer.mozilla.org/en-US/docs/Web/API/MediaDevices/getSupportedConstraints
 //todo promblème N°1 les devices n'ont pas de name avant que l'on actualise la page au moins une fois..
 //todo problème N°3 l'autorisation d'utiliser la caméra est demandé à chaque changement de caméra sur facebook
 //todo masquer le vidéoBlock si erreur.
@@ -25,9 +27,15 @@ const app = {
 
   },
   
-  // Stream vidéo
+  /**
+   * Main Streamer 
+   * Ask for media acces permission
+   * Full stream logic
+   * @return MediaStream
+   */
   camStreamer:function() {
     console.log('camStreamer:function')
+
     app.takeCapture();
     app.resetCurrentCamName()
 
@@ -80,7 +88,6 @@ const app = {
 
     //* ici on monitore en console toutes les valeurs de notre objet MediaStream en lecture
     const getStreamValues = stream.getTracks();
-    //app.monitorCurrentStremValues(getStreamValues);
     
     //* actions quand on arrête le stream en cours
     document.querySelector('#stop').addEventListener('click', () => { 
@@ -91,7 +98,6 @@ const app = {
     app.resetCanvasContext();
 
     app.stopCurrentStreamAndClearTracks(getStreamValues);
-    //app.monitorCurrentStremValues(getStreamValues);
 
     //* on réinitialise l'état de l'affichage du départ.
     startStateElements.forEach(function(elements) {
@@ -119,7 +125,12 @@ const app = {
   
   },
 
-  //lister tous les périfériques de capture dispo
+  /**
+   * Find media devices in current User devices
+   * Filter on videoInput kind
+   * Append media vidéo elements in select values
+   * @return select & options
+   */
   createListDevice:function () {
     //*je resete la liste avant de la contruire
     app.resetMediaListOption();
@@ -132,12 +143,13 @@ const app = {
 
               if (device.kind === 'videoinput') {   
 
-              let select = document.getElementById('select'); // j'ai mon élément sélect qui existe déjà en dur
-              let option = document.createElement('option'); // je crée un élément option
+              let select = document.getElementById('select'); 
+              let option = document.createElement('option');
 
               option.value = device.deviceId;
 
-              let label = device.label; // nom de la cam
+              let label = device.label; 
+
               if (device.label === ''){
                 label = device.kind
               }
@@ -147,7 +159,6 @@ const app = {
               option.appendChild(camName);  
 
               }
-                  //la liste de mes péréphériques
                   //console.log(device.kind + ": " + device.label + " id = " + device.deviceId);   
           });
       })
@@ -158,7 +169,12 @@ const app = {
       });  
   },
 
-  // Faire une capture dans un canvas
+  /**
+   * Allow user to capture picture from current stream
+   * Append capture in canvas elment
+   * @return canvas 
+   * @return dataUrl from canva
+   */
   takeCapture:function () {
   console.log('takeCapture:function')
  
@@ -180,7 +196,6 @@ const app = {
     canvas.getContext('2d').drawImage(video, 0, 0, canvas.width, canvas.height);
     });
 
-    //reset canvas si clic sur delete picture.
     document.querySelector('#reset').addEventListener('click', () => {
     app.resetCanvasContext();
     }); 
@@ -189,12 +204,18 @@ const app = {
     document.querySelector('#post').addEventListener("click", () => {
     let dataURL = canvas.toDataURL('image/jpeg', 1.0);
     console.log(dataURL);
+
     //*j'apelle ma fonction api POST au clic sur Post My picture et le lui passe mon canvas.
     app.postNewPicture(dataURL);
+
     }, false); 
+
   },
   
-  // display currentCam Name
+  /**
+   * Display current select video device name
+   * @return video device name innerHTML
+   */
   displayCurrentCamName:function(){
     let sel = document.getElementById('select');
     let value = sel.options[sel.selectedIndex].text;
@@ -202,29 +223,41 @@ const app = {
     document.getElementById('currentCamName').innerHTML = 'Streaming On : ' + value;
   },
  
-  //Arrêter le sream en cours
-  stopCurrentStreamAndClearTracks:function(getStreamValues){
-  //* loop on MediaStream and use native MediaStream Object stop() function
-    getStreamValues.forEach(function(track) {
+  /**
+   * Stop all current stream tracks
+   * loop on MediaStream and use native MediaStream Object stop() function
+   * @param {MediaStream} 
+   */
+  stopCurrentStreamAndClearTracks:function(streamTracks){
+    streamTracks.forEach(function(track) {
       track.stop();
     });
   },
 
-  // reset currentCam Name
+  /**
+   * Reset current streaming cam name
+   * @return '' innerHTML
+   */
   resetCurrentCamName:function(){
     document.getElementById('currentCamName').setAttribute('hidden', true)
     document.getElementById('currentCamName').innerHTML = '';
   },
 
-  //reset la liste des cams dans les options pour la reconstruire à chaque passage dans camStreamer
+  /**
+   * Reset all Media Devide select Options
+   */
   resetMediaListOption:function(){
     let options = document.querySelectorAll('#select option');
         options.forEach(element => element.remove());
   },
 
-  //Récupérer les valeurs du stream pur monitorer en console.
+  /**
+   * Get all MediaStream info and display in console
+   * @param {MediaStream}
+   */
   monitorCurrentStremValues:function(getStreamValues){
-  //* loop on MediaStream and use native MediaStream Object
+    //* loop on MediaStream and use native MediaStream Object
+
     getStreamValues.forEach(function(track) {
       //* on initialise nos variables avec les valeurs de retour de nos méthodes propres à MediaStream
       let trackSettings = track.getSettings();
@@ -248,7 +281,12 @@ const app = {
     });
   },
 
-  // API POST
+  /**
+   * Fetch and POST data on https://photoboothback.simschab.fr/api
+   * @param {text} dataURL from canvas
+   * @return {json}
+   * @method POST
+   */
   postNewPicture:function(dataURL) {
   console.log('postNewPicture:function')
 
@@ -267,7 +305,8 @@ const app = {
     httpHeaders.append('Content-Type', 'application/json');
     
     //* route de mon back-end symfony
-    const apiRootUrl = 'https://photoboothback.simschab.fr/api';
+    //const apiRootUrl = 'https://photoboothback.simschab.fr/api';
+    const apiRootUrl = 'http://127.0.0.1:8000/api';
 
     //* Je poste sur la route API 
     const fetchOptions = 
@@ -306,10 +345,16 @@ const app = {
     });
   },
 
-  // API GET 
+  /**
+   * Display all pictures from DataBase
+   * Fetch data from API
+   * Append data.entries to img.src
+   * @method GET
+   */
   listAllPictures: function () {
     console.log('listAllPictures: function')
-      const apiRootUrl = 'https://photoboothback.simschab.fr/getpictures'
+      //const apiRootUrl = 'https://photoboothback.simschab.fr/getpictures'
+      const apiRootUrl = 'http://127.0.0.1:8000/getpictures'
 
       let config = {
           method: 'GET',
@@ -322,19 +367,18 @@ const app = {
           return response.json();
       })
       .then(data => {
-
           for(value in data) {
-              //console.log(data[value].picture);
-  
               output = document.getElementById('canvasImg')
               output.innerHTML += `
-              <img id="canvasImg" src="${data[value].picture}" alt="canvas" width="160" height="120">  
+              <img id="canvasImg" src="${data[value].picture}" alt="image"/>  
             `
-            }
+          }
       });
   },
   
-  //resetCanvasContext
+  /**
+   * Reset all canvas content
+   */
   resetCanvasContext:function(){
   console.log('resetCanvasContext:function')
 
@@ -350,7 +394,10 @@ const app = {
   context.clearRect(0, 0, canvas.width, canvas.height)
   },
 
-  //reset de la div main vidéo après post
+  /**
+   * Hide all video stream features
+   * Display POST confirmation message 
+   */
   resetMainVideoDiv:function(){
       let MainVideoDiv = document.getElementById('videoBlock');
       let postErrorMessage = document.getElementById('errorMsg');
@@ -360,18 +407,26 @@ const app = {
       postErrorMessage.innerHTML += ' -----> Image ajoutée <----- '
   },
 
-  // reset all pictures in div on Api GET request pur éviter de remplir à nouveau la div
+  /**
+   * Reset all images displayed
+   * on each API GET request event
+   */
   resetpictureDiv:function(){
   console.log('resetpictureDiv:function')
       document.getElementById('canvasImg').innerHTML = '';
   },
 
+  /**
+   * Reset errorMsg content
+   */
   resetErrorPostMessage:function(){
   document.getElementById('errorMsg').innerHTML = '';
   },
 
-  // liste les contraintes supportées par le navigateur
-  // https://developer.mozilla.org/en-US/docs/Web/API/MediaDevices/getSupportedConstraints
+ /**
+  * Display all navigator supported info
+  * Actually noy used but ready to use if needed
+  */
   browserSuportedConstraints:function () {   
       let supportedConstraints = navigator.mediaDevices.getSupportedConstraints();
       let constrainsList = document.getElementById('constraintList');
@@ -387,10 +442,14 @@ const app = {
       }
   },
 
-  // initialisation du template d'affichage des messages d'erreur.
+  /**
+   * 'Template' for errors message
+   * @param {text} errorName 
+   * @param {text} errorMessage 
+   */
   dislayError: function(errorName, errorMessage) {
   console.log('dislayError: function') 
-      // Pour le moment il n'y en a qu'un mais on est prêt à en entre d'autres si besoin.
+      // Pour le moment il n'y en a qu'un mais on est prêt à en ajouter entre d'autres si besoin.
       let errorElements = document.querySelectorAll('#errorMsg')
       errorElements.forEach(function(elements) {
       elements.removeAttribute('hidden');
@@ -398,39 +457,55 @@ const app = {
       document.getElementById('errorMsg').innerHTML += '<p>' + errorName + '<br>' + errorMessage + '</p>';
   },
 
-  // je crée un cookie pour l'app avec une date d'expiration de 1 jour.
+  /**
+   * Create a 1 day life cookie
+   * If user post then user get the cookie and
+   * can not post again for 1 day
+   */
   setCookie:function () {
   let date = new Date(Date.now() + 86400000); //86400000ms = 1 jour
   date = date.toUTCString();
   let path = window.location.origin;
-  //Crée ou met à jour un cookie 'user'
   document.cookie = 'user=PhotoBooth; path=' + path + '; expires=' + date; 
   },
 
-  // je vérifie si j'ai le cookie ou pas dans la navigateur de l'utilisateur
+  /**
+   * Check if user have the cookie
+   * @returns bool
+   */
   getcookie:function() {  
       let decodedCookie = decodeURIComponent(document.cookie);
       return decodedCookie
   },
 
+  /**
+   * What wa do when user have the cookie
+   */
   userEnterWithCookie :function() {
       let postErrorMessage = document.getElementById('errorMsg');
       let homeSelect = document.getElementById('divSelect');
       let homeStart = document.getElementById('start');
+
       homeSelect.classList.add('hidden');
       homeStart.classList.add('hidden');
+
       postErrorMessage.classList.remove('hidden');
       postErrorMessage.innerHTML += 'Vous avez déjà posté une photo ! <br> revenez demain pour en poster une autre'
   },
 
-  // détecter la navigateur de facebook
+  /**
+   * Detect Facebook User Agent
+   * @returns bool
+   */
   isFacebookApp : function() {
     console.log('isFacebookApp')
       var ua = navigator.userAgent || navigator.vendor || window.opera;
       return (ua.indexOf("FBAN") > -1) || (ua.indexOf("FBAV") > -1);
   },
 
-  //ce que l'on fait si c'est facebook ! 
+  /**
+   * What we do when we Detect Facebook User Agent
+   */ 
   onFacebooKload: function() {
 
       document.getElementById('facebookAlert').innerHTML += `
