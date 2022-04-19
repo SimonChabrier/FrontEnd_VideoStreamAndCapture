@@ -114,22 +114,22 @@ const app = {
         //* On autorise la prise d'une capture
         app.takeCapture();
         
-        //* ici on monitore en console toutes les valeurs de notre objet MediaStream
+        //* ici on monitore en console toutes les valeurs de notre objet MediaStream en lecture
         const getStreamValues = stream.getTracks();
-        app.monitorStremValues(getStreamValues);
+        app.monitorCurrentStremValues(getStreamValues);
         
-
-        //* stop all tacks
+        //* actions quand on arrête le stream en cours
         document.querySelector('#stop').addEventListener('click', () => { 
+        
         document.querySelector('#start').removeAttribute('hidden');
         app.resetCanvasContext();
         app.stopCurrentStreamAndClearTracks(getStreamValues);
-        app.monitorStremValues(getStreamValues);
+        app.monitorCurrentStremValues(getStreamValues);
+
         //* on réinitialise l'état de l'affichage du départ.
         startStateElements.forEach(function(elements) {
         elements.setAttribute('hidden', true);
           });//end foreach
-
         });
 
       };//end if is grantedCam and streamActive
@@ -145,7 +145,7 @@ const app = {
   },
   
   //Récupérer les valeurs du stream pur monitorer en console.
-  monitorStremValues:function(getStreamValues){
+  monitorCurrentStremValues:function(getStreamValues){
   //* loop on MediaStream and use native MediaStream Object
     getStreamValues.forEach(function(track) {
       //* on initialise nos variables avec les valeurs de retour de nos méthodes propres à MediaStream
