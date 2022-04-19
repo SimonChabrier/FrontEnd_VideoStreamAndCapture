@@ -1,9 +1,8 @@
 // https://developer.mozilla.org/en-US/docs/Web/API/MediaStream
 //* Contraintes pour la vidéo dynamisée par les valeurs des if/else ci-dessus.
 // https://developer.mozilla.org/en-US/docs/Web/API/MediaDevices/getUserMedia
-//todo promblème N°1 les devices n'ont pas de name avant que l'on actualise la page au moins une fois..
+
 //todo problème N°2 le canvas ne se vide pas quand on change de caméra chaque ACTION de capture est mémorisée comme si il avait un compteur ! il postera la dernière image mais autant de fois qu'on aura changé de caméra
-//todo problème N°3 l'autorisation d'utiliser la caméra est demandé à chaque changement de caméra sur facebook
 //todo masquer le vidéoBlock si erreur.
 
 const app = {
@@ -130,7 +129,7 @@ const app = {
 
           devices.forEach(function(device) {  
 
-              if (device.kind === 'videoinput') {   
+              if (device.kind === 'videoInput') {   
 
               let select = document.getElementById('select'); // j'ai mon élément sélect qui existe déjà en dur
               let option = document.createElement('option'); // je crée un élément option
@@ -254,7 +253,7 @@ const app = {
           //* je crée une date
           let createdAt = new Date();
 
-          //* ici je préprare le contenu des datas à poster.
+          //* Je préprare le contenu des valeurs à donner à mes propriétés
           //!  ils doivent correspondre aux propriétés non nullables de mon entité.
           const data = { 
               picture: dataURL,
@@ -265,13 +264,13 @@ const app = {
           const httpHeaders = new Headers();
           httpHeaders.append('Content-Type', 'application/json');
           
-          //* route de mon back-end symfony
+          //* route de mon back-end Symfony
           const apiRootUrl = 'https://photoboothback.simschab.fr/api';
       
           //* Je poste sur la route API 
           const fetchOptions = 
           {
-          method: 'POST', // or 'POST --> doit correspondre à la mathode délcarée sur la route symfony'
+          method: 'POST', // ou 'PUT' etc
           mode : 'cors',
           cache : 'no-cache',
           headers: httpHeaders,
@@ -291,15 +290,14 @@ const app = {
           )
           .then(function(){
               console.log('second then après post des datas, je resete le contenu de la div pour réafficher la liste avec le dernière photo prise ')
-              app.resetpictureDiv();
-              //app.listAllPictures();
+              app.resetPictureListDiv();
               app.setCookie();
               app.resetMainVideoDiv();
               app.resetCanvasContext();
               document.querySelector('#errorMsg').removeAttribute('hidden');
               setTimeout(function() {
                 location.reload();
-              }, 2000);
+              }, 1600);
           })
           .catch(function(errorMsg){
               console.log(errorMsg)
@@ -361,8 +359,8 @@ const app = {
   },
 
   // Reset all pictures in div on Api GET request pur éviter de remplir à nouveau la div
-  resetpictureDiv:function(){
-  console.log('resetpictureDiv:function')
+  resetPictureListDiv:function(){
+  console.log('resetPictureListDiv:function')
       document.getElementById('canvasImg').innerHTML = '';
   },
 
