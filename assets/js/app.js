@@ -16,7 +16,7 @@ const app = {
     app.camStreamer();
     app.listAllPictures();
     app.currentBrowserCheck();
-    
+    app.browserSuportedConstraints();
 
     if (app.getcookie() === 'user=PhotoBooth'){
     app.userEnterWithCookie()
@@ -58,7 +58,7 @@ const app = {
     } else {
       videoConstraints.deviceId = { exact: select.value };
     };
-
+// todo ici filter les navigateurs regarder si cela a une action réelle ou pas ! 
     navigator.getUserMedia = ( navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia || navigator.msGetUserMedia || navigator.mediaDevices.getUserMedia);
 
     //* état final des constraints
@@ -75,7 +75,10 @@ const app = {
     app.createListDevice(); 
 // todo ici filter les navigateurs
     // for iOS autoplay must be set to false ans controls append in <video></video>
-    document.querySelector('video').autoplay = false
+    document.querySelector('video').autoplay = false;
+    document.querySelector('video').controls = true;
+    document.querySelector('video').defaultMuted = true;
+
     //* on a eu l'autorisation ET on a un stream on insère
     document.querySelector('video').srcObject = stream
 
