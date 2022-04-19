@@ -55,9 +55,9 @@
 </div>
 <h2 id="errorMsg"></h2><!-- titre + affichage des messages d'erreur -->
 
-
-
 <div id="facebookAlert">
+</div>
+<div id="smartAlert">
 </div>
 
 <div class="container-fluid">
@@ -84,8 +84,8 @@
             <button type="button" class="btn btn-primary" id="catch">Capture</button>
             <button type="button" class="btn btn-warning" id="reset">Delete Capture</button>
             <button type="button" class="btn btn-success" id="post">Share Capture</button>
-            <!-- capture -->
-            <canvas id="canvas" width="0" height="0"></canvas>
+            <!-- capture moz-opaque est ajouté car le canvas n'a pas besoin de transparence cette option optimise le rendu (mozilla)-->
+            <canvas id="canvas" width="0" height="0" moz-opaque></canvas>
             <!-- capture -->
           </div>
         </div>

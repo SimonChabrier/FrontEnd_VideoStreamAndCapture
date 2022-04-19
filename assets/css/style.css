@@ -94,7 +94,8 @@ div#canvasImg {
     padding-bottom: 2rem;
 }
 
-#facebookAlert{
+#facebookAlert,
+#smartAlert {
     text-align: center!important;
 }
 
