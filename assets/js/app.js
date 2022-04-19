@@ -114,47 +114,22 @@ const app = {
         //* On autorise la prise d'une capture
         app.takeCapture();
         
-        //* ici on monitore en console toutes les valeurs de notre objet MediaStream
+        //* ici on monitore en console toutes les valeurs de notre objet MediaStream en lecture
         const getStreamValues = stream.getTracks();
-
-        getStreamValues.forEach(function(track) {
-          //* on initialise nos variables avec les valeurs de retour de nos méthodes propres à MediaStream
-          let trackSettings = track.getSettings();
-          let trackCapabilities = track.getCapabilities();
-          let trackConstraints = track.getConstraints();
-
-              //* On boucle sur les paires clé/valeur de chacun de nos objets    
-              for (const [key, value] of Object.entries(trackSettings)) {
-                //console.log('TRACK SETTINGS ' + key + ' : ' + value);
-              };
-              
-              for (const [key, value] of Object.entries(trackCapabilities)) {
-                  //console.log('TRACK CAPABILITIES ' + key + ' : ');
-                  //si on ajoute un texte avant value il n'affiche pas les valeurs json idexées dans les clés ! 
-                  //console.log(value);
-              };
-
-              for (const [key, value] of Object.entries(trackConstraints)) {
-                //console.log('TRACK CONSTRAINTS ' + key + ' : ' + value);
-              };
-        });
+        app.monitorCurrentStremValues(getStreamValues);
         
-        //* stop all tacks
+        //* actions quand on arrête le stream en cours
         document.querySelector('#stop').addEventListener('click', () => { 
+        
         document.querySelector('#start').removeAttribute('hidden');
         app.resetCanvasContext();
-        //* loop on MediaStream and use native MediaStream Object stop() function
-        const streamValues = stream.getTracks();
-        streamValues.forEach(function(track) {
-          track.stop();
-        });
+        app.stopCurrentStreamAndClearTracks(getStreamValues);
+        app.monitorCurrentStremValues(getStreamValues);
 
-        
         //* on réinitialise l'état de l'affichage du départ.
         startStateElements.forEach(function(elements) {
         elements.setAttribute('hidden', true);
           });//end foreach
-
         });
 
       };//end if is grantedCam and streamActive
@@ -169,6 +144,40 @@ const app = {
 
   },
   
+  //Récupérer les valeurs du stream pur monitorer en console.
+  monitorCurrentStremValues:function(getStreamValues){
+  //* loop on MediaStream and use native MediaStream Object
+    getStreamValues.forEach(function(track) {
+      //* on initialise nos variables avec les valeurs de retour de nos méthodes propres à MediaStream
+      let trackSettings = track.getSettings();
+      let trackCapabilities = track.getCapabilities();
+      let trackConstraints = track.getConstraints();
+
+          //* On boucle sur les paires clé/valeur de chacun de nos objets    
+          for (const [key, value] of Object.entries(trackSettings)) {
+              console.log('TRACK SETTINGS ' + key + ' : ' + value);
+          };
+          
+          for (const [key, value] of Object.entries(trackCapabilities)) {
+              //console.log('TRACK CAPABILITIES ' + key + ' : ');
+              //si on ajoute un texte avant value il n'affiche pas les valeurs json idexées dans les clés ! 
+              //console.log(value);
+          };
+
+          for (const [key, value] of Object.entries(trackConstraints)) {
+              console.log('TRACK CONSTRAINTS ' + key + ' : ' + value);
+          };
+    });
+  },
+
+  //Arrêter le sream en cours
+  stopCurrentStreamAndClearTracks:function(getStreamValues){
+  //* loop on MediaStream and use native MediaStream Object stop() function
+    getStreamValues.forEach(function(track) {
+      track.stop();
+    });
+  },
+
   // Faire une capture dans un canvas
   takeCapture:function () {
   console.log('takeCapture:function')
