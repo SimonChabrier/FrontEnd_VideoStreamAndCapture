@@ -22,7 +22,7 @@ const app = {
     }
   },
   
-    // Stream vidéo
+  // Stream vidéo
   camStreamer:function() {
 
     app.resetCurrentCamName()
@@ -119,7 +119,7 @@ const app = {
 
   },
 
-  //lister tous les périfériques de capture dispo
+  // Contruire la liste des périfériques vidéo dans le select
   createListDevice:function () {
     //*je resete la liste avant de la contruire
     app.resetMediaListOption();
@@ -158,7 +158,7 @@ const app = {
       });  
   },
   
-  // display currentCam Name
+  // Afficher le nom de la caméra qui streame
   displayCurrentCamName:function(){
     let sel = document.getElementById('select');
     let value = sel.options[sel.selectedIndex].text;
@@ -166,7 +166,7 @@ const app = {
     document.getElementById('currentCamName').innerHTML = 'Streaming On : ' + value;
   },
  
-  //Arrêter le sream en cours
+  // Arrêter le sream en cours
   stopCurrentStreamAndClearTracks:function(getStreamValues){
   //* loop on MediaStream and use native MediaStream Object stop() function
     getStreamValues.forEach(function(track) {
@@ -174,19 +174,19 @@ const app = {
     });
   },
 
-  // reset currentCam Name
+  // Reinitialiser le nom de la caméra
   resetCurrentCamName:function(){
     document.getElementById('currentCamName').setAttribute('hidden', true)
     document.getElementById('currentCamName').innerHTML = '';
   },
 
-  //reset la liste des cams dans les options pour la reconstruire à chaque passage dans camStreamer
+  // Reinitialiser la liste des cams dans les options pour la reconstruire à chaque passage dans camStreamer
   resetMediaListOption:function(){
     let options = document.querySelectorAll('#select option');
         options.forEach(element => element.remove());
   },
 
-  //Récupérer les valeurs du stream pur monitorer en console.
+  // Récupérer les valeurs du stream pour monitorer en console.
   monitorCurrentStremValues:function(getStreamValues){
   //* loop on MediaStream and use native MediaStream Object
     getStreamValues.forEach(function(track) {
@@ -240,8 +240,6 @@ const app = {
     app.resetCanvasContext();
     }); 
     
-    //reset canvas si clic sur Share this Picture 
-    //todo vérifier si ça a poste pas un canvas vide du coup ! 
     document.querySelector('#post').addEventListener("click", () => {
     let dataURL = canvas.toDataURL('image/jpeg', 1.0);
     //*j'apelle ma fonction api POST au clic sur Post My picture et le lui passe mon canvas.
@@ -310,33 +308,33 @@ const app = {
 
   // API GET 
   listAllPictures: function () {
-    console.log('listAllPictures: function')
-        const apiRootUrl = 'https://photoboothback.simschab.fr/getpictures'
+  console.log('listAllPictures: function')
+      const apiRootUrl = 'https://photoboothback.simschab.fr/getpictures'
 
-        let config = {
-            method: 'GET',
-            mode: 'cors',
-            cache: 'no-cache'
-        };
+      let config = {
+          method: 'GET',
+          mode: 'cors',
+          cache: 'no-cache'
+      };
 
-        fetch (apiRootUrl, config)
-        .then(response => {
-            return response.json();
-        })
-        .then(data => {
+      fetch (apiRootUrl, config)
+      .then(response => {
+          return response.json();
+      })
+      .then(data => {
 
-            for(value in data) {
-                //console.log(data[value].picture);
-    
-                output = document.getElementById('canvasImg')
-                output.innerHTML += `
-                <img id="canvasImg" src="${data[value].picture}" alt="canvas" width="160" height="120">  
-              `
-              }
-        });
-    },
+          for(value in data) {
+              //console.log(data[value].picture);
+
+              output = document.getElementById('canvasImg')
+              output.innerHTML += `
+              <img id="canvasImg" src="${data[value].picture}" alt="canvas" width="160" height="120">  
+            `
+            }
+      });
+  },
   
-  //resetCanvasContext
+  // ResetCanvasContext
   resetCanvasContext:function(){
   console.log('resetCanvasContext:function')
 
@@ -352,7 +350,7 @@ const app = {
   context.clearRect(0, 0, canvas.width, canvas.height)
   },
 
-  //reset de la div main vidéo après post
+  // Reset de la div main vidéo après post
   resetMainVideoDiv:function(){
       let MainVideoDiv = document.getElementById('videoBlock');
       let postErrorMessage = document.getElementById('errorMsg');
@@ -362,7 +360,7 @@ const app = {
       postErrorMessage.innerHTML += ' -----> Image ajoutée <----- '
   },
 
-  // reset all pictures in div on Api GET request pur éviter de remplir à nouveau la div
+  // Reset all pictures in div on Api GET request pur éviter de remplir à nouveau la div
   resetpictureDiv:function(){
   console.log('resetpictureDiv:function')
       document.getElementById('canvasImg').innerHTML = '';
@@ -372,7 +370,7 @@ const app = {
   document.getElementById('errorMsg').innerHTML = '';
   },
 
-  // liste les contraintes supportées par le navigateur
+  // Liste les contraintes supportées par le navigateur (actuellment non exploité dans l'affichage)
   // https://developer.mozilla.org/en-US/docs/Web/API/MediaDevices/getSupportedConstraints
   browserSuportedConstraints:function () {   
       let supportedConstraints = navigator.mediaDevices.getSupportedConstraints();
@@ -389,7 +387,7 @@ const app = {
       }
   },
 
-  // initialisation du template d'affichage des messages d'erreur.
+  // Initialisation du template d'affichage des messages d'erreur.
   dislayError: function(errorName, errorMessage) {
   console.log('dislayError: function') 
       // Pour le moment il n'y en a qu'un mais on est prêt à en entre d'autres si besoin.
@@ -400,7 +398,7 @@ const app = {
       document.getElementById('errorMsg').innerHTML += '<p>' + errorName + '<br>' + errorMessage + '</p>';
   },
 
-  // je crée un cookie pour l'app avec une date d'expiration de 1 jour.
+  // Je crée un cookie pour l'app avec une date d'expiration de 1 jour.
   setCookie:function () {
   let date = new Date(Date.now() + 86400000); //86400000ms = 1 jour
   date = date.toUTCString();
@@ -409,12 +407,13 @@ const app = {
   document.cookie = 'user=PhotoBooth; path=' + path + '; expires=' + date; 
   },
 
-  // je vérifie si j'ai le cookie ou pas dans la navigateur de l'utilisateur
+  // Je vérifie si j'ai le cookie ou pas dans la navigateur de l'utilisateur
   getcookie:function() {  
       let decodedCookie = decodeURIComponent(document.cookie);
       return decodedCookie
   },
 
+  // Ce que je fais si l'utilisateur a un cookie présent
   userEnterWithCookie :function() {
       let postErrorMessage = document.getElementById('errorMsg');
       let homeSelect = document.getElementById('divSelect');
@@ -425,14 +424,14 @@ const app = {
       postErrorMessage.innerHTML += 'Vous avez déjà posté une photo ! <br> revenez demain pour en poster une autre'
   },
 
-  // détecter la navigateur de facebook
+  // Détecter la navigateur de facebook
   isFacebookApp : function() {
     console.log('isFacebookApp')
       var ua = navigator.userAgent || navigator.vendor || window.opera;
       return (ua.indexOf("FBAN") > -1) || (ua.indexOf("FBAV") > -1);
   },
 
-  //ce que l'on fait si c'est facebook ! 
+  // Ce que l'on fait si c'est facebook ! 
   onFacebooKload: function() {
 
       document.getElementById('facebookAlert').innerHTML += `
