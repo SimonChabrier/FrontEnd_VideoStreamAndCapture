@@ -116,29 +116,8 @@ const app = {
         
         //* ici on monitore en console toutes les valeurs de notre objet MediaStream
         const getStreamValues = stream.getTracks();
+        app.monitorStremValues(getStreamValues)
 
-        getStreamValues.forEach(function(track) {
-          //* on initialise nos variables avec les valeurs de retour de nos méthodes propres à MediaStream
-          let trackSettings = track.getSettings();
-          let trackCapabilities = track.getCapabilities();
-          let trackConstraints = track.getConstraints();
-
-              //* On boucle sur les paires clé/valeur de chacun de nos objets    
-              for (const [key, value] of Object.entries(trackSettings)) {
-                //console.log('TRACK SETTINGS ' + key + ' : ' + value);
-              };
-              
-              for (const [key, value] of Object.entries(trackCapabilities)) {
-                  //console.log('TRACK CAPABILITIES ' + key + ' : ');
-                  //si on ajoute un texte avant value il n'affiche pas les valeurs json idexées dans les clés ! 
-                  //console.log(value);
-              };
-
-              for (const [key, value] of Object.entries(trackConstraints)) {
-                //console.log('TRACK CONSTRAINTS ' + key + ' : ' + value);
-              };
-        });
-        
         //* stop all tacks
         document.querySelector('#stop').addEventListener('click', () => { 
         document.querySelector('#start').removeAttribute('hidden');
@@ -169,6 +148,33 @@ const app = {
 
   },
   
+  //Récupérer les valeurs du stream pur monitorer en console.
+
+  monitorStremValues:function(getStreamValues){
+
+    getStreamValues.forEach(function(track) {
+      //* on initialise nos variables avec les valeurs de retour de nos méthodes propres à MediaStream
+      let trackSettings = track.getSettings();
+      let trackCapabilities = track.getCapabilities();
+      let trackConstraints = track.getConstraints();
+
+          //* On boucle sur les paires clé/valeur de chacun de nos objets    
+          for (const [key, value] of Object.entries(trackSettings)) {
+              //console.log('TRACK SETTINGS ' + key + ' : ' + value);
+          };
+          
+          for (const [key, value] of Object.entries(trackCapabilities)) {
+              //console.log('TRACK CAPABILITIES ' + key + ' : ');
+              //si on ajoute un texte avant value il n'affiche pas les valeurs json idexées dans les clés ! 
+              //console.log(value);
+          };
+
+          for (const [key, value] of Object.entries(trackConstraints)) {
+              console.log('TRACK CONSTRAINTS ' + key + ' : ' + value);
+          };
+    });
+  },
+
   // Faire une capture dans un canvas
   takeCapture:function () {
   console.log('takeCapture:function')
