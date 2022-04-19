@@ -60,12 +60,10 @@ const app = {
       });  
   },
   
-  //reset la liste des périfériques de capture
-  resetListDevice:function(){
-    //todo selctionner tout le contenu des options du select et les vider;
-    let options = document.querySelectorAll('#camselect option');
-    options.forEach(element => element.innerHTML = '');
-    console.log(options)
+  //reset la liste des cams dans les options pour la reconstruire à chaque passage dans camStreamer
+  resetMediaListOption:function(){
+    let options = document.querySelectorAll('#select option');
+        options.forEach(element => element.remove());
   },
 
   // Stream vidéo
@@ -74,19 +72,11 @@ const app = {
         let startStateElements = document.querySelectorAll('#catch, #reset, #post, #canvas, #videoElement, #stop, #errorMsg');
         let isCurentlyStreaming = document.querySelectorAll('#start, #post, #errorMsg, #canvas');
         let userHasGrantedPermission = false;
-        
-  //todo il faut que je resette la liste des select 
-  let deviceListCreated = false;
-  if(deviceListCreated === false){
-    app.resetListDevice();
-  }
- 
-        
+         
         //* état d'affichage au départ.
         startStateElements.forEach(function(elements) {
         elements.setAttribute('hidden', true);
         });
-
 
         document.getElementById('start').addEventListener('click', () => {
         app.resetCanvasContext(); 
@@ -112,13 +102,9 @@ const app = {
 
         if (userHasGrantedPermission === true && stream.active === true) {
         
-        deviceListCreated = true;
-        if(deviceListCreated === true){
-          var options = document.querySelectorAll('#select option');
-          options.forEach(o => o.remove());
-          app.createListDevice(); 
-        }
-
+        app.resetMediaListOption();
+        app.createListDevice(); 
+  
         //* on a eu l'autorisation ET on a un stream on insère
         document.querySelector('video').srcObject = stream
       
