@@ -45,8 +45,9 @@ li {
 }
 
 #canvasImg img {
-    width: auto;
-    height: 200px;
+    width: 15vh;
+    height: 20vh;
+    object-fit: cover;
 }
 
 div#canvasImg {

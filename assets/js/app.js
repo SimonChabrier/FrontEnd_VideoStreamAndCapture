@@ -260,18 +260,20 @@ const app = {
           .then(function(){
               console.log('second then après post des datas, je resete le contenu de la div pour réafficher la liste avec le dernière photo prise ')
               app.resetpictureDiv();
-              app.listAllPictures();
+              //app.listAllPictures();
               app.setCookie();
               app.resetMainVideoDiv();
               app.resetCanvasContext();
-              //location.reload();
               document.querySelector('#errorMsg').removeAttribute('hidden');
+              setTimeout(function() {
+                location.reload();
+              }, 3000);
           })
           .catch(function(errorMsg){
               console.log(errorMsg)
           });
   },
-  
+
   // API GET 
   listAllPictures: function () {
     console.log('listAllPictures: function')
