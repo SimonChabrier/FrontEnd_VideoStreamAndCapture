@@ -25,6 +25,7 @@ const app = {
   
   //lister tous les périfériques de capture dispo
   createListDevice:function () {
+    app.resetMediaListOption();
       // je récupère les devices vidéo et audio dipo sur mon péréphérique
       navigator.mediaDevices.enumerateDevices()
       .then(function(devices) {
@@ -102,7 +103,7 @@ const app = {
 
         if (userHasGrantedPermission === true && stream.active === true) {
         
-        app.resetMediaListOption();
+        
         app.createListDevice(); 
   
         //* on a eu l'autorisation ET on a un stream on insère
