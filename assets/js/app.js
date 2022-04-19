@@ -1,12 +1,10 @@
 // https://developer.mozilla.org/en-US/docs/Web/API/MediaStream
-//* Contraintes pour la vidéo dynamisée par les valeurs des if/else ci-dessus.
+// Contraintes pour la vidéo dynamisée par les valeurs des if/else ci-dessus.
 // https://developer.mozilla.org/en-US/docs/Web/API/MediaDevices/getUserMedia
- // liste les contraintes supportées par le navigateur
-  // https://developer.mozilla.org/en-US/docs/Web/API/MediaDevices/getSupportedConstraints
+// liste les contraintes supportées par le navigateur
+// https://developer.mozilla.org/en-US/docs/Web/API/MediaDevices/getSupportedConstraints
 //todo promblème N°1 les devices n'ont pas de name avant que l'on actualise la page au moins une fois..
 //todo problème N°3 l'autorisation d'utiliser la caméra est demandé à chaque changement de caméra sur facebook
-//todo masquer le vidéoBlock si erreur.
-
 
 const app = {
 
@@ -75,6 +73,7 @@ const app = {
     app.createListDevice(); 
 
     //* on a eu l'autorisation ET on a un stream on insère
+
     document.querySelector('video').srcObject = stream
 
     //* on affiche ou masque les boutons que l'on souhaite
@@ -305,8 +304,8 @@ const app = {
     httpHeaders.append('Content-Type', 'application/json');
     
     //* route de mon back-end symfony
-    //const apiRootUrl = 'https://photoboothback.simschab.fr/api';
-    const apiRootUrl = 'http://127.0.0.1:8000/api';
+    const apiRootUrl = 'https://photoboothback.simschab.fr/api';
+    //const apiRootUrl = 'http://127.0.0.1:8000/api';
 
     //* Je poste sur la route API 
     const fetchOptions = 
@@ -353,8 +352,8 @@ const app = {
    */
   listAllPictures: function () {
     console.log('listAllPictures: function')
-      //const apiRootUrl = 'https://photoboothback.simschab.fr/getpictures'
-      const apiRootUrl = 'http://127.0.0.1:8000/getpictures'
+      const apiRootUrl = 'https://photoboothback.simschab.fr/getpictures'
+      //const apiRootUrl = 'http://127.0.0.1:8000/getpictures'
 
       let config = {
           method: 'GET',
