@@ -11,9 +11,8 @@ const app = {
   init:function() {
 
     console.log('init');
-    //app.createListDevice();
     app.camStreamer();
-    //app.listAllPictures();
+    app.listAllPictures();
     if (app.getcookie() === 'user=PhotoBooth'){
     app.userEnterWithCookie()
     document.querySelector('#errorMsg').removeAttribute('hidden');
@@ -25,6 +24,7 @@ const app = {
   
   //lister tous les périfériques de capture dispo
   createListDevice:function () {
+    //*je resete la liste avant de la contruire
     app.resetMediaListOption();
       // je récupère les devices vidéo et audio dipo sur mon péréphérique
       navigator.mediaDevices.enumerateDevices()
@@ -46,12 +46,13 @@ const app = {
               }
 
               let camName = document.createTextNode(label + ' N° '+ `${count++}`);
-              
               select.appendChild(option); // j'attache mes options à mon element select
-              option.appendChild(camName);   
+              option.appendChild(camName);  
+
               }
+             
                   //la liste de mes péréphériques
-                  console.log(device.kind + ": " + device.label + " id = " + device.deviceId);   
+                  //console.log(device.kind + ": " + device.label + " id = " + device.deviceId);   
           });
       })
 
@@ -61,6 +62,20 @@ const app = {
       });  
   },
   
+  // display currentCam Name
+  displayCurrentCamName:function(){
+    let sel = document.getElementById('select');
+    let value = sel.options[sel.selectedIndex].text;
+    document.getElementById('currentCamName').innerHTML = value;
+  },
+
+  // reset currentCam Name
+  resetCurrentCamName:function(){
+    let sel = document.getElementById('select');
+    let value = sel.options[sel.selectedIndex].text;
+    document.getElementById('currentCamName').innerHTML = '';
+  },
+
   //reset la liste des cams dans les options pour la reconstruire à chaque passage dans camStreamer
   resetMediaListOption:function(){
     let options = document.querySelectorAll('#select option');
@@ -71,7 +86,7 @@ const app = {
   camStreamer:function() {
   
         let startStateElements = document.querySelectorAll('#catch, #reset, #post, #canvas, #videoElement, #stop, #errorMsg');
-        let isCurentlyStreaming = document.querySelectorAll('#start, #post, #errorMsg, #canvas');
+        let isCurentlyStreaming = document.querySelectorAll('#start, #post, #errorMsg, #canvas, #select');
         let userHasGrantedPermission = false;
          
         //* état d'affichage au départ.
@@ -82,6 +97,7 @@ const app = {
         document.getElementById('start').addEventListener('click', () => {
         app.resetCanvasContext(); 
         //* pré - initialisation des constraints.
+   
         const videoConstraints = {};
          
         // si pas de valeur passée dans le select
@@ -93,7 +109,6 @@ const app = {
 
         //* état final des constraints
         const constraints = {video: videoConstraints, audio: false};
-
         app.resetCanvasContext();
 
         //* getUserMedia: demande d'autorisation d'accès à la caméra. 
@@ -102,10 +117,10 @@ const app = {
         userHasGrantedPermission = true;
 
         if (userHasGrantedPermission === true && stream.active === true) {
-        
-        
+        app.displayCurrentCamName();
+        // tout est validé j'ai la permission + un stream actif -> je crée la liste de mes options select
         app.createListDevice(); 
-  
+
         //* on a eu l'autorisation ET on a un stream on insère
         document.querySelector('video').srcObject = stream
       
@@ -128,8 +143,11 @@ const app = {
         //* actions quand on arrête le stream en cours
         document.querySelector('#stop').addEventListener('click', () => { 
         document.querySelector('#start').removeAttribute('hidden');
+        document.querySelector('#select').removeAttribute('hidden');
 
+        app.resetCurrentCamName();
         app.resetCanvasContext();
+
         app.stopCurrentStreamAndClearTracks(getStreamValues);
         app.monitorCurrentStremValues(getStreamValues);
 
@@ -174,9 +192,9 @@ const app = {
           };
           
           for (const [key, value] of Object.entries(trackCapabilities)) {
-              //console.log('TRACK CAPABILITIES ' + key + ' : ');
+              console.log('TRACK CAPABILITIES ' + key + ' : ');
               //si on ajoute un texte avant value il n'affiche pas les valeurs json idexées dans les clés ! 
-              //console.log(value);
+              console.log(value);
           };
 
           for (const [key, value] of Object.entries(trackConstraints)) {
@@ -282,7 +300,7 @@ const app = {
               document.querySelector('#errorMsg').removeAttribute('hidden');
               setTimeout(function() {
                 location.reload();
-              }, 3000);
+              }, 2000);
           })
           .catch(function(errorMsg){
               console.log(errorMsg)
