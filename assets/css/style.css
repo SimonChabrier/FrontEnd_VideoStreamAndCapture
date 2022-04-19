@@ -40,6 +40,14 @@ li {
     line-height: 1.8rem;
 }
 
+p#currentCamName {
+    text-align: center;
+    background: yellowgreen;
+    padding: 0.5rem;
+    color: white;
+    border-radius: 5px;
+}
+
 #canvas {
     background: rgb(21 21 21);
 }

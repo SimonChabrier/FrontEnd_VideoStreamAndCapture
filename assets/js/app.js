@@ -12,7 +12,7 @@ const app = {
 
     console.log('init');
     app.camStreamer();
-    app.listAllPictures();
+    app.listAllPictures();;
     if (app.getcookie() === 'user=PhotoBooth'){
     app.userEnterWithCookie()
     document.querySelector('#errorMsg').removeAttribute('hidden');
@@ -22,6 +22,103 @@ const app = {
     }
   },
   
+    // Stream vidéo
+  camStreamer:function() {
+
+    app.resetCurrentCamName()
+
+    let startStateElements = document.querySelectorAll('#catch, #reset, #post, #canvas, #videoElement, #stop, #errorMsg');
+    let isCurentlyStreaming = document.querySelectorAll('#start, #post, #errorMsg, #canvas, #select');
+    let userHasGrantedPermission = false;
+      
+    //* état d'affichage au départ.
+    startStateElements.forEach(function(elements) {
+    elements.setAttribute('hidden', true);
+    });
+
+    document.getElementById('start').addEventListener('click', () => {
+    app.resetCanvasContext(); 
+    //* pré - initialisation des constraints.
+
+    const videoConstraints = {};
+      
+    // si pas de valeur passée dans le select
+    if (select.value === ''){
+    videoConstraints.facingMode = 'user'; 
+    } else {
+      videoConstraints.deviceId = { exact: select.value };
+    };
+
+    //* état final des constraints
+    const constraints = {video: videoConstraints, audio: false};
+    app.resetCanvasContext();
+
+    //* getUserMedia: demande d'autorisation d'accès à la caméra. 
+    navigator.mediaDevices.getUserMedia(constraints).then(stream => {
+    
+    userHasGrantedPermission = true;
+
+    if (userHasGrantedPermission === true && stream.active === true) {
+    app.displayCurrentCamName();
+    // tout est validé j'ai la permission + un stream actif -> je crée la liste de mes options select
+    app.createListDevice(); 
+
+    //* on a eu l'autorisation ET on a un stream on insère
+    document.querySelector('video').srcObject = stream
+
+    //* on affiche ou masque les boutons que l'on souhaite
+    startStateElements.forEach(function(elements) {
+    elements.removeAttribute('hidden');
+    });
+
+    isCurentlyStreaming.forEach(function(elements){
+    elements.setAttribute('hidden', true)
+    });
+
+    //* On autorise la prise d'une capture
+    app.takeCapture();
+    
+    //* ici on monitore en console toutes les valeurs de notre objet MediaStream en lecture
+    const getStreamValues = stream.getTracks();
+    app.monitorCurrentStremValues(getStreamValues);
+    
+    //* actions quand on arrête le stream en cours
+    document.querySelector('#stop').addEventListener('click', () => { 
+    document.querySelector('#start').removeAttribute('hidden');
+    document.querySelector('#select').removeAttribute('hidden');
+
+    app.resetCurrentCamName();
+    app.resetCanvasContext();
+
+    app.stopCurrentStreamAndClearTracks(getStreamValues);
+    app.monitorCurrentStremValues(getStreamValues);
+
+    //* on réinitialise l'état de l'affichage du départ.
+    startStateElements.forEach(function(elements) {
+    elements.setAttribute('hidden', true);
+      });//end foreach
+    });
+
+  };//end if is grantedCam and streamActive
+
+  })//end stream GetUSerMedia
+
+  .catch(function(err) {
+
+      if (err.name === 'NotReadableError' || err.message === 'Could not start video source'){
+        let errorName =  'L\'autorisation d\'accès à votre caméra n\'est pas été autorisé :'
+        let errorMessage = 'la caméra ne peut pas se lancer'
+        app.dislayError(errorName, errorMessage);
+      } else {
+        app.dislayError(' Erreur dans camStreamer ' + err.name + ": " + err.message + ' ');
+      }
+      
+  });
+
+  });//end click start listener
+
+  },
+
   //lister tous les périfériques de capture dispo
   createListDevice:function () {
     //*je resete la liste avant de la contruire
@@ -50,9 +147,8 @@ const app = {
               option.appendChild(camName);  
 
               }
-             
                   //la liste de mes péréphériques
-                  //console.log(device.kind + ": " + device.label + " id = " + device.deviceId);   
+                  console.log(device.kind + ": " + device.label + " id = " + device.deviceId);   
           });
       })
 
@@ -66,13 +162,21 @@ const app = {
   displayCurrentCamName:function(){
     let sel = document.getElementById('select');
     let value = sel.options[sel.selectedIndex].text;
-    document.getElementById('currentCamName').innerHTML = value;
+    document.getElementById('currentCamName').removeAttribute('hidden');
+    document.getElementById('currentCamName').innerHTML = 'Streaming On : ' + value;
+  },
+ 
+  //Arrêter le sream en cours
+  stopCurrentStreamAndClearTracks:function(getStreamValues){
+  //* loop on MediaStream and use native MediaStream Object stop() function
+    getStreamValues.forEach(function(track) {
+      track.stop();
+    });
   },
 
   // reset currentCam Name
   resetCurrentCamName:function(){
-    let sel = document.getElementById('select');
-    let value = sel.options[sel.selectedIndex].text;
+    document.getElementById('currentCamName').setAttribute('hidden', true)
     document.getElementById('currentCamName').innerHTML = '';
   },
 
@@ -82,101 +186,6 @@ const app = {
         options.forEach(element => element.remove());
   },
 
-  // Stream vidéo
-  camStreamer:function() {
-  
-        let startStateElements = document.querySelectorAll('#catch, #reset, #post, #canvas, #videoElement, #stop, #errorMsg');
-        let isCurentlyStreaming = document.querySelectorAll('#start, #post, #errorMsg, #canvas, #select');
-        let userHasGrantedPermission = false;
-         
-        //* état d'affichage au départ.
-        startStateElements.forEach(function(elements) {
-        elements.setAttribute('hidden', true);
-        });
-
-        document.getElementById('start').addEventListener('click', () => {
-        app.resetCanvasContext(); 
-        //* pré - initialisation des constraints.
-   
-        const videoConstraints = {};
-         
-        // si pas de valeur passée dans le select
-        if (select.value === ''){
-        videoConstraints.facingMode = 'user'; 
-        } else {
-          videoConstraints.deviceId = { exact: select.value };
-        };
-
-        //* état final des constraints
-        const constraints = {video: videoConstraints, audio: false};
-        app.resetCanvasContext();
-
-        //* getUserMedia: demande d'autorisation d'accès à la caméra. 
-        navigator.mediaDevices.getUserMedia(constraints).then(stream => {
-        
-        userHasGrantedPermission = true;
-
-        if (userHasGrantedPermission === true && stream.active === true) {
-        app.displayCurrentCamName();
-        // tout est validé j'ai la permission + un stream actif -> je crée la liste de mes options select
-        app.createListDevice(); 
-
-        //* on a eu l'autorisation ET on a un stream on insère
-        document.querySelector('video').srcObject = stream
-      
-        //* on affiche ou masque les boutons que l'on souhaite
-        startStateElements.forEach(function(elements) {
-        elements.removeAttribute('hidden');
-        });
-
-        isCurentlyStreaming.forEach(function(elements){
-        elements.setAttribute('hidden', true)
-        });
-
-        //* On autorise la prise d'une capture
-        app.takeCapture();
-        
-        //* ici on monitore en console toutes les valeurs de notre objet MediaStream en lecture
-        const getStreamValues = stream.getTracks();
-        app.monitorCurrentStremValues(getStreamValues);
-        
-        //* actions quand on arrête le stream en cours
-        document.querySelector('#stop').addEventListener('click', () => { 
-        document.querySelector('#start').removeAttribute('hidden');
-        document.querySelector('#select').removeAttribute('hidden');
-
-        app.resetCurrentCamName();
-        app.resetCanvasContext();
-
-        app.stopCurrentStreamAndClearTracks(getStreamValues);
-        app.monitorCurrentStremValues(getStreamValues);
-
-        //* on réinitialise l'état de l'affichage du départ.
-        startStateElements.forEach(function(elements) {
-        elements.setAttribute('hidden', true);
-          });//end foreach
-        });
-
-      };//end if is grantedCam and streamActive
-
-      })//end stream GetUSerMedia
-
-      .catch(function(err) {
-
-          if (err.name === 'NotReadableError' || err.message === 'Could not start video source'){
-            let errorName =  'L\'autorisation d\'accès à votre caméra n\'est pas été autorisé :'
-            let errorMessage = 'la caméra ne peut pas se lancer'
-            app.dislayError(errorName, errorMessage);
-          } else {
-            app.dislayError(' Erreur dans camStreamer ' + err.name + ": " + err.message + ' ');
-          }
-          
-      });
-
-    });//end click start listener
-
-  },
-  
   //Récupérer les valeurs du stream pur monitorer en console.
   monitorCurrentStremValues:function(getStreamValues){
   //* loop on MediaStream and use native MediaStream Object
@@ -200,14 +209,6 @@ const app = {
           for (const [key, value] of Object.entries(trackConstraints)) {
               console.log('TRACK CONSTRAINTS ' + key + ' : ' + value);
           };
-    });
-  },
-
-  //Arrêter le sream en cours
-  stopCurrentStreamAndClearTracks:function(getStreamValues){
-  //* loop on MediaStream and use native MediaStream Object stop() function
-    getStreamValues.forEach(function(track) {
-      track.stop();
     });
   },
 
