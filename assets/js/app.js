@@ -11,9 +11,9 @@ const app = {
   init:function() {
 
     console.log('init');
-    app.createListDevice();
+    //app.createListDevice();
     app.camStreamer();
-    app.listAllPictures();
+    //app.listAllPictures();
     if (app.getcookie() === 'user=PhotoBooth'){
     app.userEnterWithCookie()
     document.querySelector('#errorMsg').removeAttribute('hidden');
@@ -60,12 +60,27 @@ const app = {
       });  
   },
   
+  //reset la liste des périfériques de capture
+  resetListDevice:function(){
+    //todo selctionner tout le contenu des options du select et les vider;
+    let options = document.querySelectorAll('#camselect option');
+    options.forEach(element => element.innerHTML = '');
+    console.log(options)
+  },
+
   // Stream vidéo
   camStreamer:function() {
   
         let startStateElements = document.querySelectorAll('#catch, #reset, #post, #canvas, #videoElement, #stop, #errorMsg');
         let isCurentlyStreaming = document.querySelectorAll('#start, #post, #errorMsg, #canvas');
         let userHasGrantedPermission = false;
+        
+  //todo il faut que je resette la liste des select 
+  let deviceListCreated = false;
+  if(deviceListCreated === false){
+    app.resetListDevice();
+  }
+ 
         
         //* état d'affichage au départ.
         startStateElements.forEach(function(elements) {
@@ -96,8 +111,14 @@ const app = {
         userHasGrantedPermission = true;
 
         if (userHasGrantedPermission === true && stream.active === true) {
-
         
+        deviceListCreated = true;
+        if(deviceListCreated === true){
+          var options = document.querySelectorAll('#select option');
+          options.forEach(o => o.remove());
+          app.createListDevice(); 
+        }
+
         //* on a eu l'autorisation ET on a un stream on insère
         document.querySelector('video').srcObject = stream
       
@@ -119,8 +140,8 @@ const app = {
         
         //* actions quand on arrête le stream en cours
         document.querySelector('#stop').addEventListener('click', () => { 
-        
         document.querySelector('#start').removeAttribute('hidden');
+
         app.resetCanvasContext();
         app.stopCurrentStreamAndClearTracks(getStreamValues);
         app.monitorCurrentStremValues(getStreamValues);
@@ -430,4 +451,3 @@ const app = {
 };
   
 document.addEventListener('DOMContentLoaded', app.init)
-
