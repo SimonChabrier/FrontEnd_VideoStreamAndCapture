@@ -16,6 +16,7 @@ const app = {
     app.camStreamer();
     app.listAllPictures();
     app.currentBrowserCheck();
+    
 
     if (app.getcookie() === 'user=PhotoBooth'){
     app.userEnterWithCookie()
@@ -58,6 +59,8 @@ const app = {
       videoConstraints.deviceId = { exact: select.value };
     };
 
+    navigator.getUserMedia = ( navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia || navigator.msGetUserMedia || navigator.mediaDevices.getUserMedia);
+
     //* état final des constraints
     const constraints = {video: videoConstraints, audio: false};
 
@@ -70,9 +73,10 @@ const app = {
     app.displayCurrentCamName();
     // tout est validé j'ai la permission + un stream actif -> je crée la liste de mes options select
     app.createListDevice(); 
-
+    // todo ici filter les navigateurs
+    // for iOS autoplay must be set to false ans controls append in <video></video>
+    document.querySelector('video').autoplay = false
     //* on a eu l'autorisation ET on a un stream on insère
-
     document.querySelector('video').srcObject = stream
 
     //* on affiche ou masque les boutons que l'on souhaite
@@ -86,7 +90,8 @@ const app = {
 
     //* ici on monitore en console toutes les valeurs de notre objet MediaStream en lecture
     const getStreamValues = stream.getTracks();
-    
+    //app.monitorCurrentStremValues(getStreamValues);
+
     //* actions quand on arrête le stream en cours
     document.querySelector('#stop').addEventListener('click', () => { 
     document.querySelector('#start').removeAttribute('hidden');
@@ -131,7 +136,7 @@ const app = {
    */
   createListDevice:function () {
     //*je resete la liste avant de la contruire
-    app.resetMediaListOption();
+    app.resetListDevices();
       // je récupère les devices vidéo et audio dipo sur mon péréphérique
       navigator.mediaDevices.enumerateDevices()
       .then(function(devices) {
@@ -165,6 +170,15 @@ const app = {
           //alert('impossible d\'initialiser les péréfériques')
           alert(' Erreur dans la listDevice ' + err.name + ": " + err.message);
       });  
+  },
+ 
+ /**
+   * Reset all Media Devide select Options
+   * Call on start of CreateListDevice
+   */
+  resetListDevices:function(){
+    let options = document.querySelectorAll('#select option');
+        options.forEach(element => element.remove());
   },
 
   /**
@@ -241,13 +255,6 @@ const app = {
     document.getElementById('currentCamName').innerHTML = '';
   },
 
-  /**
-   * Reset all Media Devide select Options
-   */
-  resetMediaListOption:function(){
-    let options = document.querySelectorAll('#select option');
-        options.forEach(element => element.remove());
-  },
 
   /**
    * Get all MediaStream info and display in console
