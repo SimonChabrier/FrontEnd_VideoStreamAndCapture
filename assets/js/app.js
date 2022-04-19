@@ -229,9 +229,14 @@ const app = {
 
     let video = document.querySelector('video');
     let canvas = document.querySelector('canvas');
+
     canvas.width = video.offsetWidth;
     canvas.height = video.offsetHeight;
     canvas.getContext('2d').drawImage(video, 0, 0, canvas.width, canvas.height);
+    document.querySelector('#stop').addEventListener('click', () => {
+    app.resetCanvasContext();  
+    });
+
     });
 
     //reset canvas si clic sur delete picture.
@@ -345,7 +350,9 @@ const app = {
   document.querySelector('#catch').removeAttribute('hidden')
   let canvas = document.querySelector('canvas'); 
   let context = canvas.getContext('2d');
+  console.log(context)
   context.clearRect(0, 0, canvas.width, canvas.height)
+  console.log(context)
   },
 
   // Reset de la div main vidéo après post
