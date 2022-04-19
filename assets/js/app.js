@@ -4,6 +4,7 @@
 //todo promblème N°1 les devices n'ont pas de name avant que l'on actualise la page au moins une fois..
 //todo problème N°2 le canvas ne se vide pas quand on change de caméra chaque ACTION de capture est mémorisée comme si il avait un compteur ! il postera la dernière image mais autant de fois qu'on aura changé de caméra
 //todo problème N°3 l'autorisation d'utiliser la caméra est demandé à chaque changement de caméra sur facebook
+//todo masquer le vidéoBlock si erreur.
 
 const app = {
 
@@ -87,10 +88,8 @@ const app = {
         //* état final des constraints
         const constraints = {video: videoConstraints, audio: false};
 
-        console.log(constraints);
-        //* lancement du stream au click sur le bouton Stat Cam
-       
         app.resetCanvasContext();
+
         //* getUserMedia: demande d'autorisation d'accès à la caméra. 
         navigator.mediaDevices.getUserMedia(constraints).then(stream => {
         
@@ -137,7 +136,15 @@ const app = {
       })//end stream GetUSerMedia
 
       .catch(function(err) {
-          app.dislayError(' Erreur dans camStreamer ' + err.name + ": " + err.message + ' L\'autorisation d\'accès à votre caméra n\'a pas été validé !');
+
+          if (err.name === 'NotReadableError' || err.message === 'Could not start video source'){
+            let errorName =  'L\'autorisation d\'accès à votre caméra n\'est pas été autorisé :'
+            let errorMessage = 'la caméra ne peut pas se lancer'
+            app.dislayError(errorName, errorMessage);
+          } else {
+            app.dislayError(' Erreur dans camStreamer ' + err.name + ": " + err.message + ' ');
+          }
+          
       });
 
     });//end click start listener
@@ -356,14 +363,14 @@ const app = {
   },
 
   // initialisation du template d'affichage des messages d'erreur.
-  dislayError: function(error) {
+  dislayError: function(errorName, errorMessage) {
   console.log('dislayError: function') 
       // Pour le moment il n'y en a qu'un mais on est prêt à en entre d'autres si besoin.
       let errorElements = document.querySelectorAll('#errorMsg')
       errorElements.forEach(function(elements) {
       elements.removeAttribute('hidden');
       });
-      document.getElementById('errorMsg').innerHTML += '<p>' + error + '</p>';
+      document.getElementById('errorMsg').innerHTML += '<p>' + errorName + '<br>' + errorMessage + '</p>';
   },
 
   // je crée un cookie pour l'app avec une date d'expiration de 1 jour.
