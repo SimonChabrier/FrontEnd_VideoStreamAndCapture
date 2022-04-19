@@ -73,7 +73,7 @@ const app = {
     app.displayCurrentCamName();
     // tout est validé j'ai la permission + un stream actif -> je crée la liste de mes options select
     app.createListDevice(); 
-    // todo ici filter les navigateurs
+// todo ici filter les navigateurs
     // for iOS autoplay must be set to false ans controls append in <video></video>
     document.querySelector('video').autoplay = false
     //* on a eu l'autorisation ET on a un stream on insère
