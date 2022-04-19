@@ -72,7 +72,8 @@
               </div>
             <!-- buttons -->
             <button type="button" class="btn btn-primary" id="start">Start Cam</button>
-            <button type="button" class="btn btn-info" id="stop">Stop And Change Cam</button>
+            <p id="currentCamName"></p>
+            <button type="button" class="btn btn-info" id="stop">Switch Cam</button>
             
             <!-- stream vidéo -->
             <div class="container" id="vidéoStreamContainer">
@@ -80,9 +81,9 @@
             </div>
             <!-- stream vidéo -->
 
-            <button type="button" class="btn btn-primary" id="catch">Take a picture</button>
-            <button type="button" class="btn btn-warning" id="reset">Delete this picture</button>
-            <button type="button" class="btn btn-success" id="post">Share this picture</button>
+            <button type="button" class="btn btn-primary" id="catch">Capture</button>
+            <button type="button" class="btn btn-warning" id="reset">Delete Capture</button>
+            <button type="button" class="btn btn-success" id="post">Share Capture</button>
             <!-- capture -->
             <canvas id="canvas" width="0" height="0"></canvas>
             <!-- capture -->

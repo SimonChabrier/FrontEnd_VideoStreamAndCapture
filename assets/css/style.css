@@ -32,12 +32,20 @@ b {
     font-weight: bold;
 }
 
-span, p {
-	margin-bottom: 1rem!important;
+p {
+    line-height: 1.3rem;
 }
 
 li {
     line-height: 1.8rem;
+}
+
+p#currentCamName {
+    text-align: center;
+    background: yellowgreen;
+    padding: 0.5rem;
+    color: white;
+    border-radius: 5px;
 }
 
 #canvas {
