@@ -4,10 +4,10 @@
 // liste les contraintes supportées par le navigateur
 // https://developer.mozilla.org/en-US/docs/Web/API/MediaDevices/getSupportedConstraints
 
-//* Supported on Android and Desktop
-//* Supported on Chrome Safari Mozilla
-//* iOS stream don't work ! 
-
+//* Supported on Mobile Android & iOS
+//* Supported on Desktop OSX Windows Linux
+//* Supported on Chrome Safari Mozilla Opera ChromeDevelopper Edge Opera Gx
+ 
 const app = {
 
   init:function() {
