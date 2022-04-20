@@ -78,6 +78,18 @@ div#canvasImg {
     border-radius: 1rem;
 }
 
+#coords {
+    display: flex;
+    justify-content: center;
+    gap: 2rem;
+    margin-top: 1rem;
+}
+
+div#coords {
+    display: none;
+}
+
+
 /* #videoElement {
     background: rgb(83, 83, 83);
     width: 320px;

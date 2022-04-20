@@ -1,30 +1,31 @@
 // https://developer.mozilla.org/en-US/docs/Web/API/MediaStream
-// Contraintes pour la vidéo dynamisée par les valeurs des if/else ci-dessus.
+// Contraintes pour la vidéo
 // https://developer.mozilla.org/en-US/docs/Web/API/MediaDevices/getUserMedia
-// liste les contraintes supportées par le navigateur
+// Contraintes supportées par le navigateur
 // https://developer.mozilla.org/en-US/docs/Web/API/MediaDevices/getSupportedConstraints
 
 //* Supported on Mobile Android & iOS
 //* Supported on Desktop OSX Windows Linux
 //* Supported on Chrome Safari Mozilla Opera ChromeDevelopper Edge Opera Gx
+
+//todo exploiter console.log('mediaDevices' in navigator) === true) {on peut lancer la logique du stream ou sinon retourner une info.}
  
 const app = {
 
   init:function() {
 
     console.log('init');
+    app.getGeoLoc();
     app.camStreamer();
     app.listAllPictures();
     app.currentBrowserCheck();
     app.browserSuportedConstraints();
-   
     if (app.getcookie() === 'user=PhotoBooth'){
     app.userEnterWithCookie()
     document.querySelector('#errorMsg').removeAttribute('hidden');
     };
-
   },
-  
+
   /**
    * Main Streamer 
    * Ask for media acces permission
@@ -64,8 +65,6 @@ const app = {
     } else {
       videoConstraints.deviceId = { exact: select.value };
     };
-// todo ici filter les navigateurs regarder si cela a une action réelle ou pas ! 
-//   navigator.getUserMedia = ( navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia || navigator.msGetUserMedia || navigator.mediaDevices.getUserMedia);
 
     //* état final des constraints
     const constraints = {video: videoConstraints, audio: false};
@@ -81,7 +80,8 @@ const app = {
     // tout est validé j'ai la permission + un stream actif -> je crée la liste de mes options select
     app.createListDevice(); 
 
-// todo ici filter les navigateurs
+  //On contrôle le navigateur courant beaucoup ne supportent pas l'autoplay et obligent l'utilisateur à lancer la lecture.
+  //Côté html on ajoute playsinline à la balise vidéo pour éviter l'auto-lancement du plein écran sur iOS
     if (navigator.userAgent.indexOf("Chrome") !== -1){
       console.log('je suis dans Chrome')
       document.querySelector('video').autoplay = true;
@@ -108,7 +108,9 @@ const app = {
 
     //* ici on monitore en console toutes les valeurs de notre objet MediaStream en lecture
     const getStreamValues = stream.getTracks();
-    app.monitorCurrentStremValues(getStreamValues);
+
+    //todo soucis de compatibilité firefox Mobile
+    //app.monitorCurrentStremValues(getStreamValues);
 
     //* actions quand on arrête le stream en cours
     document.querySelector('#stop').addEventListener('click', () => { 
@@ -240,7 +242,6 @@ const app = {
     //* je crée un canvas.toDataURL pour avoir un format encodé 'postable' et persistable en BDD.
     document.querySelector('#post').addEventListener("click", () => {
     let dataURL = canvas.toDataURL('image/jpeg', 1.0);
-    console.log(dataURL);
 
     //*j'apelle ma fonction api POST au clic sur Post My picture et le lui passe mon canvas.
     app.postNewPicture(dataURL);
@@ -287,11 +288,12 @@ const app = {
    */
   monitorCurrentStremValues:function(getStreamValues){
     //* loop on MediaStream and use native MediaStream Object
-
+    //todo soucis de compatibilité firefox Mobile
     getStreamValues.forEach(function(track) {
       //* on initialise nos variables avec les valeurs de retour de nos méthodes propres à MediaStream
       let trackSettings = track.getSettings();
-      let trackCapabilities = track.getCapabilities();
+      // fonctionnalité non compatible FireFox !
+      //let trackCapabilities = track.getCapabilities();
       let trackConstraints = track.getConstraints();
 
           //* On boucle sur les paires clé/valeur de chacun de nos objets    
@@ -320,14 +322,18 @@ const app = {
   postNewPicture:function(dataURL) {
   console.log('postNewPicture:function')
 
-    //* je crée une date
+    //setTimeout(function() {}, 2000);
+    let lat = document.getElementById('lat').innerHTML
+    let lng = document.getElementById('lng').innerHTML
     let createdAt = new Date();
 
     //* ici je préprare le contenu des datas à poster.
     //!  ils doivent correspondre aux propriétés non nullables de mon entité.
     const data = { 
         picture: dataURL,
-        createdAt: createdAt
+        createdAt: createdAt,
+        lat: lat,
+        lng: lng
     };
 
     //* préparation des Headers
@@ -335,8 +341,8 @@ const app = {
     httpHeaders.append('Content-Type', 'application/json');
     
     //* route de mon back-end symfony
-    const apiRootUrl = 'https://photoboothback.simschab.fr/api';
-    //const apiRootUrl = 'http://127.0.0.1:8000/api';
+    //const apiRootUrl = 'https://photoboothback.simschab.fr/api';
+    const apiRootUrl = 'http://127.0.0.1:8000/api';
 
     //* Je poste sur la route API 
     const fetchOptions = 
@@ -375,16 +381,43 @@ const app = {
     });
   },
 
+
+  /**
+   * Get Geolocation
+   */
+  getGeoLoc: function(){
+
+    if(!navigator.geolocation) {
+
+    alert('Geolocation is not supported by your browser');
+
+    } else {
+
+      navigator.geolocation.getCurrentPosition(position => {
+      const { latitude, longitude } = position.coords;
+      console.log(latitude)
+      console.log(longitude)
+
+      //todo il faut travailler ici je ne peux rien sortir d'ici
+      
+      document.getElementById('lat').innerHTML += latitude
+      document.getElementById('lng').innerHTML += longitude
+    
+      }); 
+    }
+  },
+
   /**
    * Display all pictures from DataBase
    * Fetch data from API
    * Append data.entries to img.src
    * @method GET
+   * @return {json}
    */
   listAllPictures: function () {
     console.log('listAllPictures: function')
-      const apiRootUrl = 'https://photoboothback.simschab.fr/getpictures'
-      //const apiRootUrl = 'http://127.0.0.1:8000/getpictures'
+     // const apiRootUrl = 'https://photoboothback.simschab.fr/getpictures'
+      const apiRootUrl = 'http://127.0.0.1:8000/getpictures'
 
       let config = {
           method: 'GET',
@@ -602,6 +635,8 @@ const app = {
       }
 
   },
+
+
 
 };
 
