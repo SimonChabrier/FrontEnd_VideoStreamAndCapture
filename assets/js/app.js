@@ -4,10 +4,10 @@
 // liste les contraintes supportées par le navigateur
 // https://developer.mozilla.org/en-US/docs/Web/API/MediaDevices/getSupportedConstraints
 
-//* Supported on Android and Desktop
-//* Supported on Chrome Safari Mozilla
-//* iOS stream don't work ! 
-
+//* Supported on Mobile Android & iOS
+//* Supported on Desktop OSX Windows Linux
+//* Supported on Chrome Safari Mozilla Opera ChromeDevelopper Edge Opera Gx
+ 
 const app = {
 
   init:function() {
@@ -16,7 +16,8 @@ const app = {
     app.camStreamer();
     app.listAllPictures();
     app.currentBrowserCheck();
-
+    app.browserSuportedConstraints();
+   
     if (app.getcookie() === 'user=PhotoBooth'){
     app.userEnterWithCookie()
     document.querySelector('#errorMsg').removeAttribute('hidden');
@@ -49,7 +50,13 @@ const app = {
     document.getElementById('start').addEventListener('click', () => {
 
     //* pré - initialisation des constraints on prépare un objet vide.
-    const videoConstraints = {};
+    const videoConstraints = {
+
+    width: { min: 320, ideal: 230, max: 640 },
+    height: { min: 240, ideal: 240, max: 480},
+    aspectRatio: { ideal: 1.7777777778 }
+
+    };
       
     // si pas de valeur passée dans le select on prend par défaut la cam frontale.
     if (select.value === ''){
@@ -57,22 +64,38 @@ const app = {
     } else {
       videoConstraints.deviceId = { exact: select.value };
     };
+// todo ici filter les navigateurs regarder si cela a une action réelle ou pas ! 
+//   navigator.getUserMedia = ( navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia || navigator.msGetUserMedia || navigator.mediaDevices.getUserMedia);
 
     //* état final des constraints
     const constraints = {video: videoConstraints, audio: false};
-
+    
     //* getUserMedia: demande d'autorisation d'accès à la caméra. 
     navigator.mediaDevices.getUserMedia(constraints).then(stream => {
     
     userHasGrantedPermission = true;
 
     if (userHasGrantedPermission === true && stream.active === true) {
+
     app.displayCurrentCamName();
     // tout est validé j'ai la permission + un stream actif -> je crée la liste de mes options select
     app.createListDevice(); 
 
-    //* on a eu l'autorisation ET on a un stream on insère
+// todo ici filter les navigateurs
+    if (navigator.userAgent.indexOf("Chrome") !== -1){
+      document.querySelector('video').autoplay = true;
+      document.querySelector('video').controls = true;
+      //document.querySelector('video').playsinline = true; 
 
+    } else {
+      console.log('je suis dans le else donc pas dans Chrome')
+      document.querySelector('video').autoplay = false;
+      document.querySelector('video').controls = true;      
+      document.querySelector('video').controls = true;  
+      //document.querySelector('video').playsinline = true;  
+    }
+    
+    //* on a eu l'autorisation ET on a un stream on insère
     document.querySelector('video').srcObject = stream
 
     //* on affiche ou masque les boutons que l'on souhaite
@@ -86,7 +109,8 @@ const app = {
 
     //* ici on monitore en console toutes les valeurs de notre objet MediaStream en lecture
     const getStreamValues = stream.getTracks();
-    
+    //app.monitorCurrentStremValues(getStreamValues);
+
     //* actions quand on arrête le stream en cours
     document.querySelector('#stop').addEventListener('click', () => { 
     document.querySelector('#start').removeAttribute('hidden');
@@ -113,6 +137,13 @@ const app = {
         let errorName =  'L\'autorisation d\'accès à votre caméra n\'est pas été autorisé :'
         let errorMessage = 'la caméra ne peut pas se lancer'
         app.dislayError(errorName, errorMessage);
+      
+      } 
+      if (err.name === 'NotReadableError' || err.message === 'Permission denied undefined'){
+        let errorName =  'L\'autorisation d\'accès à votre caméra rencontre un problème :'
+        let errorMessage = 'le type de l\'erreur n\'a pas été précisée !'
+        app.dislayError(errorName, errorMessage);
+      
       } else {
         app.dislayError(' Erreur dans camStreamer ' + err.name + ": " + err.message + ' ');
       }
@@ -131,7 +162,7 @@ const app = {
    */
   createListDevice:function () {
     //*je resete la liste avant de la contruire
-    app.resetMediaListOption();
+    app.resetListDevices();
       // je récupère les devices vidéo et audio dipo sur mon péréphérique
       navigator.mediaDevices.enumerateDevices()
       .then(function(devices) {
@@ -165,6 +196,15 @@ const app = {
           //alert('impossible d\'initialiser les péréfériques')
           alert(' Erreur dans la listDevice ' + err.name + ": " + err.message);
       });  
+  },
+ 
+ /**
+   * Reset all Media Devide select Options
+   * Call on start of CreateListDevice
+   */
+  resetListDevices:function(){
+    let options = document.querySelectorAll('#select option');
+        options.forEach(element => element.remove());
   },
 
   /**
@@ -241,13 +281,6 @@ const app = {
     document.getElementById('currentCamName').innerHTML = '';
   },
 
-  /**
-   * Reset all Media Devide select Options
-   */
-  resetMediaListOption:function(){
-    let options = document.querySelectorAll('#select option');
-        options.forEach(element => element.remove());
-  },
 
   /**
    * Get all MediaStream info and display in console
@@ -500,40 +533,40 @@ const app = {
   currentBrowserCheck :function() {
     console.log('windowMobileCheck')
     //*Fecebook Browser Detection
-    let check = false;
+    // let check = false;
 
-    (function(a){
-    if(/(android|bb\d+|meego).+mobile|avantgo|bada\/|blackberry|blazer|compal|elaine|fennec|hiptop|iemobile|ip(hone|od)|iris|kindle|lge |maemo|midp|mmp|mobile.+firefox|netfront|opera m(ob|in)i|palm( os)?|phone|p(ixi|re)\/|plucker|pocket|psp|series(4|6)0|symbian|treo|up\.(browser|link)|vodafone|wap|windows ce|xda|xiino/i.test(a)||/1207|6310|6590|3gso|4thp|50[1-6]i|770s|802s|a wa|abac|ac(er|oo|s\-)|ai(ko|rn)|al(av|ca|co)|amoi|an(ex|ny|yw)|aptu|ar(ch|go)|as(te|us)|attw|au(di|\-m|r |s )|avan|be(ck|ll|nq)|bi(lb|rd)|bl(ac|az)|br(e|v)w|bumb|bw\-(n|u)|c55\/|capi|ccwa|cdm\-|cell|chtm|cldc|cmd\-|co(mp|nd)|craw|da(it|ll|ng)|dbte|dc\-s|devi|dica|dmob|do(c|p)o|ds(12|\-d)|el(49|ai)|em(l2|ul)|er(ic|k0)|esl8|ez([4-7]0|os|wa|ze)|fetc|fly(\-|_)|g1 u|g560|gene|gf\-5|g\-mo|go(\.w|od)|gr(ad|un)|haie|hcit|hd\-(m|p|t)|hei\-|hi(pt|ta)|hp( i|ip)|hs\-c|ht(c(\-| |_|a|g|p|s|t)|tp)|hu(aw|tc)|i\-(20|go|ma)|i230|iac( |\-|\/)|ibro|idea|ig01|ikom|im1k|inno|ipaq|iris|ja(t|v)a|jbro|jemu|jigs|kddi|keji|kgt( |\/)|klon|kpt |kwc\-|kyo(c|k)|le(no|xi)|lg( g|\/(k|l|u)|50|54|\-[a-w])|libw|lynx|m1\-w|m3ga|m50\/|ma(te|ui|xo)|mc(01|21|ca)|m\-cr|me(rc|ri)|mi(o8|oa|ts)|mmef|mo(01|02|bi|de|do|t(\-| |o|v)|zz)|mt(50|p1|v )|mwbp|mywa|n10[0-2]|n20[2-3]|n30(0|2)|n50(0|2|5)|n7(0(0|1)|10)|ne((c|m)\-|on|tf|wf|wg|wt)|nok(6|i)|nzph|o2im|op(ti|wv)|oran|owg1|p800|pan(a|d|t)|pdxg|pg(13|\-([1-8]|c))|phil|pire|pl(ay|uc)|pn\-2|po(ck|rt|se)|prox|psio|pt\-g|qa\-a|qc(07|12|21|32|60|\-[2-7]|i\-)|qtek|r380|r600|raks|rim9|ro(ve|zo)|s55\/|sa(ge|ma|mm|ms|ny|va)|sc(01|h\-|oo|p\-)|sdk\/|se(c(\-|0|1)|47|mc|nd|ri)|sgh\-|shar|sie(\-|m)|sk\-0|sl(45|id)|sm(al|ar|b3|it|t5)|so(ft|ny)|sp(01|h\-|v\-|v )|sy(01|mb)|t2(18|50)|t6(00|10|18)|ta(gt|lk)|tcl\-|tdg\-|tel(i|m)|tim\-|t\-mo|to(pl|sh)|ts(70|m\-|m3|m5)|tx\-9|up(\.b|g1|si)|utst|v400|v750|veri|vi(rg|te)|vk(40|5[0-3]|\-v)|vm40|voda|vulc|vx(52|53|60|61|70|80|81|83|85|98)|w3c(\-| )|webc|whit|wi(g |nc|nw)|wmlb|wonu|x700|yas\-|your|zeto|zte\-/i.test(a.substr(0,4)))
-    check = true;})
+    // (function(a){
+    // if(/(android|bb\d+|meego).+mobile|avantgo|bada\/|blackberry|blazer|compal|elaine|fennec|hiptop|iemobile|ip(hone|od)|iris|kindle|lge |maemo|midp|mmp|mobile.+firefox|netfront|opera m(ob|in)i|palm( os)?|phone|p(ixi|re)\/|plucker|pocket|psp|series(4|6)0|symbian|treo|up\.(browser|link)|vodafone|wap|windows ce|xda|xiino/i.test(a)||/1207|6310|6590|3gso|4thp|50[1-6]i|770s|802s|a wa|abac|ac(er|oo|s\-)|ai(ko|rn)|al(av|ca|co)|amoi|an(ex|ny|yw)|aptu|ar(ch|go)|as(te|us)|attw|au(di|\-m|r |s )|avan|be(ck|ll|nq)|bi(lb|rd)|bl(ac|az)|br(e|v)w|bumb|bw\-(n|u)|c55\/|capi|ccwa|cdm\-|cell|chtm|cldc|cmd\-|co(mp|nd)|craw|da(it|ll|ng)|dbte|dc\-s|devi|dica|dmob|do(c|p)o|ds(12|\-d)|el(49|ai)|em(l2|ul)|er(ic|k0)|esl8|ez([4-7]0|os|wa|ze)|fetc|fly(\-|_)|g1 u|g560|gene|gf\-5|g\-mo|go(\.w|od)|gr(ad|un)|haie|hcit|hd\-(m|p|t)|hei\-|hi(pt|ta)|hp( i|ip)|hs\-c|ht(c(\-| |_|a|g|p|s|t)|tp)|hu(aw|tc)|i\-(20|go|ma)|i230|iac( |\-|\/)|ibro|idea|ig01|ikom|im1k|inno|ipaq|iris|ja(t|v)a|jbro|jemu|jigs|kddi|keji|kgt( |\/)|klon|kpt |kwc\-|kyo(c|k)|le(no|xi)|lg( g|\/(k|l|u)|50|54|\-[a-w])|libw|lynx|m1\-w|m3ga|m50\/|ma(te|ui|xo)|mc(01|21|ca)|m\-cr|me(rc|ri)|mi(o8|oa|ts)|mmef|mo(01|02|bi|de|do|t(\-| |o|v)|zz)|mt(50|p1|v )|mwbp|mywa|n10[0-2]|n20[2-3]|n30(0|2)|n50(0|2|5)|n7(0(0|1)|10)|ne((c|m)\-|on|tf|wf|wg|wt)|nok(6|i)|nzph|o2im|op(ti|wv)|oran|owg1|p800|pan(a|d|t)|pdxg|pg(13|\-([1-8]|c))|phil|pire|pl(ay|uc)|pn\-2|po(ck|rt|se)|prox|psio|pt\-g|qa\-a|qc(07|12|21|32|60|\-[2-7]|i\-)|qtek|r380|r600|raks|rim9|ro(ve|zo)|s55\/|sa(ge|ma|mm|ms|ny|va)|sc(01|h\-|oo|p\-)|sdk\/|se(c(\-|0|1)|47|mc|nd|ri)|sgh\-|shar|sie(\-|m)|sk\-0|sl(45|id)|sm(al|ar|b3|it|t5)|so(ft|ny)|sp(01|h\-|v\-|v )|sy(01|mb)|t2(18|50)|t6(00|10|18)|ta(gt|lk)|tcl\-|tdg\-|tel(i|m)|tim\-|t\-mo|to(pl|sh)|ts(70|m\-|m3|m5)|tx\-9|up(\.b|g1|si)|utst|v400|v750|veri|vi(rg|te)|vk(40|5[0-3]|\-v)|vm40|voda|vulc|vx(52|53|60|61|70|80|81|83|85|98)|w3c(\-| )|webc|whit|wi(g |nc|nw)|wmlb|wonu|x700|yas\-|your|zeto|zte\-/i.test(a.substr(0,4)))
+    // check = true;})
 
-    (navigator.userAgent||navigator.vendor||window.opera);
+    // (navigator.userAgent||navigator.vendor||window.opera);
 
-    if(check === true){
+    // if(check === true){
       
-      document.getElementById('smartAlert').innerHTML += `
+    //   document.getElementById('smartAlert').innerHTML += `
 
-      <div class="alert alert-primary" role="alert" id="smartAlert">
-      <b>
-      <span>&#129310;</span>
-      SmartPhone Info</b>
-      <span>&#129310;</span>
-      <br>
-      <hr>
-      Compatible Android / Chrome / Safari / Mozilla
-      <br>
-      <hr>
-      Compatibilité non garantie sur Iphone et iOS !<br><br>
-      <button type="button" class="btn btn-primary" id="smartInfo">Fermer</button>
-      </div>
-    `   
-    document.querySelector('#smartAlert').removeAttribute('hidden');
-    document.querySelector('#facebookAlert').setAttribute('hidden', false);
+    //   <div class="alert alert-primary" role="alert" id="smartAlert">
+    //   <b>
+    //   <span>&#129310;</span>
+    //   SmartPhone Info</b>
+    //   <span>&#129310;</span>
+    //   <br>
+    //   <hr>
+    //   Compatible Android / Chrome / Safari / Mozilla
+    //   <br>
+    //   <hr>
+    //   Compatibilité non garantie sur Iphone et iOS !<br><br>
+    //   <button type="button" class="btn btn-primary" id="smartInfo">Fermer</button>
+    //   </div>
+    // `   
+    // document.querySelector('#smartAlert').removeAttribute('hidden');
+    // document.querySelector('#facebookAlert').setAttribute('hidden', false);
 
-        document.getElementById('smartInfo').addEventListener('click', () => {
-        document.querySelector('#smartAlert').setAttribute('hidden', true);
-        });
+    //     document.getElementById('smartInfo').addEventListener('click', () => {
+    //     document.querySelector('#smartAlert').setAttribute('hidden', true);
+    //     });
 
-      } 
+    //   } 
 
       //*SmartPhone Detection
       var ua = navigator.userAgent || navigator.vendor || window.opera;
