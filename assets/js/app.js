@@ -17,7 +17,7 @@ const app = {
     app.listAllPictures();
     app.currentBrowserCheck();
     app.browserSuportedConstraints();
-
+   
     if (app.getcookie() === 'user=PhotoBooth'){
     app.userEnterWithCookie()
     document.querySelector('#errorMsg').removeAttribute('hidden');
@@ -50,7 +50,13 @@ const app = {
     document.getElementById('start').addEventListener('click', () => {
 
     //* pré - initialisation des constraints on prépare un objet vide.
-    const videoConstraints = {};
+    const videoConstraints = {
+
+    width: { min: 320, ideal: 230, max: 640 },
+    height: { min: 240, ideal: 240, max: 480},
+    aspectRatio: { ideal: 1.7777777778 }
+
+    };
       
     // si pas de valeur passée dans le select on prend par défaut la cam frontale.
     if (select.value === ''){
@@ -59,26 +65,36 @@ const app = {
       videoConstraints.deviceId = { exact: select.value };
     };
 // todo ici filter les navigateurs regarder si cela a une action réelle ou pas ! 
-    navigator.getUserMedia = ( navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia || navigator.msGetUserMedia || navigator.mediaDevices.getUserMedia);
+//   navigator.getUserMedia = ( navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia || navigator.msGetUserMedia || navigator.mediaDevices.getUserMedia);
 
     //* état final des constraints
     const constraints = {video: videoConstraints, audio: false};
-
+    
     //* getUserMedia: demande d'autorisation d'accès à la caméra. 
     navigator.mediaDevices.getUserMedia(constraints).then(stream => {
     
     userHasGrantedPermission = true;
 
     if (userHasGrantedPermission === true && stream.active === true) {
+
     app.displayCurrentCamName();
     // tout est validé j'ai la permission + un stream actif -> je crée la liste de mes options select
     app.createListDevice(); 
-// todo ici filter les navigateurs
-    // for iOS autoplay must be set to false ans controls append in <video></video>
-    document.querySelector('video').autoplay = false;
-    document.querySelector('video').controls = true;
-    document.querySelector('video').defaultMuted = true;
 
+// todo ici filter les navigateurs
+    if (navigator.userAgent.indexOf("Chrome") !== -1){
+      document.querySelector('video').autoplay = true;
+      document.querySelector('video').controls = false;
+      document.querySelector('video').playsinline = false; 
+
+    } else {
+      console.log('je suis dans le else donc pas dans Chrome')
+      document.querySelector('video').autoplay = false;
+      document.querySelector('video').controls = true;      
+      document.querySelector('video').controls = true;  
+      document.querySelector('video').playsinline = true;  
+    }
+    
     //* on a eu l'autorisation ET on a un stream on insère
     document.querySelector('video').srcObject = stream
 
