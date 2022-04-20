@@ -85,6 +85,11 @@ div#canvasImg {
     margin-top: 1rem;
 }
 
+div#coords {
+    display: none;
+}
+
+
 /* #videoElement {
     background: rgb(83, 83, 83);
     width: 320px;
