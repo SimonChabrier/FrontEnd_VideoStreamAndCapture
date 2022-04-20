@@ -53,7 +53,7 @@ p#currentCamName {
 }
 
 #canvasImg img {
-    width: 15vh;
+    width: 13vh;
     height: 20vh;
     object-fit: cover;
 }
@@ -67,8 +67,6 @@ div#canvasImg {
 }
 
 #imgContainer {
-    max-height: 720px;
-    overflow: auto;
     margin-bottom: 1.5rem;
     margin-top: 1.5rem;
     text-align: center;
@@ -80,10 +78,19 @@ div#canvasImg {
     border-radius: 1rem;
 }
 
-#videoElement {
+/* #videoElement {
     background: rgb(83, 83, 83);
     width: 320px;
     height: auto;
+} */
+
+div#vidéoStreamContainer {
+    margin: 0;
+    padding: 0;
+}
+
+video#videoElement {
+    width: inherit;
 }
 
 #errorMsg {

@@ -52,8 +52,8 @@ const app = {
     //* pré - initialisation des constraints on prépare un objet vide.
     const videoConstraints = {
 
-    width: { min: 320, ideal: 230, max: 640 },
-    height: { min: 240, ideal: 240, max: 480},
+    width: { min: 320, ideal: 640, max: 640 },
+    height: { min: 240, ideal: 480, max: 480},
     aspectRatio: { ideal: 1.7777777778 }
 
     };
@@ -83,17 +83,16 @@ const app = {
 
 // todo ici filter les navigateurs
     if (navigator.userAgent.indexOf("Chrome") !== -1){
+      console.log('je suis dans Chrome')
       document.querySelector('video').autoplay = true;
       document.querySelector('video').controls = true;
-      //document.querySelector('video').playsinline = true; 
 
     } else {
       console.log('je suis dans le else donc pas dans Chrome')
       document.querySelector('video').autoplay = false;
       document.querySelector('video').controls = true;      
       document.querySelector('video').controls = true;  
-      //document.querySelector('video').playsinline = true;  
-    }
+    };
     
     //* on a eu l'autorisation ET on a un stream on insère
     document.querySelector('video').srcObject = stream
@@ -109,7 +108,7 @@ const app = {
 
     //* ici on monitore en console toutes les valeurs de notre objet MediaStream en lecture
     const getStreamValues = stream.getTracks();
-    //app.monitorCurrentStremValues(getStreamValues);
+    app.monitorCurrentStremValues(getStreamValues);
 
     //* actions quand on arrête le stream en cours
     document.querySelector('#stop').addEventListener('click', () => { 
@@ -523,7 +522,6 @@ const app = {
       postErrorMessage.classList.remove('hidden');
       postErrorMessage.innerHTML += 'Vous avez déjà posté une photo ! <br> revenez demain pour en poster une autre'
   },
-
 
   /**
    * Detect if Smartphone or facebook internal browser
