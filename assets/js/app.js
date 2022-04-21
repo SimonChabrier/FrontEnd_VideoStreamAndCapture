@@ -19,7 +19,7 @@ const app = {
     app.getGeoLoc();
     app.camStreamer();
     app.currentBrowserCheck();
-    app.browserSuportedConstraints();
+    //app.browserSuportedConstraints();
     if (app.getcookie() === 'user=PhotoBooth'){
     app.userEnterWithCookie()
     document.querySelector('#errorMsg').removeAttribute('hidden');
@@ -430,7 +430,7 @@ const app = {
      //attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
     }).addTo(map);
 
-    // const apiRootUrl = 'https://photoboothback.simschab.fr/getpictures'
+    //const apiRootUrl = 'https://photoboothback.simschab.fr/getpictures'
     const apiRootUrl = 'http://127.0.0.1:8000/getpictures'
 
     let config = {
@@ -444,15 +444,16 @@ const app = {
         return response.json();
     })
     .then(data => {
-        for(value in data) {
+
+      for(item = 0; item < data.length; item ++) {
 
           output = document.getElementById('canvasImg')
-          output.innerHTML += ` <img id="canvasImg" src="${data[value].picture}" alt="image"/>`  
+          output.innerHTML += ` <img id="canvasImg" src="${data[item].picture}" alt="image"/>`  
          
-          let lat = data[value].lat;
-          let lng = data[value].lng;
-          let picture = `<img id="canvasImg" src="${data[value].picture}" alt="image"/> `
-
+          let lat = data[item].lat;
+          let lng = data[item].lng;
+          let picture = `<img id="canvasImg" src="${data[item].picture}" alt="image"/> `
+          
           if (lat === null) {
 
             lat = app.getRandomCoords(43, 47, 20);
