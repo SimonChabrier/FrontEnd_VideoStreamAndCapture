@@ -384,12 +384,13 @@ const app = {
 
   /**
    * Get Geolocation
+   * Ask user to Allow GeaoLocalisatin
    */
   getGeoLoc: function(){
 
     if(!navigator.geolocation) {
 
-    alert('Geolocation is not supported by your browser');
+    alert('La géolocalisation n\'est pas supportée mais ce n\'est pas primordial !');
 
     } else {
 
@@ -411,12 +412,18 @@ const app = {
    * Display all pictures from DataBase
    * Fetch data from API
    * Append data.entries to img.src
+   * APpend date.entrie to MAP
    * @method GET
    */
   leafletInit:function(){
 
-    //* initialisatio de la carte sur la position GPS d'AGEN
-    var map = L.map('map').setView([44.2036587, 0.6091369], 6);
+    //* initialisatio de la carte sur la position GPS centre de la France
+    var map = L.map('map').setView([46.227638, 2.213749], 5);
+
+    //* Add fullscreen option from tiercepart script include in index head
+    // https://github.com/Leaflet/Leaflet.fullscreen
+
+    map.addControl(new L.Control.Fullscreen());
 
     //*Layer visule de la carte fixé sur 180px dans le css à voir pour l'intégration
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {    
@@ -467,7 +474,14 @@ const app = {
     
   },//end leafletInit
 
-  //*random coordonates générator
+  
+  /**
+   * random coordonates générator
+   * @param {int} from 
+   * @param {int} to 
+   * @param {*-int} fixed 
+   * @returns 
+   */
   getRandomCoords: function(from, to, fixed) {
   return (Math.random() * (to - from) + from).toFixed(fixed) * 1;
   //.toFixed() returns string, so ' * 1' is a trick to convert to number

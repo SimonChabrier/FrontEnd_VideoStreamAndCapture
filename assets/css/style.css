@@ -41,7 +41,8 @@ li {
 } */
 
 #map {
-    height:350px;
+    /* height:350px; */
+    height:40vh;
 }
 
 div.leaflet-popup-content {
