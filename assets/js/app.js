@@ -20,10 +20,10 @@ const app = {
     app.camStreamer();
     app.currentBrowserCheck();
     //app.browserSuportedConstraints();
-    if (app.getcookie() === 'user=PhotoBooth'){
-    app.userEnterWithCookie()
-    document.querySelector('#errorMsg').removeAttribute('hidden');
-    };
+    // if (app.getcookie() === 'user=PhotoBooth'){
+    // app.userEnterWithCookie()
+    // document.querySelector('#errorMsg').removeAttribute('hidden');
+    // };
   },
 
   /**
@@ -448,11 +448,11 @@ const app = {
       for(item = 0; item < data.length; item ++) {
 
           output = document.getElementById('canvasImg')
-          output.innerHTML += ` <img id="canvasImg" src="${data[item].picture}" alt="image"/>`  
+          output.innerHTML += ` <img id="canvasImg" src="http://127.0.0.1:8000/assets/upload/pictures/${data[item].picture}" alt="image"/>`  
          
           let lat = data[item].lat;
           let lng = data[item].lng;
-          let picture = `<img id="canvasImg" src="${data[item].picture}" alt="image"/> `
+          let picture =  ` <img id="canvasImg" src="http://127.0.0.1:8000/assets/upload/pictures/${data[item].picture}" alt="image"/>`
           
           if (lat === null) {
 
