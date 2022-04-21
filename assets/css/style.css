@@ -40,6 +40,41 @@ li {
     line-height: 1.8rem;
 }
 
+/* #map { 
+    height: 180px; 
+    background: #425365;
+} */
+
+#map {
+    height:350px;
+}
+
+div.leaflet-popup-content {
+    width: auto !important;
+    text-align: center!important;
+    width: 13vh;
+    height: 20vh;
+    object-fit: cover;
+}
+
+div.leaflet-popup-content img {
+    width: 13vh;
+    height: 20vh;
+    object-fit: cover;
+}
+
+.leaflet-popup-close-button {
+    display: none;
+}
+
+.leaflet-popup-content{
+    margin:10px!important;
+}
+
+.leaflet-popup-tip-container {
+    display: none;
+}
+
 p#currentCamName {
     text-align: center;
     background: yellowgreen;

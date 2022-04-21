@@ -27,7 +27,6 @@
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" defer></script>   
     <!-- Bootstrap icons -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.1/font/bootstrap-icons.css">
-
     <!-- Fontawesome icons CDN -->
     <script src="https://kit.fontawesome.com/115544430d.js" crossorigin="anonymous" defer></script>
 
@@ -36,12 +35,21 @@
 
     <!-- Add this App favicon -->
     <link rel="shortcut icon" href="./assets/favicon.png" type="image/x-icon">
-
+    <!-- My App Custom Style -->
     <link rel="stylesheet" href="./assets/css/reset.css">
     <link rel="stylesheet" href="./assets/css/style.css">
+    <!-- Leaflet Style -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.8.0/dist/leaflet.css"
+    integrity="sha512-hoalWLoI8r4UszCkZ5kL8vayOGVae1oxXe/2A4AO6J9+580uKHDO3JdHb7NzwwzK5xr/Fs0W40kiNHxM9vyTtQ=="
+    crossorigin=""/>
+   <!-- Leaflet script -->
+    <script src="https://unpkg.com/leaflet@1.8.0/dist/leaflet.js"
+    integrity="sha512-BB3hKbKWOc9Ez/TAwyWxNXeoV9c1v6FIeYiBieIWkpLjauysF18NzgR1MBNBXf8/KABdlkX68nAhlwcDFLGPCQ=="
+    crossorigin=""></script>
 
-    <!-- insertion du script en bas de page -->
+    <!-- My App Script -->
     <script src="./assets/js/app.js" defer></script>
+    <script src="./assets/js/map.js" defer></script>
 
     <title>JS Photo Booth</title>
     
@@ -56,14 +64,14 @@
 </div>
 <h2 id="errorMsg"></h2><!-- titre + affichage des messages d'erreur -->
 
-<div id="facebookAlert">
-</div>
-<div id="smartAlert">
-</div>
+<div id="facebookAlert"></div>
+<div id="smartAlert"></div>
 <div id = "coords">
   <p id ="lat"></p>
   <p id="lng"></p>
 </div>
+
+<div id="map"></div><!-- leaflet Map -->
 
 <div class="container-fluid">
   <div class="col"><!--start col 1 -->
