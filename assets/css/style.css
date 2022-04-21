@@ -3,12 +3,7 @@ body {
 }
 
 h1{
-    text-align: center;
-    font-size: 1.5rem;
     padding: 1rem;
-    margin-bottom: 1rem;
-    margin: 1rem 2rem;
-    border-radius: .3rem;
     color: #348496
 }
 

@@ -15,9 +15,9 @@ const app = {
   init:function() {
 
     console.log('init');
+    app.leafletInit()
     app.getGeoLoc();
     app.camStreamer();
-    app.listAllPictures();
     app.currentBrowserCheck();
     app.browserSuportedConstraints();
     if (app.getcookie() === 'user=PhotoBooth'){
@@ -412,31 +412,65 @@ const app = {
    * Fetch data from API
    * Append data.entries to img.src
    * @method GET
-   * @return {json}
    */
-  listAllPictures: function () {
-    console.log('listAllPictures: function')
-     // const apiRootUrl = 'https://photoboothback.simschab.fr/getpictures'
-      const apiRootUrl = 'http://127.0.0.1:8000/getpictures'
+  leafletInit:function(){
 
-      let config = {
-          method: 'GET',
-          mode: 'cors',
-          cache: 'no-cache'
-      };
+    //* initialisatio de la carte sur la position GPS d'AGEN
+    var map = L.map('map').setView([44.2036587, 0.6091369], 6);
 
-      fetch (apiRootUrl, config)
-      .then(response => {
-          return response.json();
-      })
-      .then(data => {
-          for(value in data) {
-              output = document.getElementById('canvasImg')
-              output.innerHTML += `
-              <img id="canvasImg" src="${data[value].picture}" alt="image"/>  
-            `
+    //*Layer visule de la carte fixé sur 180px dans le css à voir pour l'intégration
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {    
+     //attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+    }).addTo(map);
+
+    // const apiRootUrl = 'https://photoboothback.simschab.fr/getpictures'
+    const apiRootUrl = 'http://127.0.0.1:8000/getpictures'
+
+    let config = {
+        method: 'GET',
+        mode: 'cors',
+        cache: 'no-cache'
+    };
+
+    fetch (apiRootUrl, config)
+    .then(response => {
+        return response.json();
+    })
+    .then(data => {
+        for(value in data) {
+
+          output = document.getElementById('canvasImg')
+          output.innerHTML += ` <img id="canvasImg" src="${data[value].picture}" alt="image"/>`  
+         
+          let lat = data[value].lat;
+          let lng = data[value].lng;
+          let picture = `<img id="canvasImg" src="${data[value].picture}" alt="image"/> `
+
+          if (lat === null) {
+
+            lat = app.getRandomCoords(43, 47, 20);
           }
-      });
+
+          if(lng === null){
+
+            lng = app.getRandomCoords(0, 7, 10);
+
+          }
+          
+          //*initialisation des marqueurs
+          L.marker([lat, lng]).addTo(map)
+          //*popUp du marqueur qui doit pouvoir recevoir un template ou autre
+          .bindPopup(picture)
+        
+        }     
+    });
+    
+  },//end leafletInit
+
+  //*random coordonates générator
+  getRandomCoords: function(from, to, fixed) {
+  return (Math.random() * (to - from) + from).toFixed(fixed) * 1;
+  //.toFixed() returns string, so ' * 1' is a trick to convert to number
   },
   
   /**
