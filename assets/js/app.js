@@ -10,6 +10,10 @@
 
 //todo exploiter console.log('mediaDevices' in navigator) === true) {on peut lancer la logique du stream ou sinon retourner une info.}
  
+
+//! ATTENTION
+// todo remettre les cookies + changer les routes get post et lien images
+
 const app = {
 
   init:function() {
@@ -341,7 +345,7 @@ const app = {
     httpHeaders.append('Content-Type', 'application/json');
     
     //* route de mon back-end symfony
-    //const apiRootUrl = 'https://photoboothback.simschab.fr/api';
+    //const apiRootUrl = 'https://photoboothback.simschab.fr/api/post';
     const apiRootUrl = 'http://127.0.0.1:8000/api';
 
     //* Je poste sur la route API 
@@ -444,15 +448,15 @@ const app = {
         return response.json();
     })
     .then(data => {
-
+      console.log(data)
       for(item = 0; item < data.length; item ++) {
 
           output = document.getElementById('canvasImg')
-          output.innerHTML += ` <img id="canvasImg" src="http://127.0.0.1:8000/assets/upload/pictures/${data[item].picture}" alt="image"/>`  
+          output.innerHTML += ` <img id="canvasImg" src="http://127.0.0.1:8000/assets/upload/pictures/${data[item].pictureFile}" alt="image"/>`  
          
           let lat = data[item].lat;
           let lng = data[item].lng;
-          let picture =  ` <img id="canvasImg" src="http://127.0.0.1:8000/assets/upload/pictures/${data[item].picture}" alt="image"/>`
+          let picture =  ` <img id="canvasImg" src="http://127.0.0.1:8000/assets/upload/pictures/${data[item].pictureFile}" alt="image"/>`
           
           if (lat === null) {
 
