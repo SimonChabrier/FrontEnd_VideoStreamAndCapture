@@ -10,6 +10,10 @@
 
 //todo exploiter console.log('mediaDevices' in navigator) === true) {on peut lancer la logique du stream ou sinon retourner une info.}
  
+
+//! ATTENTION
+// todo remettre les cookies + changer les routes get post et lien images
+
 const app = {
 
   init:function() {
@@ -19,7 +23,7 @@ const app = {
     app.getGeoLoc();
     app.camStreamer();
     app.currentBrowserCheck();
-    //app.browserSuportedConstraints();
+    app.browserSuportedConstraints();
     if (app.getcookie() === 'user=PhotoBooth'){
     app.userEnterWithCookie()
     document.querySelector('#errorMsg').removeAttribute('hidden');
@@ -341,8 +345,8 @@ const app = {
     httpHeaders.append('Content-Type', 'application/json');
     
     //* route de mon back-end symfony
-    //const apiRootUrl = 'https://photoboothback.simschab.fr/api';
-    const apiRootUrl = 'http://127.0.0.1:8000/api';
+    const apiRootUrl = 'https://photoboothback.simschab.fr/api/post';
+    //const apiRootUrl = 'http://127.0.0.1:8000/api/post';
 
     //* Je poste sur la route API 
     const fetchOptions = 
@@ -383,32 +387,6 @@ const app = {
 
 
   /**
-   * Get Geolocation
-   * Ask user to Allow GeaoLocalisatin
-   */
-  getGeoLoc: function(){
-
-    if(!navigator.geolocation) {
-
-    alert('La géolocalisation n\'est pas supportée mais ce n\'est pas primordial !');
-
-    } else {
-
-      navigator.geolocation.getCurrentPosition(position => {
-      const { latitude, longitude } = position.coords;
-      console.log(latitude)
-      console.log(longitude)
-
-      //todo il faut travailler ici je ne peux rien sortir d'ici
-      
-      document.getElementById('lat').innerHTML += latitude
-      document.getElementById('lng').innerHTML += longitude
-    
-      }); 
-    }
-  },
-
-  /**
    * Display all pictures from DataBase
    * Fetch data from API
    * Append data.entries to img.src
@@ -430,8 +408,8 @@ const app = {
      //attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
     }).addTo(map);
 
-    //const apiRootUrl = 'https://photoboothback.simschab.fr/getpictures'
-    const apiRootUrl = 'http://127.0.0.1:8000/getpictures'
+    const apiRootUrl = 'https://photoboothback.simschab.fr/api/get'
+    //const apiRootUrl = 'http://127.0.0.1:8000/api/get'
 
     let config = {
         method: 'GET',
@@ -444,15 +422,15 @@ const app = {
         return response.json();
     })
     .then(data => {
-
+      console.log(data)
       for(item = 0; item < data.length; item ++) {
 
           output = document.getElementById('canvasImg')
-          output.innerHTML += ` <img id="canvasImg" src="${data[item].picture}" alt="image"/>`  
+          output.innerHTML += ` <img id="canvasImg" src="https://photoboothback.simschab.fr/assets/upload/pictures/${data[item].pictureFile}" alt="image"/>`  
          
           let lat = data[item].lat;
           let lng = data[item].lng;
-          let picture = `<img id="canvasImg" src="${data[item].picture}" alt="image"/> `
+          let picture =  ` <img id="canvasImg" src="https://photoboothback.simschab.fr/assets/upload/pictures/${data[item].pictureFile}" alt="image"/>`
           
           if (lat === null) {
 
@@ -475,6 +453,33 @@ const app = {
     
   },//end leafletInit
 
+
+
+  /**
+   * Get Geolocation
+   * Ask user to Allow GeaoLocalisatin
+   */
+   getGeoLoc: function(){
+
+    if(!navigator.geolocation) {
+
+    alert('La géolocalisation n\'est pas supportée mais ce n\'est pas primordial !');
+
+    } else {
+
+      navigator.geolocation.getCurrentPosition(position => {
+      const { latitude, longitude } = position.coords;
+      console.log(latitude)
+      console.log(longitude)
+
+      //todo il faut travailler ici je ne peux rien sortir d'ici
+      
+      document.getElementById('lat').innerHTML += latitude
+      document.getElementById('lng').innerHTML += longitude
+    
+      }); 
+    }
+  },
   
   /**
    * random coordonates générator
