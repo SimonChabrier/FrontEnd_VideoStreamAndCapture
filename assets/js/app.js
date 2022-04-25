@@ -10,9 +10,6 @@
 
 //todo exploiter console.log('mediaDevices' in navigator) === true) {on peut lancer la logique du stream ou sinon retourner une info.}
  
-//! ATTENTION
-// todo remettre les cookies + changer les routes get post et lien images
-
 const app = {
 
   init:function() {
