@@ -21,12 +21,12 @@ const app = {
     app.getAllPictures()
     app.getGeoLoc();
     app.camStreamer();
-    // app.currentBrowserCheck();
-    // app.browserSuportedConstraints();
-    // if (app.getcookie() === 'user=PhotoBooth'){
-    // app.userEnterWithCookie()
-    // document.querySelector('#errorMsg').removeAttribute('hidden');
-    // };
+    app.currentBrowserCheck();
+    //app.browserSuportedConstraints();
+    if (app.getcookie() === 'user=PhotoBooth'){
+    app.userEnterWithCookie()
+    document.querySelector('#errorMsg').removeAttribute('hidden');
+    };
   },
 
   /**
@@ -344,8 +344,8 @@ const app = {
     httpHeaders.append('Content-Type', 'application/json');
     
     //* route de mon back-end symfony
-    //const apiRootUrl = 'https://photoboothback.simschab.fr/api/post';
-    const apiRootUrl = 'http://127.0.0.1:8000/api/post';
+    const apiRootUrl = 'https://photoboothback.simschab.fr/api/post';
+    //const apiRootUrl = 'http://127.0.0.1:8000/api/post';
 
     //* Je poste sur la route API 
     const fetchOptions = 
@@ -407,8 +407,8 @@ const app = {
      //attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
     }).addTo(map);
 
-    //const apiRootUrl = 'https://photoboothback.simschab.fr/api/get'
-    const apiRootUrl = 'http://127.0.0.1:8000/api/get'
+    const apiRootUrl = 'https://photoboothback.simschab.fr/api/get'
+    //const apiRootUrl = 'http://127.0.0.1:8000/api/get'
 
     let config = {
         method: 'GET',
@@ -431,7 +431,8 @@ const app = {
           // output.innerHTML += ` <img id="canvasImg" src="http://127.0.0.1:8000/assets/upload/pictures/${data[item].pictureFile}" alt="image"/>`  
           
           //*picture insérée dans la liste des pictures
-          output.innerHTML += ` <img id="canvasImg" src="http://127.0.0.1:8000/media/cache/portrait/assets/upload/pictures/${data[item].pictureFile}" type="image/jpeg alt="image"/>`  
+          //output.innerHTML += ` <img id="canvasImg" src="http://127.0.0.1:8000/media/cache/portrait/assets/upload/pictures/${data[item].pictureFile}" type="image/jpeg alt="image"/>`  
+          output.innerHTML += ` <img id="canvasImg" src="https://photoboothback.simschab.fr/media/cache/portrait/assets/upload/pictures/${data[item].pictureFile}" type="image/jpeg alt="image"/>`  
       
          
           let lat = data[item].lat;
@@ -440,7 +441,8 @@ const app = {
           // let picture =  ` <img id="canvasImg" src="http://127.0.0.1:8000/assets/upload/pictures/${data[item].pictureFile}" alt="image"/>`
           
           //*picture insérée dans le popup de la map
-          let picture =  ` <img id="canvasImg" src="http://127.0.0.1:8000/media/cache/portrait/assets/upload/pictures/${data[item].pictureFile}.webp" type="image/webp" alt="image"/>`
+          //let picture =  ` <img id="canvasImg" src="http://127.0.0.1:8000/media/cache/portrait/assets/upload/pictures/${data[item].pictureFile}.webp" type="image/webp" alt="image"/>`
+          let picture =  ` <img id="canvasImg" src="https://photoboothback.simschab.fr/media/cache/portrait/assets/upload/pictures/${data[item].pictureFile}.webp" type="image/webp" alt="image"/>`
           
           if (lat === null) {
             lat = app.getRandomCoords(43, 47, 20);
