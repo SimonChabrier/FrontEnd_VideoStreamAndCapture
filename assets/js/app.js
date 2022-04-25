@@ -222,7 +222,7 @@ const app = {
 
     document.querySelector('#catch').addEventListener('click', () => {
     let ElementsToHide = document.querySelectorAll('#canvas, #post, #reset');
-    ElementsToHide.forEach(function(elements) {
+    ElementsToHide.forEach(elements => {
     elements.removeAttribute('hidden');
     });
 
