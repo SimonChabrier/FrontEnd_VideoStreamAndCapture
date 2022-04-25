@@ -10,7 +10,6 @@
 
 //todo exploiter console.log('mediaDevices' in navigator) === true) {on peut lancer la logique du stream ou sinon retourner une info.}
  
-
 //! ATTENTION
 // todo remettre les cookies + changer les routes get post et lien images
 
@@ -19,15 +18,15 @@ const app = {
   init:function() {
 
     console.log('init');
-    app.leafletInit()
+    app.getAllPictures()
     app.getGeoLoc();
     app.camStreamer();
-    app.currentBrowserCheck();
-    app.browserSuportedConstraints();
-    if (app.getcookie() === 'user=PhotoBooth'){
-    app.userEnterWithCookie()
-    document.querySelector('#errorMsg').removeAttribute('hidden');
-    };
+    // app.currentBrowserCheck();
+    // app.browserSuportedConstraints();
+    // if (app.getcookie() === 'user=PhotoBooth'){
+    // app.userEnterWithCookie()
+    // document.querySelector('#errorMsg').removeAttribute('hidden');
+    // };
   },
 
   /**
@@ -84,18 +83,18 @@ const app = {
     // tout est validé j'ai la permission + un stream actif -> je crée la liste de mes options select
     app.createListDevice(); 
 
-  //On contrôle le navigateur courant beaucoup ne supportent pas l'autoplay et obligent l'utilisateur à lancer la lecture.
-  //Côté html on ajoute playsinline à la balise vidéo pour éviter l'auto-lancement du plein écran sur iOS
+    // On contrôle le navigateur courant beaucoup ne supportent pas l'autoplay et obligent l'utilisateur à lancer la lecture.
+    // Côté html on ajoute playsinline à la balise vidéo pour éviter l'auto-lancement du plein écran sur iOS
     if (navigator.userAgent.indexOf("Chrome") !== -1){
       console.log('je suis dans Chrome')
       document.querySelector('video').autoplay = true;
+      //todo teste si les contrôles sont pertinents ici ou pas.
       document.querySelector('video').controls = true;
 
     } else {
       console.log('je suis dans le else donc pas dans Chrome')
       document.querySelector('video').autoplay = false;
-      document.querySelector('video').controls = true;      
-      document.querySelector('video').controls = true;  
+      document.querySelector('video').controls = true;       
     };
     
     //* on a eu l'autorisation ET on a un stream on insère
@@ -113,7 +112,7 @@ const app = {
     //* ici on monitore en console toutes les valeurs de notre objet MediaStream en lecture
     const getStreamValues = stream.getTracks();
 
-    //todo soucis de compatibilité firefox Mobile
+    //todo soucis de compatibilité firefox sur si appelée sur Mobile
     //app.monitorCurrentStremValues(getStreamValues);
 
     //* actions quand on arrête le stream en cours
@@ -127,7 +126,7 @@ const app = {
     app.stopCurrentStreamAndClearTracks(getStreamValues);
 
     //* on réinitialise l'état de l'affichage du départ.
-    startStateElements.forEach(function(elements) {
+    startStateElements.forEach(elements => {
     elements.setAttribute('hidden', true);
       });//end foreach
     });
@@ -136,7 +135,7 @@ const app = {
 
   })//end stream GetUSerMedia
 
-  .catch(function(err) {
+  .catch(err => {
 
       if (err.name === 'NotReadableError' || err.message === 'Could not start video source'){
         let errorName =  'L\'autorisation d\'accès à votre caméra n\'est pas été autorisé :'
@@ -170,10 +169,10 @@ const app = {
     app.resetListDevices();
       // je récupère les devices vidéo et audio dipo sur mon péréphérique
       navigator.mediaDevices.enumerateDevices()
-      .then(function(devices) {
+      .then(devices => {
           let count = 1;
 
-          devices.forEach(function(device) {  
+          devices.forEach(device => {  
 
               if (device.kind === 'videoinput') {   
 
@@ -197,7 +196,7 @@ const app = {
           });
       })
 
-      .catch(function(err) {
+      .catch(err => {
           //alert('impossible d\'initialiser les péréfériques')
           alert(' Erreur dans la listDevice ' + err.name + ": " + err.message);
       });  
@@ -271,7 +270,7 @@ const app = {
    * @param {MediaStream} 
    */
   stopCurrentStreamAndClearTracks:function(streamTracks){
-    streamTracks.forEach(function(track) {
+    streamTracks.forEach(track => {
       track.stop();
     });
   },
@@ -293,7 +292,7 @@ const app = {
   monitorCurrentStremValues:function(getStreamValues){
     //* loop on MediaStream and use native MediaStream Object
     //todo soucis de compatibilité firefox Mobile
-    getStreamValues.forEach(function(track) {
+    getStreamValues.forEach(track => {
       //* on initialise nos variables avec les valeurs de retour de nos méthodes propres à MediaStream
       let trackSettings = track.getSettings();
       // fonctionnalité non compatible FireFox !
@@ -345,8 +344,8 @@ const app = {
     httpHeaders.append('Content-Type', 'application/json');
     
     //* route de mon back-end symfony
-    const apiRootUrl = 'https://photoboothback.simschab.fr/api/post';
-    //const apiRootUrl = 'http://127.0.0.1:8000/api/post';
+    //const apiRootUrl = 'https://photoboothback.simschab.fr/api/post';
+    const apiRootUrl = 'http://127.0.0.1:8000/api/post';
 
     //* Je poste sur la route API 
     const fetchOptions = 
@@ -393,7 +392,7 @@ const app = {
    * APpend date.entrie to MAP
    * @method GET
    */
-  leafletInit:function(){
+  getAllPictures: async function(){
 
     //* initialisatio de la carte sur la position GPS centre de la France
     var map = L.map('map').setView([46.227638, 2.213749], 5);
@@ -403,13 +402,13 @@ const app = {
 
     map.addControl(new L.Control.Fullscreen());
 
-    //*Layer visule de la carte fixé sur 180px dans le css à voir pour l'intégration
+    //*Layer visule de la carte fixé sur 40vh dans le css
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {    
      //attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
     }).addTo(map);
 
-    const apiRootUrl = 'https://photoboothback.simschab.fr/api/get'
-    //const apiRootUrl = 'http://127.0.0.1:8000/api/get'
+    //const apiRootUrl = 'https://photoboothback.simschab.fr/api/get'
+    const apiRootUrl = 'http://127.0.0.1:8000/api/get'
 
     let config = {
         method: 'GET',
@@ -417,43 +416,49 @@ const app = {
         cache: 'no-cache'
     };
 
-    fetch (apiRootUrl, config)
+    fetch(apiRootUrl, config)
+
     .then(response => {
         return response.json();
     })
+
     .then(data => {
       console.log(data)
       for(item = 0; item < data.length; item ++) {
 
           output = document.getElementById('canvasImg')
-          output.innerHTML += ` <img id="canvasImg" src="https://photoboothback.simschab.fr/assets/upload/pictures/${data[item].pictureFile}" alt="image"/>`  
+          // output.innerHTML += ` <img id="canvasImg" src="https://photoboothback.simschab.fr/assets/upload/pictures/${data[item].pictureFile}" type="image/jpeg alt="image"/>`  
+          // output.innerHTML += ` <img id="canvasImg" src="http://127.0.0.1:8000/assets/upload/pictures/${data[item].pictureFile}" alt="image"/>`  
+          
+          //*picture insérée dans la liste des pictures
+          output.innerHTML += ` <img id="canvasImg" src="http://127.0.0.1:8000/media/cache/portrait/assets/upload/pictures/${data[item].pictureFile}" type="image/jpeg alt="image"/>`  
+      
          
           let lat = data[item].lat;
           let lng = data[item].lng;
-          let picture =  ` <img id="canvasImg" src="https://photoboothback.simschab.fr/assets/upload/pictures/${data[item].pictureFile}" alt="image"/>`
+          // let picture =  ` <img id="canvasImg" src="https://photoboothback.simschab.fr/assets/upload/pictures/${data[item].pictureFile}" type="image/webp" alt="image"/>`
+          // let picture =  ` <img id="canvasImg" src="http://127.0.0.1:8000/assets/upload/pictures/${data[item].pictureFile}" alt="image"/>`
+          
+          //*picture insérée dans le popup de la map
+          let picture =  ` <img id="canvasImg" src="http://127.0.0.1:8000/media/cache/portrait/assets/upload/pictures/${data[item].pictureFile}.webp" type="image/webp" alt="image"/>`
           
           if (lat === null) {
-
             lat = app.getRandomCoords(43, 47, 20);
           }
 
           if(lng === null){
-
             lng = app.getRandomCoords(0, 7, 10);
-
           }
           
           //*initialisation des marqueurs
           L.marker([lat, lng]).addTo(map)
-          //*popUp du marqueur qui doit pouvoir recevoir un template ou autre
+          //*popUp du marqueur acuellment on insérer juste la picture.
           .bindPopup(picture)
         
         }     
     });
     
-  },//end leafletInit
-
-
+  },//end getAllPictures
 
   /**
    * Get Geolocation
@@ -471,9 +476,7 @@ const app = {
       const { latitude, longitude } = position.coords;
       console.log(latitude)
       console.log(longitude)
-
-      //todo il faut travailler ici je ne peux rien sortir d'ici
-      
+      //il faut travailler pour placer les coordonnées dans le code html et les récupèrer ensuite (je ne peux rien sortir d'ici).
       document.getElementById('lat').innerHTML += latitude
       document.getElementById('lng').innerHTML += longitude
     
@@ -482,7 +485,7 @@ const app = {
   },
   
   /**
-   * random coordonates générator
+   * Random coordonates générator
    * @param {int} from 
    * @param {int} to 
    * @param {*-int} fixed 
@@ -499,9 +502,9 @@ const app = {
   resetCanvasContext:function(){
   console.log('resetCanvasContext:function')
 
-  let ElementsToHide = document.querySelectorAll('#canvas, #post, #reset');
+  let elementsToHide = document.querySelectorAll('#canvas, #post, #reset');
 
-  ElementsToHide.forEach(function(elements) {
+  elementsToHide.forEach(function(elements) {
   elements.setAttribute('hidden', true)  
   });
 
@@ -516,9 +519,9 @@ const app = {
    * Display POST confirmation message 
    */
   resetMainVideoDiv:function(){
-      let MainVideoDiv = document.getElementById('videoBlock');
+      let mainVideoDiv = document.getElementById('videoBlock');
       let postErrorMessage = document.getElementById('errorMsg');
-      MainVideoDiv.classList.add('hidden');
+      mainVideoDiv.classList.add('hidden');
       postErrorMessage.classList.remove('hidden');
       postErrorMessage.style.background = "#298838";
       postErrorMessage.innerHTML += ' -----> Image ajoutée <----- '
@@ -568,8 +571,8 @@ const app = {
   console.log('dislayError: function') 
       // Pour le moment il n'y en a qu'un mais on est prêt à en ajouter entre d'autres si besoin.
       let errorElements = document.querySelectorAll('#errorMsg')
-      errorElements.forEach(function(elements) {
-      elements.removeAttribute('hidden');
+      errorElements.forEach(element => {
+      element.removeAttribute('hidden');
       });
       document.getElementById('errorMsg').innerHTML += '<p>' + errorName + '<br>' + errorMessage + '</p>';
   },
@@ -623,13 +626,9 @@ const app = {
     // (function(a){
     // if(/(android|bb\d+|meego).+mobile|avantgo|bada\/|blackberry|blazer|compal|elaine|fennec|hiptop|iemobile|ip(hone|od)|iris|kindle|lge |maemo|midp|mmp|mobile.+firefox|netfront|opera m(ob|in)i|palm( os)?|phone|p(ixi|re)\/|plucker|pocket|psp|series(4|6)0|symbian|treo|up\.(browser|link)|vodafone|wap|windows ce|xda|xiino/i.test(a)||/1207|6310|6590|3gso|4thp|50[1-6]i|770s|802s|a wa|abac|ac(er|oo|s\-)|ai(ko|rn)|al(av|ca|co)|amoi|an(ex|ny|yw)|aptu|ar(ch|go)|as(te|us)|attw|au(di|\-m|r |s )|avan|be(ck|ll|nq)|bi(lb|rd)|bl(ac|az)|br(e|v)w|bumb|bw\-(n|u)|c55\/|capi|ccwa|cdm\-|cell|chtm|cldc|cmd\-|co(mp|nd)|craw|da(it|ll|ng)|dbte|dc\-s|devi|dica|dmob|do(c|p)o|ds(12|\-d)|el(49|ai)|em(l2|ul)|er(ic|k0)|esl8|ez([4-7]0|os|wa|ze)|fetc|fly(\-|_)|g1 u|g560|gene|gf\-5|g\-mo|go(\.w|od)|gr(ad|un)|haie|hcit|hd\-(m|p|t)|hei\-|hi(pt|ta)|hp( i|ip)|hs\-c|ht(c(\-| |_|a|g|p|s|t)|tp)|hu(aw|tc)|i\-(20|go|ma)|i230|iac( |\-|\/)|ibro|idea|ig01|ikom|im1k|inno|ipaq|iris|ja(t|v)a|jbro|jemu|jigs|kddi|keji|kgt( |\/)|klon|kpt |kwc\-|kyo(c|k)|le(no|xi)|lg( g|\/(k|l|u)|50|54|\-[a-w])|libw|lynx|m1\-w|m3ga|m50\/|ma(te|ui|xo)|mc(01|21|ca)|m\-cr|me(rc|ri)|mi(o8|oa|ts)|mmef|mo(01|02|bi|de|do|t(\-| |o|v)|zz)|mt(50|p1|v )|mwbp|mywa|n10[0-2]|n20[2-3]|n30(0|2)|n50(0|2|5)|n7(0(0|1)|10)|ne((c|m)\-|on|tf|wf|wg|wt)|nok(6|i)|nzph|o2im|op(ti|wv)|oran|owg1|p800|pan(a|d|t)|pdxg|pg(13|\-([1-8]|c))|phil|pire|pl(ay|uc)|pn\-2|po(ck|rt|se)|prox|psio|pt\-g|qa\-a|qc(07|12|21|32|60|\-[2-7]|i\-)|qtek|r380|r600|raks|rim9|ro(ve|zo)|s55\/|sa(ge|ma|mm|ms|ny|va)|sc(01|h\-|oo|p\-)|sdk\/|se(c(\-|0|1)|47|mc|nd|ri)|sgh\-|shar|sie(\-|m)|sk\-0|sl(45|id)|sm(al|ar|b3|it|t5)|so(ft|ny)|sp(01|h\-|v\-|v )|sy(01|mb)|t2(18|50)|t6(00|10|18)|ta(gt|lk)|tcl\-|tdg\-|tel(i|m)|tim\-|t\-mo|to(pl|sh)|ts(70|m\-|m3|m5)|tx\-9|up(\.b|g1|si)|utst|v400|v750|veri|vi(rg|te)|vk(40|5[0-3]|\-v)|vm40|voda|vulc|vx(52|53|60|61|70|80|81|83|85|98)|w3c(\-| )|webc|whit|wi(g |nc|nw)|wmlb|wonu|x700|yas\-|your|zeto|zte\-/i.test(a.substr(0,4)))
     // check = true;})
-
     // (navigator.userAgent||navigator.vendor||window.opera);
-
     // if(check === true){
-      
     //   document.getElementById('smartAlert').innerHTML += `
-
     //   <div class="alert alert-primary" role="alert" id="smartAlert">
     //   <b>
     //   <span>&#129310;</span>
@@ -644,14 +643,12 @@ const app = {
     //   <button type="button" class="btn btn-primary" id="smartInfo">Fermer</button>
     //   </div>
     // `   
-    // document.querySelector('#smartAlert').removeAttribute('hidden');
-    // document.querySelector('#facebookAlert').setAttribute('hidden', false);
-
-    //     document.getElementById('smartInfo').addEventListener('click', () => {
-    //     document.querySelector('#smartAlert').setAttribute('hidden', true);
-    //     });
-
-    //   } 
+    //    document.querySelector('#smartAlert').removeAttribute('hidden');
+    //    document.querySelector('#facebookAlert').setAttribute('hidden', false);
+    //    document.getElementById('smartInfo').addEventListener('click', () => {
+    //    document.querySelector('#smartAlert').setAttribute('hidden', true);
+    //    });
+    //  } 
 
       //*SmartPhone Detection
       var ua = navigator.userAgent || navigator.vendor || window.opera;
@@ -682,15 +679,11 @@ const app = {
       document.querySelector('#facebookAlert').removeAttribute('hidden');
       document.querySelector('#smartAlert').setAttribute('hidden', false);
 
-        document.getElementById('fbInfo').addEventListener('click', () => {
-        document.querySelector('#facebookAlert').setAttribute('hidden', true);
-        });
-
-      }
-
+      document.getElementById('fbInfo').addEventListener('click', () => {
+      document.querySelector('#facebookAlert').setAttribute('hidden', true);
+      });
+    }
   },
-
-
 
 };
 
