@@ -67,7 +67,7 @@ div.leaflet-popup-content img {
 
 p#currentCamName {
     text-align: center;
-    background: yellowgreen;
+    background: #c9cac6;
     padding: 0.5rem;
     color: white;
     border-radius: 5px;
@@ -113,7 +113,6 @@ div#canvasImg {
 div#coords {
     display: none;
 }
-
 
 div#vidéoStreamContainer {
     margin: 0;
