@@ -327,7 +327,8 @@ const app = {
     let lng = document.getElementById('lng').innerHTML
 
     //* ici je préprare le contenu des datas à poster.
-    //!  ils doivent correspondre aux propriétés non nullables de mon entité.
+    //! ils doivent correspondre aux propriétés non nullables de mon entité.
+    // CreatedAt est géré en backoffice sur la propriété createdAt par un event Doctrine PrePersist
     const data = { 
         picture: dataURL,
         lat: lat,
