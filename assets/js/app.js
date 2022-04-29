@@ -423,8 +423,6 @@ const app = {
       for(item = 0; item < data.length; item ++) {
 
           output = document.getElementById('canvasImg')
-          // output.innerHTML += ` <img id="canvasImg" src="https://photoboothback.simschab.fr/assets/upload/pictures/${data[item].pictureFile}" type="image/jpeg alt="image"/>`  
-          //output.innerHTML += ` <img id="canvasImg" src="http://127.0.0.1:8000/assets/upload/pictures/${data[item].pictureFile}" alt="image"/>`  
           
           //*picture insérée dans la liste des pictures
           output.innerHTML += ` <img id="canvasImg" src="http://127.0.0.1:8000/media/cache/portrait/assets/upload/pictures/${data[item].pictureFile}" type="image/jpeg alt="image"/>`  
@@ -433,8 +431,6 @@ const app = {
          
           let lat = data[item].lat;
           let lng = data[item].lng;
-          // let picture =  ` <img id="canvasImg" src="https://photoboothback.simschab.fr/assets/upload/pictures/${data[item].pictureFile}" type="image/webp" alt="image"/>`
-          // let picture =  ` <img id="canvasImg" src="http://127.0.0.1:8000/assets/upload/pictures/${data[item].pictureFile}" alt="image"/>`
           
           //*picture insérée dans le popup de la map
           let picture =  ` <img id="canvasImg" src="http://127.0.0.1:8000/media/cache/portrait/assets/upload/pictures/${data[item].pictureFile}.webp" type="image/webp" alt="image"/>`
@@ -444,7 +440,7 @@ const app = {
             lat = app.getRandomCoords(43, 47, 20);
           }
 
-          if(lng === null){
+          if(lng === null) {
             lng = app.getRandomCoords(0, 7, 10);
           }
           
