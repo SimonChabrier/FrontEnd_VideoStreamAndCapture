@@ -474,29 +474,40 @@ const app = {
       markers.push(marker)
 
       let pictures = document.getElementsByClassName('divImg');
-      console.log(pictures)
+      //console.log(pictures)
     
-      //todo il faut que je récupère un id dans l'attibut de mon image ou autre
+      for (var i = 0; i < pictures.length; i++) {
+        console.log(pictures[i]); //second console output
+      }
+
+      // //todo il faut que je récupère un id dans l'attibut de mon image ou autre
         for (var i in markers){
         var markerID = markers[i]._leaflet_id;
+        let currentId = pictures[i].setAttribute('id', markerID)
         //ici j'ai des id 61 66 et 68
+        pictures[i].addEventListener("mouseover", function(event) {
+          if (markerID == currentId){ //! ici je peux dynamiser le marqueur 
+            markers[i].openPopup();
+          };
+        });
         }
         
-        for(let j = 0; j < pictures.length; j++){
-          console.log(pictures[j])
-          pictures[j].setAttribute('id', markerID)
+        
+
+
+        // for(let j = 0; j < pictures.length; j++){
+        //   //console.log(pictures[j])
+        //   pictures[j].setAttribute('id', markerID)
           
 
-          pictures[j].addEventListener("mouseover", function(event) { 
-          console.log(event.target);
-          }); 
+        //   pictures[j].addEventListener("mouseover", function(event) { 
+        //   //console.log(event.target);
+        //   }); 
 
-            if (markerID == '61'){ //! ici je peux dynamiser le marqueur 
-                markers[i].openPopup();
-            };
-        }
-
-     
+        //     if (markerID == '61'){ //! ici je peux dynamiser le marqueur 
+        //         markers[i].openPopup();
+        //     };
+        // }
 },
 
 
