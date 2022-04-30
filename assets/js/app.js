@@ -477,18 +477,27 @@ const app = {
       pict = document.getElementsByClassName('divImg');
       pictures.push(pict);
 
-
+      //* ici j'associe l'id du marquer comme id de mes images.
       for (let element of markers) {
         let markerId = element._leaflet_id
          //console.log(element._leaflet_id);
+
           for (let element of pictures) {
             console.log(element[0]);
             element[0].setAttribute('id', markerId)
           }
+          
       }
-      
 
+    for (let i = 0; i < pict.length; i++) {
+        pict[i].addEventListener("mouseover", function(event) {
+          console.log(event.target)
+        // if (markerID == currentId){ //! ici je peux dynamiser le marqueur 
+        //   markers[i].openPopup();
+        // };
+      });
 
+    }
 
 
       // //todo il faut que je récupère un id dans l'attibut de mon image ou autre
