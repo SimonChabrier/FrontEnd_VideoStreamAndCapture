@@ -472,25 +472,62 @@ const app = {
       .bindPopup(picture)
 
       markers.push(marker)
-
-      let pictures = document.getElementsByClassName('divImg');
-      //console.log(pictures)
     
-      for (var i = 0; i < pictures.length; i++) {
-        console.log(pictures[i]); //second console output
+      let pictures = [];
+      pict = document.getElementsByClassName('divImg');
+      pictures.push(pict);
+
+
+      for (let element of markers) {
+        let markerId = element._leaflet_id
+         //console.log(element._leaflet_id);
+          for (let element of pictures) {
+            console.log(element[0]);
+            element[0].setAttribute('id', markerId)
+          }
       }
+      
+
+
+
 
       // //todo il faut que je récupère un id dans l'attibut de mon image ou autre
-        for (var i in markers){
-        var markerID = markers[i]._leaflet_id;
-        let currentId = pictures[i].setAttribute('id', markerID)
-        //ici j'ai des id 61 66 et 68
-        pictures[i].addEventListener("mouseover", function(event) {
-          if (markerID == currentId){ //! ici je peux dynamiser le marqueur 
-            markers[i].openPopup();
-          };
-        });
-        }
+
+      // markers.forEach(element => {
+      // let markerId = element._leaflet_id;
+      // });
+      //console.log(marker);
+
+      // markers.forEach(element => {
+      // let markerId = element._leaflet_id;
+      // console.log(markerId)
+      
+      //     for (var i = 0; i < pictures.length; i++) {
+      //     let currentId = pictures[i].setAttribute('id', markerId)
+      //     console.log(currentId) //second console output
+      //     }
+
+      // });
+
+
+    
+
+
+
+
+      // for (var i in markers){
+      // var markerID = markers[i]._leaflet_id;
+      // let currentId = pictures[i].setAttribute('id', markerID)
+      // console.log(currentId)
+      // //ici j'ai des id 61 66 et 68
+     
+      // pictures[i].addEventListener("mouseover", function(event) {
+      //   if (markerID == currentId){ //! ici je peux dynamiser le marqueur 
+      //     markers[i].openPopup();
+      //   };
+      // });
+
+      //}
         
         
 
