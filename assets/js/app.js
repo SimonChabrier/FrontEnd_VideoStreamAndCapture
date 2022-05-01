@@ -381,7 +381,6 @@ const app = {
     });
   },
 
-
   /**
    * Display all pictures from DataBase
    * Fetch data from API
@@ -399,6 +398,7 @@ const app = {
     //*Layer visule de la carte fixé sur 40vh dans le css
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {    
     }).addTo(map);
+
 
     //const apiRootUrl = 'https://photoboothback.simschab.fr/api/get'
     const apiRootUrl = 'http://127.0.0.1:8000/api/get'
@@ -418,40 +418,26 @@ const app = {
     .then(data => {
       //console.log(data)
 
-      for(item = 0; item < data.length; item ++) {
+      app.markersInit(data, map);
 
-          let output = document.querySelector('#canvasImg');
-          
-          //*picture insérée dans la liste des pictures
-          output.innerHTML += ` <img class = "divImg" src="http://127.0.0.1:8000/media/cache/portrait/assets/upload/pictures/${data[item].pictureFile}" type="image/jpeg alt="image"/>`  
-          //*output.innerHTML += ` <img id="canvasImg" src="https://photoboothback.simschab.fr/media/cache/portrait/assets/upload/pictures/${data[item].pictureFile}" type="image/jpeg alt="image"/>`  
-      
-         
-          let lat = data[item].lat;
-          let lng = data[item].lng;
-          
-          //*picture insérée dans le popup de la map
-          let picture =  ` <img iclass = "listImg" src="http://127.0.0.1:8000/media/cache/portrait/assets/upload/pictures/${data[item].pictureFile}.webp" type="image/webp" alt="image"/>`
-          //*let picture =  ` <img id="canvasImg" src="https://photoboothback.simschab.fr/media/cache/portrait/assets/upload/pictures/${data[item].pictureFile}.webp" type="image/webp" alt="image"/>`
-          
-          //* a chaque passage on contruit un marqueur
-          app.markersInit(map, lat, lng , picture);
-        
-        }     
     });
     
   },//end getAllPictures
 
   /**
    * Initialisation des marqueurs
-   * @param {*} map 
-   * @param {*} lat 
-   * @param {*} lng 
-   * @param {*} picture 
+   * @param {object} map 
+   * @param {object} data
    */                                                                                                                                                                                                             
-  markersInit: function (map, lat, lng, picture)
+  markersInit: function (data, map)
   { 
 
+    for(item = 0; item < data.length; item ++) {
+
+     
+      let lat = data[item].lat;
+      let lng = data[item].lng;
+    
       if (lat === null) {
         lat = app.getRandomCoords(43, 47, 20);
       }
@@ -460,102 +446,30 @@ const app = {
         lng = app.getRandomCoords(0, 7, 10);
       }
 
+      let markers = []
 
-      //*je vais stocker l'id de mes marqueurs dans un tableau
-      let markers = [];
-
-      //*initialisation des marqueurs
-      let marker = L.marker([lat, lng])
-      //* j'ajoute le marqueur a ma map
-      marker.addTo(map)
-      // //*popUp du marqueur acuellement on insérer juste la picture.
-      .bindPopup(picture)
-
-      markers.push(marker)
+      //*picture insérée dans le popup de la map
+      let picture =  ` <img iclass = "popImg" id = "${data[item].id}" src="http://127.0.0.1:8000/media/cache/portrait/assets/upload/pictures/${data[item].pictureFile}.webp" type="image/webp" alt="image"/>`
+      //*let picture =  ` <img id="popImg" src="https://photoboothback.simschab.fr/media/cache/portrait/assets/upload/pictures/${data[item].pictureFile}.webp" type="image/webp" alt="image"/>`
+      let marker = L.marker([lat, lng],{title: data[item].id}).addTo(map).bindPopup(picture)
     
-      let pictures = [];
-      pict = document.getElementsByClassName('divImg');
-      pictures.push(pict);
-
-      //* ici j'associe l'id du marquer comme id de mes images.
-      for (let element of markers) {
-        let markerId = element._leaflet_id
-         //console.log(element._leaflet_id);
-
-          for (let element of pictures) {
-            console.log(element[0]);
-            element[0].setAttribute('id', markerId)
+      let output = document.querySelector('#canvasImg');
+      output.innerHTML += ` <img class = "divImg" id = "${data[item].id}" src="http://127.0.0.1:8000/media/cache/portrait/assets/upload/pictures/${data[item].pictureFile}" type="image/jpeg alt="image"/>`  
+      //*output.innerHTML += ` <img id="divImg" src="https://photoboothback.simschab.fr/media/cache/portrait/assets/upload/pictures/${data[item].pictureFile}" type="image/jpeg alt="image"/>`
+  
+      markers.push(marker);
+          output.addEventListener("mouseover", function(event) { 
+          let id = event.target.getAttribute('id')  
+          console.log(id)
+          for (var i in markers){
+            var markerID = markers[i].options.title;
+            if (markerID == id){
+                markers[i].openPopup();
+            };
           }
-          
-      }
-
-    for (let i = 0; i < pict.length; i++) {
-        pict[i].addEventListener("mouseover", function(event) {
-          console.log(event.target)
-        // if (markerID == currentId){ //! ici je peux dynamiser le marqueur 
-        //   markers[i].openPopup();
-        // };
-      });
-
+        });
     }
-
-
-      // //todo il faut que je récupère un id dans l'attibut de mon image ou autre
-
-      // markers.forEach(element => {
-      // let markerId = element._leaflet_id;
-      // });
-      //console.log(marker);
-
-      // markers.forEach(element => {
-      // let markerId = element._leaflet_id;
-      // console.log(markerId)
-      
-      //     for (var i = 0; i < pictures.length; i++) {
-      //     let currentId = pictures[i].setAttribute('id', markerId)
-      //     console.log(currentId) //second console output
-      //     }
-
-      // });
-
-
-    
-
-
-
-
-      // for (var i in markers){
-      // var markerID = markers[i]._leaflet_id;
-      // let currentId = pictures[i].setAttribute('id', markerID)
-      // console.log(currentId)
-      // //ici j'ai des id 61 66 et 68
-     
-      // pictures[i].addEventListener("mouseover", function(event) {
-      //   if (markerID == currentId){ //! ici je peux dynamiser le marqueur 
-      //     markers[i].openPopup();
-      //   };
-      // });
-
-      //}
-        
-        
-
-
-        // for(let j = 0; j < pictures.length; j++){
-        //   //console.log(pictures[j])
-        //   pictures[j].setAttribute('id', markerID)
-          
-
-        //   pictures[j].addEventListener("mouseover", function(event) { 
-        //   //console.log(event.target);
-        //   }); 
-
-        //     if (markerID == '61'){ //! ici je peux dynamiser le marqueur 
-        //         markers[i].openPopup();
-        //     };
-        // }
 },
-
 
   /**
    * Get Geolocation
