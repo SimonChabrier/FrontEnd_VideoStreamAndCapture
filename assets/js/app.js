@@ -415,7 +415,7 @@ const app = {
       })
 
       .then(data => {
-        app.markersInit(data, map);
+        app.createMapMarkers(data, map);
       });
   },
 
@@ -424,7 +424,7 @@ const app = {
    * @param {object} map 
    * @param {object} data
    */                                                                                                                                                                                                             
-  markersInit: function (data, map)
+  createMapMarkers: function (data, map)
   { 
 
     for(item = 0; item < data.length; item ++) {
