@@ -20,11 +20,11 @@ const app = {
     app.camStreamer();
     app.currentBrowserCheck();
  
-    //app.browserSuportedConstraints();
-    // if (app.getcookie() === 'user=PhotoBooth'){
-    // app.userEnterWithCookie()
-    // document.querySelector('#errorMsg').removeAttribute('hidden');
-    // };
+    app.browserSuportedConstraints();
+    if (app.getcookie() === 'user=PhotoBooth'){
+    app.userEnterWithCookie()
+    document.querySelector('#errorMsg').removeAttribute('hidden');
+    };
   },
 
   /**
@@ -399,8 +399,8 @@ const app = {
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {    
     }).addTo(map);
 
-    //const apiRootUrl = 'https://photoboothback.simschab.fr/api/get'
-    const apiRootUrl = 'http://127.0.0.1:8000/api/get'
+    const apiRootUrl = 'https://photoboothback.simschab.fr/api/get'
+    //const apiRootUrl = 'http://127.0.0.1:8000/api/get'
 
     let config = {
         method: 'GET',
@@ -443,13 +443,13 @@ const app = {
       let markers = []
 
       //* picture insérée dans le popup de la map
-      let popUpContent =  ` <img class = "popImg" src="http://127.0.0.1:8000/media/cache/portrait/assets/upload/pictures/${data[item].pictureFile}.webp" type="image/webp" alt="image"/>`
-      //* let picture =  ` <img id="popImg" src="https://photoboothback.simschab.fr/media/cache/portrait/assets/upload/pictures/${data[item].pictureFile}.webp" type="image/webp" alt="image"/>`
+      //let popUpContent =  ` <img class = "popImg" src="http://127.0.0.1:8000/media/cache/portrait/assets/upload/pictures/${data[item].pictureFile}.webp" type="image/webp" alt="image"/>`
+      let popUpContent =  ` <img id="popImg" src="https://photoboothback.simschab.fr/media/cache/portrait/assets/upload/pictures/${data[item].pictureFile}.webp" type="image/webp" alt="image"/>`
       let marker = L.marker([lat, lng], {title: data[item].id}).addTo(map).bindPopup(popUpContent)
     
       let appendPicturesIn = document.querySelector('#canvasImg');
-      appendPicturesIn.innerHTML += ` <img class = "divImg" id = "${data[item].id}" src="http://127.0.0.1:8000/media/cache/portrait/assets/upload/pictures/${data[item].pictureFile}" type="image/jpeg alt="image"/>`  
-      //*output.innerHTML += ` <img id="divImg" src="https://photoboothback.simschab.fr/media/cache/portrait/assets/upload/pictures/${data[item].pictureFile}" type="image/jpeg alt="image"/>`
+      //appendPicturesIn.innerHTML += ` <img class = "divImg" id = "${data[item].id}" src="http://127.0.0.1:8000/media/cache/portrait/assets/upload/pictures/${data[item].pictureFile}" type="image/jpeg alt="image"/>`  
+      appendPicturesIn.innerHTML += ` <img id="divImg" src="https://photoboothback.simschab.fr/media/cache/portrait/assets/upload/pictures/${data[item].pictureFile}" type="image/jpeg alt="image"/>`
   
       markers.push(marker);
 
