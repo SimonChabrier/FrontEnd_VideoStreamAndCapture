@@ -19,6 +19,7 @@ const app = {
     app.getGeoLoc();
     app.camStreamer();
     app.currentBrowserCheck();
+ 
     //app.browserSuportedConstraints();
     // if (app.getcookie() === 'user=PhotoBooth'){
     // app.userEnterWithCookie()
@@ -380,7 +381,6 @@ const app = {
     });
   },
 
-
   /**
    * Display all pictures from DataBase
    * Fetch data from API
@@ -392,15 +392,11 @@ const app = {
 
     //* initialisatio de la carte sur la position GPS centre de la France
     var map = L.map('map').setView([46.227638, 2.213749], 5);
-
     //* Add fullscreen option from tiercepart script include in index head
     // https://github.com/Leaflet/Leaflet.fullscreen
-
     map.addControl(new L.Control.Fullscreen());
-
     //*Layer visule de la carte fixé sur 40vh dans le css
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {    
-     //attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
     }).addTo(map);
 
     //const apiRootUrl = 'https://photoboothback.simschab.fr/api/get'
@@ -414,45 +410,74 @@ const app = {
 
     fetch(apiRootUrl, config)
 
-    .then(response => {
-        return response.json();
-    })
+      .then(response => {
+          return response.json();
+      })
 
-    .then(data => {
-      console.log(data)
-      for(item = 0; item < data.length; item ++) {
+      .then(data => {
+        app.createMapMarkers(data, map);
+      });
+  },
 
-          output = document.getElementById('canvasImg')
-          
-          //*picture insérée dans la liste des pictures
-          output.innerHTML += ` <img id="canvasImg" src="http://127.0.0.1:8000/media/cache/portrait/assets/upload/pictures/${data[item].pictureFile}" type="image/jpeg alt="image"/>`  
-          //*output.innerHTML += ` <img id="canvasImg" src="https://photoboothback.simschab.fr/media/cache/portrait/assets/upload/pictures/${data[item].pictureFile}" type="image/jpeg alt="image"/>`  
-      
-         
-          let lat = data[item].lat;
-          let lng = data[item].lng;
-          
-          //*picture insérée dans le popup de la map
-          let picture =  ` <img id="canvasImg" src="http://127.0.0.1:8000/media/cache/portrait/assets/upload/pictures/${data[item].pictureFile}.webp" type="image/webp" alt="image"/>`
-          //*let picture =  ` <img id="canvasImg" src="https://photoboothback.simschab.fr/media/cache/portrait/assets/upload/pictures/${data[item].pictureFile}.webp" type="image/webp" alt="image"/>`
-          
-          if (lat === null) {
-            lat = app.getRandomCoords(43, 47, 20);
-          }
+  /**
+   * Initialisation des marqueurs
+   * @param {object} map 
+   * @param {object} data
+   */                                                                                                                                                                                                             
+  createMapMarkers: function (data, map)
+  { 
 
-          if(lng === null) {
-            lng = app.getRandomCoords(0, 7, 10);
-          }
-          
-          //*initialisation des marqueurs
-          L.marker([lat, lng]).addTo(map)
-          //*popUp du marqueur acuellment on insérer juste la picture.
-          .bindPopup(picture)
-        
-        }     
-    });
+    for(item = 0; item < data.length; item ++) {
+
+      let lat = data[item].lat;
+      let lng = data[item].lng;
     
-  },//end getAllPictures
+      if (lat === null) {
+        lat = app.getRandomCoords(43, 47, 20);
+      }
+
+      if(lng === null) {
+        lng = app.getRandomCoords(0, 7, 10);
+      }
+
+      let markers = []
+
+      //* picture insérée dans le popup de la map
+      let popUpContent =  ` <img class = "popImg" src="http://127.0.0.1:8000/media/cache/portrait/assets/upload/pictures/${data[item].pictureFile}.webp" type="image/webp" alt="image"/>`
+      //* let picture =  ` <img id="popImg" src="https://photoboothback.simschab.fr/media/cache/portrait/assets/upload/pictures/${data[item].pictureFile}.webp" type="image/webp" alt="image"/>`
+      let marker = L.marker([lat, lng], {title: data[item].id}).addTo(map).bindPopup(popUpContent)
+    
+      let appendPicturesIn = document.querySelector('#canvasImg');
+      appendPicturesIn.innerHTML += ` <img class = "divImg" id = "${data[item].id}" src="http://127.0.0.1:8000/media/cache/portrait/assets/upload/pictures/${data[item].pictureFile}" type="image/jpeg alt="image"/>`  
+      //*output.innerHTML += ` <img id="divImg" src="https://photoboothback.simschab.fr/media/cache/portrait/assets/upload/pictures/${data[item].pictureFile}" type="image/jpeg alt="image"/>`
+  
+      markers.push(marker);
+
+      //* on ouvre le popup on mouseover
+      appendPicturesIn.addEventListener("mouseover", event => { 
+        let currentPictId = event.target.getAttribute('id')  
+          for (var i in markers){
+            var currentMarkerId = markers[i].options.title;
+            if (currentMarkerId == currentPictId){
+                markers[i].openPopup();
+            };
+          }
+      });
+
+      //* on ferme le popup on mouseout
+      appendPicturesIn.addEventListener("mouseout", event => { 
+        let currentPictId = event.target.getAttribute('id')  
+          for (var i in markers){
+            var currentMarkerId = markers[i].options.title;
+            if (currentMarkerId == currentPictId){
+              setTimeout(() => {
+                markers[i].closePopup();
+              }, "1500")
+            };
+          }
+      });
+    }
+},
 
   /**
    * Get Geolocation
@@ -482,7 +507,7 @@ const app = {
    * Random coordonates générator
    * @param {int} from 
    * @param {int} to 
-   * @param {*-int} fixed 
+   * @param {int} fixed 
    * @returns 
    */
   getRandomCoords: function(from, to, fixed) {
