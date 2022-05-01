@@ -399,7 +399,6 @@ const app = {
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {    
     }).addTo(map);
 
-
     //const apiRootUrl = 'https://photoboothback.simschab.fr/api/get'
     const apiRootUrl = 'http://127.0.0.1:8000/api/get'
 
@@ -411,18 +410,14 @@ const app = {
 
     fetch(apiRootUrl, config)
 
-    .then(response => {
-        return response.json();
-    })
+      .then(response => {
+          return response.json();
+      })
 
-    .then(data => {
-      //console.log(data)
-
-      app.markersInit(data, map);
-
-    });
-    
-  },//end getAllPictures
+      .then(data => {
+        app.markersInit(data, map);
+      });
+  },
 
   /**
    * Initialisation des marqueurs
@@ -434,7 +429,6 @@ const app = {
 
     for(item = 0; item < data.length; item ++) {
 
-     
       let lat = data[item].lat;
       let lng = data[item].lng;
     
@@ -448,26 +442,40 @@ const app = {
 
       let markers = []
 
-      //*picture insérée dans le popup de la map
-      let picture =  ` <img iclass = "popImg" id = "${data[item].id}" src="http://127.0.0.1:8000/media/cache/portrait/assets/upload/pictures/${data[item].pictureFile}.webp" type="image/webp" alt="image"/>`
-      //*let picture =  ` <img id="popImg" src="https://photoboothback.simschab.fr/media/cache/portrait/assets/upload/pictures/${data[item].pictureFile}.webp" type="image/webp" alt="image"/>`
-      let marker = L.marker([lat, lng],{title: data[item].id}).addTo(map).bindPopup(picture)
+      //* picture insérée dans le popup de la map
+      let popUpContent =  ` <img class = "popImg" src="http://127.0.0.1:8000/media/cache/portrait/assets/upload/pictures/${data[item].pictureFile}.webp" type="image/webp" alt="image"/>`
+      //* let picture =  ` <img id="popImg" src="https://photoboothback.simschab.fr/media/cache/portrait/assets/upload/pictures/${data[item].pictureFile}.webp" type="image/webp" alt="image"/>`
+      let marker = L.marker([lat, lng], {title: data[item].id}).addTo(map).bindPopup(popUpContent)
     
-      let output = document.querySelector('#canvasImg');
-      output.innerHTML += ` <img class = "divImg" id = "${data[item].id}" src="http://127.0.0.1:8000/media/cache/portrait/assets/upload/pictures/${data[item].pictureFile}" type="image/jpeg alt="image"/>`  
+      let appendPicturesIn = document.querySelector('#canvasImg');
+      appendPicturesIn.innerHTML += ` <img class = "divImg" id = "${data[item].id}" src="http://127.0.0.1:8000/media/cache/portrait/assets/upload/pictures/${data[item].pictureFile}" type="image/jpeg alt="image"/>`  
       //*output.innerHTML += ` <img id="divImg" src="https://photoboothback.simschab.fr/media/cache/portrait/assets/upload/pictures/${data[item].pictureFile}" type="image/jpeg alt="image"/>`
   
       markers.push(marker);
-          output.addEventListener("mouseover", function(event) { 
-          let id = event.target.getAttribute('id')  
-          console.log(id)
+
+      //* on ouvre le popup on mouseover
+      appendPicturesIn.addEventListener("mouseover", event => { 
+        let currentPictId = event.target.getAttribute('id')  
           for (var i in markers){
-            var markerID = markers[i].options.title;
-            if (markerID == id){
+            var currentMarkerId = markers[i].options.title;
+            if (currentMarkerId == currentPictId){
                 markers[i].openPopup();
             };
           }
-        });
+      });
+
+      //* on ferme le popup on mouseout
+      appendPicturesIn.addEventListener("mouseout", event => { 
+        let currentPictId = event.target.getAttribute('id')  
+          for (var i in markers){
+            var currentMarkerId = markers[i].options.title;
+            if (currentMarkerId == currentPictId){
+              setTimeout(() => {
+                markers[i].closePopup();
+              }, "1500")
+            };
+          }
+      });
     }
 },
 
@@ -499,7 +507,7 @@ const app = {
    * Random coordonates générator
    * @param {int} from 
    * @param {int} to 
-   * @param {*-int} fixed 
+   * @param {int} fixed 
    * @returns 
    */
   getRandomCoords: function(from, to, fixed) {
