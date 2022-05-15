@@ -434,31 +434,29 @@ postNewPicture:function(dataURL) {
   let lat = document.getElementById('lat').innerHTML
   let lng = document.getElementById('lng').innerHTML
 
-  //* ici je préprare le contenu des datas à poster.
+  // prepare the content of the data to post.
   const data = { 
       picture: dataURL,
       lat: lat,
       lng: lng
   };
 
-  //* préparation des Headers
+  //* prepare Headers
   const httpHeaders = new Headers();
   httpHeaders.append('Content-Type', 'application/json');
   
-  //* route de mon back-end symfony
+  // init symfonyer back-end route for API Post  
   //const apiRootUrl = 'https://photoboothback.simschab.fr/api/post';
   const apiRootUrl = 'http://127.0.0.1:8000/api/post';
 
-  //* Je poste sur la route API 
-  const fetchOptions = 
-  {
-  method: 'POST', // or 'POST --> doit correspondre à la mathode délcarée sur la route symfony'
+  const fetchOptions = {
+  method: 'POST',
   mode : 'cors',
   cache : 'no-cache',
   headers: httpHeaders,
   body: JSON.stringify(data),
   }
-
+ 
   fetch(apiRootUrl , fetchOptions)
 
   .then(response => {
