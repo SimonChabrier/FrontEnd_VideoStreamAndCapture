@@ -16,13 +16,11 @@ const app = {
 
     console.log('init');
     app.getAllPictures();
-
+    if (app.getcookie() === 'user=PhotoBooth'){
+    app.userEnterWithCookie()
+    document.querySelector('#errorMsg').removeAttribute('hidden');
+    };
     //app.browserSuportedConstraints();
-
-    // if (app.getcookie() === 'user=PhotoBooth'){
-    // app.userEnterWithCookie()
-    // document.querySelector('#errorMsg').removeAttribute('hidden');
-    // };
   },
 
 /**
